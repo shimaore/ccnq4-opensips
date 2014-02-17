@@ -4,6 +4,7 @@
 
 override_dh_gencontrol:
 	dh_gencontrol -- \
+		-Vmediaproxy:Version="2.5.2-5~shimaore" \
 		-Vopensips:Version="1.11.0~shimaore-5"
 
 override_dh_installinit:
