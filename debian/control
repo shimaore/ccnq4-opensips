@@ -3,6 +3,7 @@ Maintainer: Stephane Alnet (Packaging) <stephane@shimaore.net>
 
 Package: ccnq3-opensips-latest
 Provides: ccnq3-opensips
+Conflicts: ccnq3-opensips-ga
 Architecture: all
 Depends: ccnq3,
   opensips (= ${opensips:Version}),
