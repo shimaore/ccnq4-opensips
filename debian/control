@@ -3,6 +3,7 @@ Maintainer: Stephane Alnet (Packaging) <stephane@shimaore.net>
 
 Package: ccnq3-opensips-latest
 Provides: ccnq3-opensips
+Replaces: ccnq3-opensips
 Conflicts: ccnq3-opensips-ga
 Architecture: all
 Depends: ccnq3,
@@ -19,8 +20,9 @@ Description: OpenSIPS dependencies for CCNQ3, development branch
 
 Package: ccnq3-munin-opensips-latest
 Provides: ccnq3-munin-opensips
+Replaces: ccnq3-munin-opensips
 Architecture: all
-Depends: munin-node, ccnq3-opensips (= ${binary:Version}),
+Depends: munin-node, ccnq3-opensips-latest (= ${binary:Version}),
   bash
 Description: munin modules for ccnq3-opensips
   Provides the opensips_dialogs munin plugin.
