@@ -44,9 +44,6 @@
 
   "usrloc_flags": "f",
 
-  "fifo_path": "/tmp/opensips_fifo",
-  "mi_port": 30000,
-
   "cache_cleanup": 30,
   "cache_timeout": 45,
 
@@ -81,6 +78,8 @@
   "max_contacts": 0,
 
   "sip_warning": 1,
+
+  "httpd_port": 8560,
 
   "ok":true
 }

@@ -10,13 +10,11 @@ modparam("cachedb_local", "cache_table_size", 12)
 loadmodule "json.so"
 
 # -- MI --
-if fifo_path
-loadmodule "mi_fifo.so"
-modparam("mi_fifo","fifo_name", "${fifo_path}")
-end if fifo_path
-
-loadmodule "mi_datagram.so"
-modparam("mi_datagram", "socket_name", "udp:127.0.0.1:${mi_port}")
+loadmodule "httpd.so"
+if httpd_ip
+modparam("httpd","ip","${httpd_ip}")
+end if httpd_ip
+modparam("httpd","port","${httpd_port}")
 
 # -- Common --
 loadmodule "sl.so"
