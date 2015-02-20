@@ -72,7 +72,8 @@ end if rate_limit
 loadmodule "avpops.so"
 
 if notify
-  loadmodule "event_rabbitmq.so"
+  loadmodule "event_route.so"
+  loadmodule "rest_client.so"
 end if notify
 
 loadmodule "statistics.so"
