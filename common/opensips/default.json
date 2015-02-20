@@ -81,5 +81,7 @@
 
   "httpd_port": 8560,
 
+  "provisioning": "http://127.0.0.1:5984/provisioning",
+
   "ok":true
 }
