@@ -6,7 +6,7 @@ path = require 'path'
 
 macros_cfg = (t,params) ->
 
-  # Evaluate parameters after macro substitution
+  # Evaluate parameters
   t = t.replace /// \b define \s+ (\w+) \b ///g, (str,$1) ->
     params[$1] = 1
     return ''

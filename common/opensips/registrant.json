@@ -1,21 +1,26 @@
 {
   "comment":"Open proxy with registration.",
 
+  "model": "registrant",
+
   "recipe":[
     "generic",
     "toolbox",
-    "authenticate-disabled",
-    "avpops_db",
     "db_http",
+    "avpops_db",
+
     "nonat",
-    "registrant",
-    "invite",
+
+    "authenticate-disabled",
+
     "loose-route",
+
+    "registrant",
+
     "forwarder"
   ],
 
   "opensips_base_lib": ".",
-  "model": "registrant",
   "runtime_opensips_cfg": "/tmp/registrant.cfg",
 
   "db_url": "http://127.0.0.1:34340/",
@@ -50,7 +55,7 @@
   "sip_domain_name": "bypassed",
   "skip_domain_check": 1,
 
-  "children": 20,
+  "children": 5,
 
   "ok":true
 }

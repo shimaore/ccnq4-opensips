@@ -2,6 +2,8 @@
   "comment default": "Lists default values (not specific to a profile). There's no reason to modify these.",
 
   "mpath": "/usr/lib/opensips/modules/",
+  "var_run_opensips": "/var/run/opensips",
+  "var_run_mediaproxy": "/var/run/mediaproxy",
   "uac_vsf": "vsf",
   "max_hops": "10",
   "children": 30,
@@ -56,7 +58,9 @@
   "rate_limit_interval": 10,
   "rate_limit_invite": 50,
   "rate_limit_latency": 60,
-  "rate_limit": false,
+  "rate_limit": true,
+
+  "max_channels": true,
 
   "dlg_match_mode": 1,
   "fix_invalid_dialogs": false,
@@ -74,6 +78,8 @@
 
   "short_fr_timer": 2,
   "long_fr_timer": 4,
+  "T1_timer": 500,
+  "T2_timer": 4000,
 
   "max_contacts": 0,
 

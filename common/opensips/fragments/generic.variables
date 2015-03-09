@@ -41,8 +41,8 @@ dns_try_ipv6=yes
 
 mpath="${mpath}"
 
-server_header="Server: ccnq3 ${model} proxy"
-user_agent_header="User-Agent: ccnq3 ${model} proxy"
+server_header="Server: ccnq4 ${model} ${version}"
+user_agent_header="User-Agent: ccnq4 ${model} ${version}"
 
 if sip_domain_name
 alias="${sip_domain_name}"

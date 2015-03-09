@@ -22,10 +22,8 @@ loadmodule "tm.so"
 
 # Timeout for Final reply for INVITE after provisional msg (1xx).
 # This is e.g. the time we wait for ringing before trying the next route.
-modparam("tm", "fr_inv_timer", ${inv_timeout})
+modparam("tm", "fr_inv_timeout", ${inv_timeout})
 # default is 120
-# noisy_ctimer: Recommended by Gafachi, probably makes sense in this application
-# modparam("tm", "noisy_ctimer", 1)
 
 # For better interaction with broken (pre-3261) devices, turn these off.
 # modparam("tm", "ruri_matching", 0)
@@ -36,13 +34,15 @@ modparam("tm", "fr_inv_timer", ${inv_timeout})
 # 6 seconds is one ring cycle.
 
 if use_shorter_fr_timer
-  modparam("tm", "fr_timer", ${short_fr_timer})
+  modparam("tm", "fr_timeout", ${short_fr_timer})
 end if use_shorter_fr_timer
 
 if not use_shorter_fr_timer
-  modparam("tm", "fr_timer", ${long_fr_timer})
+  modparam("tm", "fr_timeout", ${long_fr_timer})
 end if not use_shorter_fr_timer
 
+modparam("tm", "T1_timer", ${T1_timer})
+modparam("tm", "T2_timer", ${T2_timer})
 
 loadmodule "rr.so"
 
@@ -64,10 +64,6 @@ if rate_limit
     modparam("ratelimit", "db_prefix", "ratelimit_")
   end if rate_limit_cache
 end if rate_limit
-
-# -- avpops --
-# Note: see also avpops_db.modules for additional configuration.
-loadmodule "avpops.so"
 
 if notify
   loadmodule "event_route.so"

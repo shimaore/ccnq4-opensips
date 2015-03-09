@@ -1,29 +1,34 @@
 {
   "comment":"Model for a complete proxy that does it all (almost).",
 
+  "model": "complete",
+
   "recipe":[
     "generic",
-    "db_http",
-    "domain_db",
-    "usrloc_db",
-    "avpops_db",
     "toolbox",
-    "authenticate",
+    "db_http",
+    "avpops_db",
+
     "nat",
     "mediaproxy",
-    "invite-router",
-    "invite",
-    "invite-trunk-drouting",
+
+    "usrloc_db",
+    "register-colocated",
+    "authenticate",
+
     "loose-route",
+
+    "invite-trunk-drouting",
+    "invite",
+    "invite-router",
     "non-loose-route",
     "routing-lineside",
     "routing-trunkside-transparent",
-    "register-colocated",
+
     "forwarder"
   ],
 
   "opensips_base_lib": ".",
-  "model": "complete",
   "runtime_opensips_cfg": "/etc/opensips/opensips.cfg",
 
   "db_url": "http://127.0.0.1:34340/",
@@ -39,7 +44,6 @@
   "mp_always": 0,
   "debug": 0,
 
-  "radius_config": "",
   "inv_timeout": 90,
   "dialog_timeout": 28800,
 
