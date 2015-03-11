@@ -1,23 +1,5 @@
     # db_dbase.c lists: int, double, string, str, blob, date; str and blob are equivalent for this interface.
     column_types =
-      usrloc:
-        username: 'string'
-        domain: 'string'
-        contact: 'string'
-        received: 'string'
-        path: 'string'
-        expires: 'date'
-        q: 'double'
-        callid: 'string'
-        cseq: 'int'
-        last_modified: 'date'
-        flags: 'int'
-        cflags: 'string'
-        user_agent: 'string'
-        socket: 'string'
-        methods: 'int'
-        sip_instance: 'string'
-        attr: 'string'
       version:
         table_name: 'string'
         table_version: 'int'
@@ -71,21 +53,25 @@
         type: 'int'
         value: 'string'
       location:
+        # keys
         username:'string'
-        domain:'string'
         contact:'string'
-        received:'string'
-        path:'string'
+        callid:'string'
+        domain:'string'
+        # non-keys
         expires:'date'
         q:'double'
-        callid:'string'
         cseq:'int'
-        last_modified:'date'
         flags:'int'
         cflags:'int'
         user_agent:'string'
+        received:'string'
+        path:'string'
         socket:'string'
         methods:'int'
+        last_modified:'date'
+        sip_instance:'string'
+        attr:'string'
       registrant:
         registrar:'string'
         proxy:'string'
@@ -98,7 +84,12 @@
         expiry:'int'
         forced_socket:'string'
 
-    quoted_value = (t,x) ->
+quote_value
+-----------
+
+Convert a JavaScript value `x` into an OpenSIPS value of type `t`.
+
+    quote_value = (t,x) ->
       # No value: no quoting.
       if not x?
         return ''
@@ -118,6 +109,80 @@
 
       # Assumes quote_delimiter = '"'
       return '"'+x.replace(/"/g, '""')+'"'
+
+unquote_value
+-------------
+
+Convert an OpenSIPS value `x` of type `t` into a JavaScript value.
+
+    unquote_value = (t,x) ->
+
+      if not x?
+        return x
+
+      if t is 'int'
+        return parseInt(x)
+      if t is 'double'
+        return parseFloat(x)
+      # Not sure what the issue is, but we're getting garbage at the end of dates.
+      if t is 'date'
+        d = new Date(x)
+        # Format expected by db_str2time() in db/db_ut.c
+        # Note: This requires opensips to be started in UTC, assuming
+        #       toISOString() outputs using UTC (which it does in Node.js 0.4.11).
+        #       Our script ccnq3-opensips.postinst makes sure this is the case.
+        return d.toISOString().replace 'T', ' '
+
+      # string, blob, ...
+      return x.toString()
+
+    do ->
+      assert = require 'assert'
+      test_set =
+        int: [
+          0
+          1
+          234
+        ]
+        double: [
+          0
+          1
+          234
+          234.56
+        ]
+        date: [
+          '2014-09-16 22:59:00.000Z'
+        ]
+        string: [
+          "foo"
+          'bar " hello'
+        ]
+        other: [
+          true
+          false
+          0
+          1
+          234
+          234.56
+          "foo"
+          'bar " hello'
+          [2,3,4]
+          {a:2,b:'k'}
+        ]
+
+      for type, test_values of test_set
+        for value in test_values
+          assert.deepEqual (unquote_value type, quote_value type, value), value
+
+    unquote_params = (k,v,table)->
+      doc = {}
+      names = k.split ','
+      values = v.split ','
+      types = column_types[table]
+
+      doc[names[i]] = unquote_value(types[names[i]],values[i]) for i in [0..names.length]
+
+      return doc
 
 
     field_delimiter = "\t"
@@ -154,7 +219,7 @@
         hash.state ?= 0
       if n is 'dr_groups'
         hash.groupid = hash.outbound_route # alternatively set the "drg_grpid_col" parameter to "outbound_route"
-      return line( quoted_value(types[col], hash[col]) for col in c )
+      return line( quote_value(types[col], hash[col]) for col in c )
 
     exports.column_types = column_types
     exports.first_line = first_line
