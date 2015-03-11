@@ -26,10 +26,13 @@ modparam("dialog", "default_timeout", ${dialog_timeout}) # default 43200 (12h)
 modparam("dialog", "dlg_extra_hdrs", "X-CCNQ3-Reason: Call too long\r\n")
 
 modparam("dialog", "profiles_with_value", "endpoint ; number ; account")
-# modparam("dialog", "cachedb_url", "redis://127.0.0.1")
+
+if cachedb_url
+modparam("dialog", "cachedb_url", "${cachedb_url}")
+end if cachedb_url
 
 modparam("dialog", "db_mode", 0) # No database of dialogs
 
-# modparam("dialog", "profiles_with_value", "")
-# modparam("dialog", "profiles_no_value", "")
+modparam("dialog", "profiles_with_value", "endpoint")
+modparam("dialog", "profiles_no_value", "direction-inbound;direction-outbound")
 
