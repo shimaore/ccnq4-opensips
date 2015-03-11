@@ -13,13 +13,17 @@ graph_title Dialogs
 graph_args -l 0
 graph_vlabel dialogs
 graph_category voice
-opensips_dialogs.label Dialogs
-opensips_dialogs.max 25000
-opensips_dialogs.min 0
-opensips_dialogs.draw LINE2
+active_dialogs.label Active Dialogs
+active_dialogs.max 25000
+active_dialogs.min 0
+active_dialogs.draw LINE2
+early_dialogs.label Early Dialogs
+early_dialogs.max 25000
+early_dialogs.min 0
+early_dialogs.draw LINE2
 EOT
   exit
 fi
 
-echo -n "opensips_dialogs.value "
-/usr/sbin/opensipsctl fifo dlg_list | egrep '^dialog::' | wc -l
+/usr/sbin/opensipsctl fifo get_statistics active_dialogs | sed -e 's/dialog:active_dialogs = /active_dialogs.value /'
+/usr/sbin/opensipsctl fifo get_statistics early_dialogs | sed -e 's/dialog:early_dialogs = /early_dialogs.value /'
