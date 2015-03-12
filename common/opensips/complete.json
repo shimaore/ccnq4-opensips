@@ -7,6 +7,7 @@
     "generic",
     "toolbox",
     "db_http",
+    "avpops",
 
     "nat",
     "mediaproxy",
