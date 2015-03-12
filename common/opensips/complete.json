@@ -7,7 +7,6 @@
     "generic",
     "toolbox",
     "db_http",
-    "avpops_db",
 
     "nat",
     "mediaproxy",
@@ -18,7 +17,7 @@
 
     "loose-route",
 
-    "invite-trunk-drouting",
+    "invite-trunk-fixed",
     "invite",
     "invite-router",
     "non-loose-route",
