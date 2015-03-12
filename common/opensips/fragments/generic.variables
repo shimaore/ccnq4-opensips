@@ -18,6 +18,13 @@ if listen
 ${listen}
 end if listen
 
+## ------- Binary Internal Interface ---- ##
+
+if bin_listen
+bin_listen = ${bin_listen}
+bin_children = 2
+end if bin_listen
+
 ## ------- Variables ---------- ##
 
 # Debug level (syslog)
