@@ -89,6 +89,9 @@
 
   "sip_warning": 1,
 
+  "mated_host": null,
+  "bin_port": 25058,
+
   "httpd_port": 8560,
 
   "provisioning": "http://127.0.0.1:5984/provisioning",

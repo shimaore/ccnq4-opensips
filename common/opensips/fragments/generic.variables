@@ -20,10 +20,10 @@ end if listen
 
 ## ------- Binary Internal Interface ---- ##
 
-if bin_listen
-bin_listen = ${bin_listen}
+if mated_host
+bin_listen = ${mated_host}:${bin_port}
 bin_children = 2
-end if bin_listen
+end if mated_host
 
 ## ------- Variables ---------- ##
 
