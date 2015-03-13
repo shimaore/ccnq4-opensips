@@ -18,6 +18,7 @@ RUN mkdir /run/mediaproxy && chown opensips.opensips /run/mediaproxy
 COPY . /home/opensips
 RUN chown -R opensips.opensips /home/opensips
 USER opensips
+RUN mkdir -p log run/opensips run/mediaproxy
 # Build mediaproxy-dispatcher
 WORKDIR vendor
 RUN tar xzvf mediaproxy-2.6.1.tar.gz

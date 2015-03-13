@@ -1,5 +1,0 @@
-applications/opensips /opt/ccnq3/src/applications
-applications/emergency /opt/ccnq3/src/applications
-applications/registrant /opt/ccnq3/src/applications
-common/opensips /opt/ccnq3/src/common
-common/mediaproxy/dispatcher.ini /opt/ccnq3/src/common/mediaproxy

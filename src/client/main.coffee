@@ -1,20 +1,24 @@
 util = require 'util'
-qs = require 'querystring'
-request = require 'superagent-as-promised'
 
 make_id = (t,n) -> [t,n].join ':'
 
 {show,list} = require './opensips'
 
-cfg = require 'local/config.json'
-
-do ->
-  provisioning = new PouchDB cfg.provisioning ? "http://127.0.0.1:5984/provisioning"
-  usrloc = new PouchDB cfg.usrloc ? "http://127.0.0.1:5984/location"
-
+module.exports = (cfg) ->
+  cfg.provisioning = new PouchDB cfg.provisioning ? "http://127.0.0.1:5984/provisioning"
+  cfg.usrloc = new PouchDB cfg.usrloc ? "http://127.0.0.1:5984/location"
   cfg.port ?= 34340
   cfg.host ?= '127.0.0.1'
 
+  couchapp = require './couchapp'
+  cfg.provisioning.get couchapp._id
+  .then ({_rev}) ->
+    couchapp._rev = _rev if _rev?
+    cfg.provisioning.put couchapp
+  .then ->
+    main cfg
+
+main = (cfg) ->
   zappa = require 'zappajs'
   zappa cfg.port, cfg.host, io:no, ->
 
@@ -24,11 +28,11 @@ do ->
       if @query.k is 'username,domain' and @query.op is '=,='
         # Parse @v -- what is the actual format?
         [username,domain] = @query.v.split ","
-        provisioning
+        cfg.provisioning
         .get make_id('endpoint',"#{username}@#{domain}")
         .then (doc) =>
           @res.type 'text/plain'
-          @send show doc, req
+          @send show doc, @req
         return
 
       util.error "subscriber: not handled: #{@query.k}"
@@ -40,22 +44,22 @@ do ->
         usrloc.get @query.v
         .then (doc) =>
           @res.type 'text/plain'
-          @send show doc, req, 'location'
+          @send show doc, @req, 'location'
         return
 
       if @query.k is 'username,domain' and @query.op is '=,='
         [username,domain] = @query.v.split ','
-        usrloc.get "#{username}@#{domain}"
+        cfg.usrloc.get "#{username}@#{domain}"
         .then (doc) =>
           @res.type 'text/plain'
-          @send show doc, req, 'location'
+          @send show doc, @req, 'location'
         return
 
       if not @query.k?
-        usrloc.allDocs include_docs:true
+        cfg.usrloc.allDocs include_docs:true
         .then ({rows}) =>
           @res.type 'text/plain'
-          @send list rows, req, 'location'
+          @send list rows, @req, 'location'
         return
 
       util.error "location: not handled: #{@query.k}"
@@ -74,10 +78,10 @@ do ->
 
       if @body.query_type is 'insert' or @body.query_type is 'update'
 
-        usrloc.get doc._id
+        cfg.usrloc.get doc._id
         .then ({_rev}) =>
           doc._rev = _rev if _rev?
-          usrloc.put doc
+          cfg.usrloc.put doc
         .then =>
           @res.type 'text/plain'
           @send doc._id
@@ -88,11 +92,11 @@ do ->
 
       if @body.query_type is 'delete'
 
-        usrloc.get doc._id
+        cfg.usrloc.get doc._id
         .then ({_rev}) =>
           if not _rev? then return
           doc._rev = _rev
-          usrloc.delete doc
+          cfg.usrloc.delete doc
         .catch (error) ->
           util.error "location: error deleting #{doc._id}: #{error}"
         .then =>
@@ -109,9 +113,6 @@ do ->
         versions =
           location: 1009
           subscriber: 7
-          dr_gateways: 6
-          dr_rules: 3
-          registrant: 1
 
         return "int\n#{versions[@query.v]}\n"
 
