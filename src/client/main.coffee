@@ -24,20 +24,6 @@ main = (cfg) ->
 
     @use 'bodyParser'
 
-    @get '/subscriber/': -> # auth_table
-      if @query.k is 'username,domain' and @query.op is '=,='
-        # Parse @v -- what is the actual format?
-        [username,domain] = @query.v.split ","
-        cfg.provisioning
-        .get make_id('endpoint',"#{username}@#{domain}")
-        .then (doc) =>
-          @res.type 'text/plain'
-          @send show doc, @req
-        return
-
-      util.error "subscriber: not handled: #{@query.k}"
-      @send ""
-
     @get '/location/': -> # usrloc_table
 
       if @query.k is 'username' and @query.op is '='
@@ -112,7 +98,6 @@ main = (cfg) ->
         # Versions for OpenSIPS 1.11.0 FIXME
         versions =
           location: 1009
-          subscriber: 7
 
         return "int\n#{versions[@query.v]}\n"
 
