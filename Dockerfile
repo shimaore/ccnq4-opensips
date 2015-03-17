@@ -1,4 +1,4 @@
-FROM shimaore/opensips:1.11.0
+FROM shimaore/opensips:1.11.1
 MAINTAINER Stéphane Alnet <stephane@shimaore.net>
 
 USER root
