@@ -5,18 +5,11 @@ make_id = (t,n) -> [t,n].join ':'
 {show,list} = require './opensips'
 
 module.exports = (cfg) ->
-  cfg.provisioning = new PouchDB cfg.provisioning ? "http://127.0.0.1:5984/provisioning"
   cfg.usrloc = new PouchDB cfg.usrloc ? "http://127.0.0.1:5984/location"
   cfg.port ?= 34340
   cfg.host ?= '127.0.0.1'
 
-  couchapp = require './couchapp'
-  cfg.provisioning.get couchapp._id
-  .then ({_rev}) ->
-    couchapp._rev = _rev if _rev?
-    cfg.provisioning.put couchapp
-  .then ->
-    main cfg
+  main cfg
 
 main = (cfg) ->
   zappa = require 'zappajs'
