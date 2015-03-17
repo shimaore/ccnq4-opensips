@@ -13,36 +13,11 @@
   "fork": "yes",
   "log_stderror": "no",
 
-  "comment bflag": "Branch flags",
-  "bflag_request_mp_callee":          6,
-  "bflag_cfb_used":                   9,
-  "bflag_cfda_used":                 10,
-  "bflag_auth_attempted":            11,
-  "bflag_in_progress":               18,
-
-  "comment flag": "Transaction flags",
-  "flag_request_mp_callee":           6,
-  "flag_request_mp_caller":           7,
-  "flag_failed_transaction":         12,
-  "flag_dest_domain_set":            16,
-  "flag_sock":                       18,
-  "flag_register_authenticated":     20,
-  "flag_tcp_persistent":             21,
-  "flag_trunk_routing":              22,
-  "flag_has_forwarding":             23,
-
-  "comment dflag": "Dialog flags",
-  "dflag_cleanup_headers":            1,
-
   "sbc_own_originator":               1,
   "sbc_own_outbound":                 2,
   "sbc_csr_outbound":                10,
 
   "sbc_own_upstream":                 1,
-
-  "comment dflag": "Dialog flags",
-  "dflag_mediaproxy":                 8,
-  "dflag_mediaproxy_engaged":         9,
 
   "usrloc_table": "location",
 
