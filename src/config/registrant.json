@@ -34,7 +34,6 @@
   "local_port": 5064,
 
   "authentication": "",
-  "skip_uac_auth": 1,
   "mp_allowed": 1,
   "mp_always": 1,
   "debug": 0,
