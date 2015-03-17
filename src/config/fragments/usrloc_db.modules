@@ -5,7 +5,7 @@ modparam("usrloc", "db_url",          "${db_url}")
 modparam("usrloc", "db_mode",         1) # Write Through, was: 2, Write Back
 modparam("usrloc", "timer_interval",  60)
 modparam("usrloc", "desc_time_order", 1)
-modparam("usrloc", "nat_bflag",       ${bflag_request_mp_callee})
+modparam("usrloc", "nat_bflag",       "bflag_request_mp_callee")
 modparam("usrloc", "use_domain",      1)
 
 if replicate_to

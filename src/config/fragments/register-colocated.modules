@@ -15,4 +15,4 @@ modparam("registrar", "max_contacts", ${max_contacts})
 # AVP used by nat_traversal
 modparam("registrar", "received_avp", "$avp(received_avp)")
 
-modparam("registrar", "tcp_persistent_flag", ${flag_tcp_persistent})
+modparam("registrar", "tcp_persistent_flag", "flag_tcp_persistent")
