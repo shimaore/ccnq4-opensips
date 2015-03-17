@@ -15,7 +15,7 @@ Use `default.json` as the base.
 
 Override it with any configuration element found in the model.
 
-      model = require "./src/config/#{cfg.opensips.model}.json"
+      model = require "./src/#{cfg.opensips.model}/config.json"
       for own k,v of model
         options[k] = v
 

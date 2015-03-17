@@ -2,7 +2,6 @@
   "comment default": "Lists default values (not specific to a profile). There's no reason to modify these.",
 
   "runtime_opensips_cfg": "/opt/opensips/etc/opensips/opensips.cfg",
-  "opensips_base_lib": ".",
   "db_url": "http://127.0.0.1:34340/",
 
   "mpath": "/opt/opensips/lib64/opensips/modules/",
