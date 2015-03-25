@@ -14,7 +14,9 @@ loadmodule "httpd.so"
 if httpd_ip
 modparam("httpd","ip","${httpd_ip}")
 end if httpd_ip
-modparam("httpd","port","${httpd_port}")
+modparam("httpd","port",${httpd_port})
+
+loadmodule "mi_json.so"
 
 # -- Common --
 loadmodule "sl.so"
@@ -67,7 +69,7 @@ end if rate_limit
 
 if notify
   loadmodule "event_route.so"
-  loadmodule "rest_client.so"
 end if notify
 
+loadmodule "rest_client.so"
 loadmodule "statistics.so"
