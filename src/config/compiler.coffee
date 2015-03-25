@@ -5,10 +5,19 @@ definitions = (t,params) ->
 
   # Evaluate parameters
   t = t.replace /// \b define \s+ (\w+) \b ///g, (str,$1) ->
+    if params[$1]? and params[$1] isnt 1
+      throw new Error "Modifying variable $1 from #{params[$1]} to 1"
     params[$1] = 1
     return ''
   t = t.replace /// \b undef \s+ (\w+) \b ///g, (str,$1) ->
+    if params[$1]? and params[$1] isnt 0
+      throw new Error "Modifying variable $1 from #{params[$1]} to 0"
     params[$1] = 0
+    return ''
+  t = t.replace /// \b set \s+ (\w+) \s+ to \s+ (\w+) \b ///g, (str,$1,$2) ->
+    if params[$1]? and params[$1] isnt $2
+      throw new Error "Modifying variable $1 from #{params[$1]} to #{$2}"
+    params[$1] = $2
     return ''
 
   t
@@ -56,8 +65,7 @@ parameters = (t,params) ->
     if params[$1]?
       return params[$1]
     else
-      console.log "Undefined #{$1}"
-      return str
+      throw new Error "Undefined #{$1} in #{t}"
 
   t
 
@@ -93,8 +101,10 @@ compile = (params) ->
   base_dir = path.dirname module.filename
   params.pkg_name = pkg.name
   params.pkg_version = pkg.version
+  params.fragments ?= {}
 
   recipe = params.recipe
+  assert recipe?, "Missing `recipe` in #{util.inspect params}"
 
   result =
     """
@@ -104,6 +114,8 @@ compile = (params) ->
     #
     # #{params.comment}
     #
+    # Includes: #{recipe.join ', '}
+    #
 
     """
 
@@ -111,9 +123,12 @@ compile = (params) ->
     for building_block in recipe
       filename = "#{building_block}.#{extension}"
       file = path.join base_dir, 'fragments', filename
-      try
+
+      params.fragments[filename] ?= try fs.readFileSync file
+
+      if params.fragments[filename]?
         fragment  = "\n## ---  Start #{file}  --- ##\n\n"
-        fragment += params.fragments[filename] ? fs.readFileSync file
+        fragment += params.fragments[filename]
         fragment += "\n## ---  End #{file}  --- ##\n\n"
         result += fragment
 
@@ -134,6 +149,8 @@ configure = (params) ->
   fs.writeFileSync params.runtime_opensips_cfg, cfg_text
 
 pkg = require '../../package.json'
+assert = require 'assert'
+util = require 'util'
 module.exports = configure
 module.exports.compile = compile
 module.exports.definitions = definitions
