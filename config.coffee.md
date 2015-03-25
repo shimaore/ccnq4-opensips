@@ -1,17 +1,21 @@
 OpenSIPS script writer
 ----------------------
 
-    module.exports = build_config = ->
+    module.exports = build_config = (local_config) ->
 
 Configuration for the entire package.
 
-      cfg = require './local/config.json'
+      cfg = require local_config ? './local/config.json'
       assert cfg.opensips?, 'Missing `opensips` object in configuration.'
       assert cfg.opensips.model?, 'Missing `model` field in `opensips` object in configuration.'
 
+      options = {}
+
 Use `default.json` as the base.
 
-      options = require "./src/config/default.json"
+      defaults = require "./src/config/default.json"
+      for own k,v of defaults
+        options[k] = v
 
 Override it with any configuration element found in the model.
 
@@ -28,6 +32,7 @@ Override them with any configuration elment found in the configuration's `opensi
 
 Toolbox
 -------
+
     pkg = require './package.json'
     assert = require 'assert'
     if require.main is module

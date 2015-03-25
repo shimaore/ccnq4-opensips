@@ -1,18 +1,18 @@
 util = require 'util'
+zappa = require 'zappajs'
 
 make_id = (t,n) -> [t,n].join ':'
 
 {show,list} = require './opensips'
 
 module.exports = (cfg) ->
-  cfg.usrloc = new PouchDB cfg.usrloc ? "http://127.0.0.1:5984/location"
+  cfg.usrloc = new PouchDB cfg.usrloc ? "http://127.0.0.1:5984/location", cfg.usrloc_options
   cfg.port ?= 34340
   cfg.host ?= '127.0.0.1'
 
   main cfg
 
 main = (cfg) ->
-  zappa = require 'zappajs'
   zappa cfg.port, cfg.host, io:no, ->
 
     @use 'bodyParser'
