@@ -8,11 +8,13 @@ modparam("registrar", "max_expires", ${max_expires})
 modparam("registrar", "default_expires", ${default_expires})
 # Append Branches is the default
 # modparam("registrar", "append_branches", 1)
-# No more than 2 contacts per AOR
+# No more than `max_contacts` contacts per AOR
 modparam("registrar", "max_contacts", ${max_contacts})
 # RFC3261 section 20.33
 # modparam("registrar", "retry_after", 30)
-# AVP used by nat_traversal
+
+# AVP used by nathelper -- since we do not use the `nathelper` module
+# we only use this for reporting / troubleshooting.
 modparam("registrar", "received_avp", "$avp(received_avp)")
 
 modparam("registrar", "tcp_persistent_flag", "flag_tcp_persistent")
