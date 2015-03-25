@@ -1,0 +1,8 @@
+{
+  "opensips": {
+    "model": "client",
+    "runtime_opensips_cfg": "/tmp/config",
+    "sip_domain_name": "example.net"
+    ,"debug": 5,"log_stderror":"yes"
+  }
+}

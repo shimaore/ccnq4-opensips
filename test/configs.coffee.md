@@ -73,3 +73,26 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
           request.get "http://127.0.0.1:#{b_port}/json/kill"
           .catch -> true
         return
+
+      it 'should accept complete configuration', (done) ->
+        port = 7520
+        a_port = port++
+        b_port = port++
+        zappa '172.17.42.1', a_port, ->
+          @get '/ok', ->
+            @json ok:yes
+            done()
+
+        build_config = require '../config'
+        {compile} = require '../src/config/compiler'
+        config = build_config './test/config1.json'
+        config.startup_route_code = """
+            rest_get("http://172.17.42.1:#{a_port}/ok","$var(body)");
+        """
+
+        opensips b_port, compile config
+        Promise.delay 1500
+        .then ->
+          request.get "http://127.0.0.1:#{b_port}/json/kill"
+          .catch -> true
+        return
