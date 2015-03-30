@@ -4,25 +4,16 @@
       fs = Promise.promisifyAll require 'fs'
       zappa = require 'zappajs'
       request = require 'superagent-as-promised'
-
-      opensips = (port,cfg) ->
-        fs.writeFileAsync "/tmp/config-#{port}", cfg
-        .then ->
-          exec "docker run --rm -v /tmp/config-#{port}:/tmp/config -p 127.0.0.1:#{port}:#{port} shimaore/opensips:1.11.1 /opt/opensips/sbin/opensips -f /tmp/config -m 1024 -M 256 -F -E"
-
+      {opensips,kill} = require './opensips'
 
       it 'should accept simple configuration', (done) ->
         port = 7500
         a_port = port++
         b_port = port++
-        kill = ->
-          request.get "http://127.0.0.1:#{b_port}/json/kill"
-          .catch -> true
-          return
         zappa '172.17.42.1', a_port, io:no, ->
           @get '/', ->
             @json ok:yes
-            kill()
+            kill b_port
             done()
         opensips b_port, """
           mpath="/opt/opensips/lib64/opensips/modules/"
@@ -38,23 +29,19 @@
         """
         Promise.delay 1500
         .then ->
-          kill()
+          kill b_port
         return
 
       it 'should parse JSON', (done) ->
         port = 7510
         a_port = port++
         b_port = port++
-        kill = ->
-          request.get "http://127.0.0.1:#{b_port}/json/kill"
-          .catch -> true
-          return
         zappa '172.17.42.1', a_port, io:no, ->
           @get '/foo', ->
             @json foo:'bar'
           @get '/ok', ->
             @json ok:yes
-            kill()
+            kill b_port
             done()
 
 Notice: `rest_get(url,"$json(response)")` does not work, one must go through a variable.
@@ -79,7 +66,7 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
         """
         Promise.delay 1500
         .then ->
-          kill()
+          kill b_port
         return
 
       it 'should accept `client` configuration', (done) ->
@@ -87,14 +74,10 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
         port = 7520
         a_port = port++
         b_port = port++
-        kill = ->
-          request.get "http://127.0.0.1:#{b_port}/json/kill"
-          .catch -> true
-          return
         zappa '172.17.42.1', a_port, io:no, ->
           @get '/ok', ->
             @json ok:yes
-            kill()
+            kill b_port
             done()
 
         build_config = require '../config'
@@ -120,7 +103,7 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
           console.log "Service error: #{error}"
         Promise.delay 1500
         .then ->
-          kill()
+          kill b_port
         return
 
       it 'should accept `registrant` configuration', (done) ->
@@ -128,14 +111,10 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
         port = 7530
         a_port = port++
         b_port = port++
-        kill = ->
-          request.get "http://127.0.0.1:#{b_port}/json/kill"
-          .catch -> true
-          return
         zappa '172.17.42.1', a_port, io:no, ->
           @get '/ok', ->
             @json ok:yes
-            kill()
+            kill b_port
             done()
 
         build_config = require '../config'
@@ -161,5 +140,5 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
           console.log "Service error: #{error}"
         Promise.delay 1500
         .then ->
-          kill()
+          kill b_port
         return
