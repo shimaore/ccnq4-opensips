@@ -17,10 +17,13 @@ OpenSIPS / CouchDB data proxy
         else
           'client'
 
-      mod = require "./src/#{type}/main"
-      mod cfg
-      # .then
-      # .catch
+      service = require "./src/#{type}/main"
+      service cfg
+      .then ({server}) ->
+        server.on 'listening', ->
+          opensips b_port, compile config
+      .catch (error) ->
+        console.log "Service error: #{error}"
 
     url = require 'url'
     run()

@@ -1,4 +1,4 @@
-quote = require 'lib/quote'
+quote = require '../quote'
 @show = (doc,req,t) ->
   body = ''
   t ?= req.query.t

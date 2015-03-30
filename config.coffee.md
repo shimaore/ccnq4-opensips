@@ -36,5 +36,23 @@ Toolbox
     pkg = require './package.json'
     assert = require 'assert'
     if require.main is module
+
+Build the configuration file.
+
       console.log "#{pkg.name} #{pkg.version} config -- Starting."
-      (require './src/config/compiler') build_config()
+      options = build_config()
+      (require './src/config/compiler') options
+
+Start the data server.
+
+      supervisord = require 'supervisord'
+      supervisor = Promise.promisifyAll supervisord.connect 'http://127.0.0.1:5708'
+      supervisor.startProcessAsync 'data'
+      .then ->
+        supervisor.startProcessAsync 'opensips'
+      .then ->
+
+This is kind of an ad-hoc test, but it should be consistent with our use of MediaProxy.
+
+        if 'mediaproxy' in options.recipe
+          supervisor.startProcessAsync 'dispatcher'

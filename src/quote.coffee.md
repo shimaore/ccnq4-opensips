@@ -153,6 +153,7 @@ Convert an OpenSIPS value `x` of type `t` into a JavaScript value.
         date: [
           '2014-09-16 22:59:00.000Z'
         ]
+        ###
         string: [
           "foo"
           'bar " hello'
@@ -169,6 +170,7 @@ Convert an OpenSIPS value `x` of type `t` into a JavaScript value.
           [2,3,4]
           {a:2,b:'k'}
         ]
+        ###
 
       for type, test_values of test_set
         for value in test_values

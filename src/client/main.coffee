@@ -1,5 +1,7 @@
 util = require 'util'
 zappa = require 'zappajs'
+PouchDB = require 'pouchdb'
+Promise = require 'bluebird'
 
 make_id = (t,n) -> [t,n].join ':'
 
@@ -10,12 +12,10 @@ module.exports = (cfg) ->
   cfg.port ?= 34340
   cfg.host ?= '127.0.0.1'
 
-  main cfg
+  Promise.resolve main cfg
 
 main = (cfg) ->
   zappa cfg.port, cfg.host, io:no, ->
-
-    @use 'bodyParser'
 
     @get '/location/': -> # usrloc_table
 
@@ -34,17 +34,17 @@ main = (cfg) ->
           @send show doc, @req, 'location'
         return
 
-      if not @query.k?
+      if not @query.k? or (@query.k is 'username' and not @query.op?)
         cfg.usrloc.allDocs include_docs:true
         .then ({rows}) =>
           @res.type 'text/plain'
           @send list rows, @req, 'location'
         return
 
-      util.error "location: not handled: #{@query.k}"
+      util.error "location: not handled: #{@query.k} #{@query.op} #{@query.v}"
       @send ""
 
-    @post '/location': ->
+    @post '/location', ((require 'body-parser').urlencoded extended:false), ->
 
       doc = unquote_params(@body.k,@body.v,'location')
       # Note: this allows for easy retrieval, but only one location can be stored.

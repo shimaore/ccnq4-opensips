@@ -1,32 +1,33 @@
 util = require 'util'
+zappa = require 'zappajs'
+PouchDB = require 'pouchdb'
+pkg = require '../../package.json'
 
 {list} = require './opensips'
 
 module.exports = (cfg) ->
-  assert cfg.host?, 'Missing `host` in configuration.'
-  provisioning = new PouchBD cfg.provisioning ? 'http://127.0.0.1:5984/provisioning'
-  cfg.port ?= 34340
+  provisioning = new PouchDB cfg.provisioning ? 'http://127.0.0.1:5984/provisioning', cfg.provisioning_options
+  cfg.port ?= 34342
   cfg.host ?= '127.0.0.1'
 
   couchapp = require './couchapp'
   provisioning.get couchapp._id
+  .catch -> {}
   .then ({_rev}) ->
     couchapp._rev = _rev if _rev?
     provisioning.put couchapp
   .then ->
+    cfg.provisioning = provisioning
     main cfg
 
 main = (cfg) ->
-  zappa = require 'zappajs'
   zappa cfg.port, cfg.host, io:no, ->
-
-    @use 'bodyParser'
 
     @get '/registrant/': ->
       if not @query.k?
         cfg.provisioning.query "#{pkg.name}-registrant/registrant_by_host",
-          startkey: [config.host]
-          endkey: [config.host,{}]
+          startkey: [cfg.host]
+          endkey: [cfg.host,{}]
         .then ({rows}) =>
           @send list rows, @req, 'registrant'
         return
