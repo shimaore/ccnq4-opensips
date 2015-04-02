@@ -24,7 +24,6 @@ WORKDIR vendor
 RUN tar xzvf mediaproxy-2.6.1.tar.gz
 WORKDIR mediaproxy-2.6.1
 RUN ./build_inplace
-RUN cp ../config.ini .
 WORKDIR ../..
 
 # Configure supervisord, etc.

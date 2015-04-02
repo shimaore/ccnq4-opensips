@@ -55,4 +55,18 @@ Start the data server.
 This is kind of an ad-hoc test, but it should be consistent with our use of MediaProxy.
 
         if 'mediaproxy' in options.recipe
+          mp_config = """
+            [Dispatcher]
+            socket_path = #{options.var_run_mediaproxy}/dispatcher.sock
+            passport = #{process.env.PASSPORT ? 'None'}
+            listen = 0.0.0.0:25060
+            listen_management = 127.0.0.1:25061
+            management_use_tls = no
+            log_level = DEBUG
+            [TLS]
+            cert_paths = local
+
+          """
+          fs = require 'fs'
+          fs.writeFileSync 'vendor/mediaproxy-2.6.1/config.ini', mp_config
           supervisor.startProcessAsync 'dispatcher'
