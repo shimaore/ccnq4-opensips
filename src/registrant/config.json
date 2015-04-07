@@ -20,6 +20,7 @@
     "forwarder"
   ],
 
+  "ignore_src_endpoint": true,
   "ignore_account": 1,
   "ignore_location": 1,
   "ignore_routing_data": 1,
