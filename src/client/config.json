@@ -18,7 +18,7 @@
 
     "loose-route",
 
-    "invite-trunk-fixed",
+    "invite-trunk-outbound-domain",
     "invite",
     "invite-router",
     "non-loose-route",
