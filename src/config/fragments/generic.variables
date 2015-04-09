@@ -1,17 +1,9 @@
-# generic.variables -- shared variables
-
-#
-# For OpenSIPS 1.10
-#
+# generic.variables
 
 # What IP address to listen onto; no statement == listen on all interfaces
 if proxy_ip
-listen=${proxy_ip}
+listen=${proxy_ip}:${proxy_port}
 end if proxy_ip
-
-if proxy_port
-port=${proxy_port}
-end if proxy_port
 
 # Additionally can support multiple listen statements
 for v in listen
