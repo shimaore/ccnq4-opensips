@@ -54,10 +54,9 @@
 
   "options_200": false,
 
-  "short_fr_timer": 2,
-  "long_fr_timer": 4,
+  "fr_timer": 2,
   "T1_timer": 500,
-  "T2_timer": 4000,
+  "T2_timer": 2200,
 
   "max_contacts": 0,
 
