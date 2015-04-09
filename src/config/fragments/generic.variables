@@ -18,6 +18,11 @@ for v in listen
 listen=${v}
 end for v in listen
 
+# For registrant, directly build from the list of source_ports.
+for v in source_ports
+listen=udp:${source_ip}:${v}
+end for v in source_ports
+
 ## ------- Binary Internal Interface ---- ##
 
 if mated_host

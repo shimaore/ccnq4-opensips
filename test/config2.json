@@ -3,7 +3,7 @@
     "model": "registrant",
     "runtime_opensips_cfg": "/tmp/config",
     "sip_domain_name": "example.net",
-    "listen": ["udp:127.0.0.1:5070"], "children":1
+    "source_ip": "127.0.0.1", "local_ipv4":"127.0.0.1", "children":1
     ,"debug": 3,"log_stderror":"yes"
   }
 }

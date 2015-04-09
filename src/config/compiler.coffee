@@ -53,6 +53,8 @@ conditionals = (t,params) ->
       if params[$2]?
         for value in params[$2]
           ctx = {}
+          for k,v of params
+            ctx[k] = v
           ctx[$1] = value
           result.push parameters $3, ctx
       result.join ''
