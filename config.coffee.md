@@ -5,8 +5,20 @@ OpenSIPS script writer
 
 Configuration for the entire package.
 
-      cfg = require local_config ? './local/config.json'
-      assert cfg.opensips?, 'Missing `opensips` object in configuration.'
+      cfg = try require local_config ? './local/config.json'
+      cfg ?= opensips: {}
+
+      cfg_env =
+        model: 'MODEL'
+        runtime_opensips_cfg: 'CFG'
+        sip_domain_name: 'DOMAIN'
+        proxy_ip: 'PROXY_IP'
+        source_ip: 'SOURCE_IP'
+        local_ipv4: 'LOCAL_IPV4'
+
+      for k,v of cfg_env
+        cfg.opensips[k] ?= process.env[v] if process.env[v]?
+
       assert cfg.opensips.model?, 'Missing `model` field in `opensips` object in configuration.'
 
       options = {}
