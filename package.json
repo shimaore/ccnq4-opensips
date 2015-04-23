@@ -20,6 +20,7 @@
     "body-parser": "^1.12.2",
     "coffee-script": "^1.9.2",
     "pouchdb": "^3.3.1",
+    "supervisord": "0.0.4",
     "zappajs": "^2.0.3"
   }
 }
