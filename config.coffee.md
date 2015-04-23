@@ -47,6 +47,7 @@ Toolbox
 -------
 
     pkg = require './package.json'
+    Promise = require 'bluebird'
     assert = require 'assert'
     if require.main is module
 
