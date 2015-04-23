@@ -3,15 +3,15 @@ MAINTAINER Stéphane Alnet <stephane@shimaore.net>
 
 USER root
 RUN apt-get update && apt-get install -y --no-install-recommends \
+  iptables-dev \
   libjson0 \
   libnetfilter-conntrack-dev \
-  iptables-dev \
   netcat \
-  python-dev \
   python-application \
+  python-cjson \
+  python-dev \
   python-gnutls \
   python-twisted-core \
-  python-cjson \
   supervisor
 RUN mkdir /run/mediaproxy && chown opensips.opensips /run/mediaproxy
 
