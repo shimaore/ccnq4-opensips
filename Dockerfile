@@ -3,9 +3,14 @@ MAINTAINER Stéphane Alnet <stephane@shimaore.net>
 
 USER root
 RUN apt-get update && apt-get install -y --no-install-recommends \
+  build-essential \
+  ca-certificates \
+  curl \
+  git \
   iptables-dev \
   libjson0 \
   libnetfilter-conntrack-dev \
+  make \
   netcat \
   python-application \
   python-cjson \
@@ -13,6 +18,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   python-gnutls \
   python-twisted-core \
   supervisor
+
+# Install Node.js using `n`.
+RUN git clone https://github.com/tj/n.git
+WORKDIR n
+RUN make install
+WORKDIR ..
+RUN n io 1.7.1
+ENV NODE_ENV production
+
+# Prepare mediaproxy
 RUN mkdir /run/mediaproxy && chown opensips.opensips /run/mediaproxy
 
 # Start opensips part.
