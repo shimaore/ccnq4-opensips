@@ -52,7 +52,7 @@ Toolbox
 Build the configuration file.
 
       console.log "#{pkg.name} #{pkg.version} config -- Starting."
-      options = build_config()
+      options = build_config process.env.LOCAL_CONFIG ? null
       (require './src/config/compiler') options
 
 Start the data server.
