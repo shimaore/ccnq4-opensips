@@ -11,7 +11,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   python-application \
   python-gnutls \
   python-twisted-core \
-  python-cjson
+  python-cjson \
+  supervisor
 RUN mkdir /run/mediaproxy && chown opensips.opensips /run/mediaproxy
 
 # Start opensips part.
