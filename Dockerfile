@@ -42,6 +42,9 @@ WORKDIR mediaproxy-2.6.1
 RUN ./build_inplace
 WORKDIR ../..
 
+# Node.js code
+RUN npm install && npm cache clean
+
 # 5708: supervisord HTTP
 # 5060: default proxy_port for `client` profile
 # 5070: default proxy_port for `registrant` profile
