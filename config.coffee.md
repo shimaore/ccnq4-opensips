@@ -6,7 +6,8 @@ OpenSIPS script writer
 Configuration for the entire package.
 
       cfg = try require local_config ? './local/config.json'
-      cfg ?= opensips: {}
+      cfg ?= {}
+      cfg.opensips ?= {}
 
       cfg_env =
         model: 'MODEL'
