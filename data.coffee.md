@@ -14,7 +14,7 @@ The service (database proxy) parameters.
       cfg = require './local/config.json'
 
       cfg.port ?= db_url.port
-      cfg.host ?= db_url.host
+      cfg.host ?= db_url.hostname
 
       type = switch config.model
         when 'registrant'
