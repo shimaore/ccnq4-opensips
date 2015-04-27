@@ -25,10 +25,23 @@ The service (database proxy) parameters.
       service = require "./src/#{type}/main"
       service cfg
       .then ({server}) ->
+        debug 'Server ready'
         server.on 'listening', ->
-          opensips b_port, compile config
+          debug 'Server listening'
+
+If there was an issue with the server,
+
       .catch (error) ->
+
+log it,
+
         console.log "Service error: #{error}"
 
+and ask supervisord to restart us.
+
+        throw error
+
     url = require 'url'
+    pkg = require './package.json'
+    debug = (require 'debug') "#{pkg.name}:data"
     run()
