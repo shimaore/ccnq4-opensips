@@ -47,8 +47,9 @@ Toolbox
 -------
 
     pkg = require './package.json'
-    Promise = require 'bluebird'
     assert = require 'assert'
+    debug = (require 'debug') "#{pkg.name}:config"
+
     if require.main is module
 
 Build the configuration file.
@@ -60,6 +61,7 @@ Build the configuration file.
 Start the data server.
 
       supervisord = require 'supervisord'
+      Promise = require 'bluebird'
       supervisor = Promise.promisifyAll supervisord.connect 'http://127.0.0.1:5708'
       supervisor.startProcessAsync 'data'
       .then ->
@@ -84,3 +86,6 @@ This is kind of an ad-hoc test, but it should be consistent with our use of Medi
           fs = require 'fs'
           fs.writeFileSync 'vendor/mediaproxy-2.6.1/config.ini', mp_config
           supervisor.startProcessAsync 'dispatcher'
+
+      .then ->
+        debug "Started."

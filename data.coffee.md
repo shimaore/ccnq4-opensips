@@ -2,9 +2,14 @@ OpenSIPS / CouchDB data proxy
 -----------------------------
 
     run = ->
+
+The OpenSIPS parameters.
+
       config = (require './config')()
 
       db_url = url.parse config.db_url
+
+The service (database proxy) parameters.
 
       cfg = require './local/config.json'
 
