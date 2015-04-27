@@ -1,6 +1,6 @@
 {
   "name": "ccnq4-opensips",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "private": true,
   "scripts": {
     "pretest": "npm install",
