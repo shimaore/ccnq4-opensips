@@ -6,4 +6,4 @@ modparam("auth", "rpid_suffix", ";party=calling;id-type=subscriber;screen=yes") 
 modparam("auth", "nonce_expire", 60)
 modparam("auth", "username_spec", "$var(username)")
 modparam("auth", "password_spec", "$var(password)")
-modparam("auth", "calculate_ha1", 0) # password_spec contains HA1 value
+modparam("auth", "calculate_ha1", 1) # password_spec contains password
