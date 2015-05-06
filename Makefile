@@ -3,9 +3,9 @@ TAG ::= `jq -r .version package.json`
 
 image:
 	docker build -t ${NAME}:${TAG} .
-	docker tag ${NAME}:${TAG} ${NAME}:latest
-	docker tag ${NAME}:${TAG} ${REGISTRY}/${NAME}:${TAG}
-	docker tag ${NAME}:${TAG} ${REGISTRY}/${NAME}
+	docker tag -f ${NAME}:${TAG} ${NAME}:latest
+	docker tag -f ${NAME}:${TAG} ${REGISTRY}/${NAME}:${TAG}
+	docker tag -f ${NAME}:${TAG} ${REGISTRY}/${NAME}
 
 image-no-cache:
 	docker build --no-cache -t ${NAME} .
