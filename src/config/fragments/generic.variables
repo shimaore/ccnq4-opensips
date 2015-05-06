@@ -24,11 +24,8 @@ end if mated_host
 
 ## ------- Variables ---------- ##
 
-# Debug level (syslog)
 debug=${debug}
-# Fork is yes for normal use
 fork=${fork}
-# Do not log to STDERR
 log_stderror=${log_stderror}
 
 # Children=4 or higher (in production)

@@ -12,7 +12,7 @@
   "max_hops": "10",
   "children": 10,
   "fork": "yes",
-  "log_stderror": "no",
+  "log_stderror": "yes",
 
   "sbc_own_originator":               1,
   "sbc_own_outbound":                 2,
