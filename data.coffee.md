@@ -5,7 +5,7 @@ OpenSIPS / CouchDB data proxy
 
 The OpenSIPS parameters.
 
-      config = (require './config')()
+      config = Config process.env.CONFIG
 
       db_url = url.parse config.db_url
 
@@ -44,4 +44,8 @@ and ask supervisord to restart us.
     url = require 'url'
     pkg = require './package.json'
     debug = (require 'debug') "#{pkg.name}:data"
-    run()
+    Config = require './config'
+    if require.main is module
+      run()
+    else
+      module.exports = run
