@@ -62,7 +62,7 @@ Start the data server.
 
       supervisord = require 'supervisord'
       Promise = require 'bluebird'
-      supervisor = Promise.promisifyAll supervisord.connect 'http://127.0.0.1:5708'
+      supervisor = Promise.promisifyAll supervisord.connect process.env.SUPERVISOR
       supervisor.startProcessAsync 'data'
       .then ->
         supervisor.startProcessAsync 'opensips'
