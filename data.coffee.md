@@ -41,10 +41,29 @@ and ask supervisord to restart us.
 
         throw error
 
+Registrant reload on data changes.
+
+      if type is 'registrant'
+        RoyalThing ->
+          supervisor = null
+          Promise.resolve()
+          .then ->
+            supervisor = Promise.promisifyAll supervisord.connect process.env.SUPERVISOR
+          .then ->
+            supervisor.stopProcessAsync 'opensips'
+          .then ->
+            supervisor.startProcessAsync 'opensips'
+          .catch (error) ->
+            debug "Restarting opensips: #{error}"
+
+
     url = require 'url'
     pkg = require './package.json'
     debug = (require 'debug') "#{pkg.name}:data"
     Config = require './config'
+    RoyalThing = require 'royal-thing'
+    supervisord = require 'supervisord'
+    Promise = require 'bluebird'
     if require.main is module
       run()
     else
