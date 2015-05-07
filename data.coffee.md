@@ -35,7 +35,7 @@ If there was an issue with the server,
 
 log it,
 
-        console.log "Service error: #{error}"
+        debug "Service error: #{error}"
 
 and ask supervisord to restart us.
 
