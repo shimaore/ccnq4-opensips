@@ -24,5 +24,25 @@
     "royal-thing": "^4.1.2",
     "supervisord": "0.0.4",
     "zappajs": "^2.0.3"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shimaore/ccnq4-opensips.git"
+  },
+  "description": "OpenSIPS for CCNQ4 ------------------",
+  "bugs": {
+    "url": "https://github.com/shimaore/ccnq4-opensips/issues"
+  },
+  "homepage": "https://github.com/shimaore/ccnq4-opensips",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "keywords": [
+    "OpenSIPS",
+    "SIP",
+    "proxy"
+  ],
+  "author": "Stéphane Alnet <stephane@shimaore.net> (http://stephane.shimaore.net/)",
+  "license": "Unlicense (http://unlicense.org/)"
 }
