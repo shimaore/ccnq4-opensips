@@ -3,9 +3,7 @@ TAG ::= `jq -r .version package.json`
 
 image:
 	docker build -t ${NAME}:${TAG} .
-	docker tag -f ${NAME}:${TAG} ${NAME}:latest
 	docker tag -f ${NAME}:${TAG} ${REGISTRY}/${NAME}:${TAG}
-	docker tag -f ${NAME}:${TAG} ${REGISTRY}/${NAME}
 
 image-no-cache:
 	docker build --no-cache -t ${NAME} .
@@ -18,7 +16,6 @@ push: image tests
 	# docker push ${NAME}:${TAG}
 	# docker push ${NAME}
 	docker push ${REGISTRY}/${NAME}:${TAG}
-	docker push ${REGISTRY}/${NAME}
 
 # Local #
 
