@@ -4,7 +4,7 @@
     debug = (require 'debug') 'test:client'
 
     describe 'The `client` configuration', ->
-      request = require 'superagent-as-promised'
+      request = (require 'superagent-as-promised') require 'superagent'
       Promise = require 'bluebird'
       {opensips,kill} = require './opensips'
 
