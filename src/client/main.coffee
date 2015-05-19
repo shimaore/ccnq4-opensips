@@ -6,6 +6,7 @@ Promise = require 'bluebird'
 make_id = (t,n) -> [t,n].join ':'
 
 {show,list} = require './opensips'
+{unquote_params} = require '../quote'
 zappa_as_promised = require '../zappa-as-promised'
 
 module.exports = (cfg) ->

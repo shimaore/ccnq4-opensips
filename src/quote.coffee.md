@@ -226,3 +226,4 @@ Convert an OpenSIPS value `x` of type `t` into a JavaScript value.
     exports.column_types = column_types
     exports.first_line = first_line
     exports.value_line = value_line
+    exports.unquote_params = unquote_params
