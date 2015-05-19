@@ -60,6 +60,8 @@ main = (cfg) ->
       if @body.query_type is 'insert' or @body.query_type is 'update'
 
         cfg.usrloc.get doc._id
+        .catch ->
+          {}
         .then ({_rev}) =>
           doc._rev = _rev if _rev?
           cfg.usrloc.put doc
@@ -74,6 +76,8 @@ main = (cfg) ->
       if @body.query_type is 'delete'
 
         cfg.usrloc.get doc._id
+        .catch ->
+          {}
         .then ({_rev}) =>
           if not _rev? then return
           doc._rev = _rev
