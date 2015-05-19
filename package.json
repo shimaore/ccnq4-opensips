@@ -23,7 +23,7 @@
     "pouchdb": "^3.5.0",
     "royal-thing": "^4.3.0",
     "supervisord": "0.0.4",
-    "zappajs": "^2.0.3"
+    "zappajs": "^2.1.2"
   },
   "repository": {
     "type": "git",

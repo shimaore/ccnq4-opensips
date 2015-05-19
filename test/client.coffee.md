@@ -1,8 +1,9 @@
     chai = require 'chai'
     chai.should()
 
+    debug = (require 'debug') 'test:client'
+
     describe 'The `client` configuration', ->
-      zappa = require 'zappajs'
       request = require 'superagent-as-promised'
       Promise = require 'bluebird'
       {opensips,kill} = require './opensips'
@@ -14,6 +15,7 @@
       our_server = null
 
       before (done) ->
+        @timeout 8000
         build_config = require '../config'
         {compile} = require '../src/config/compiler'
         config = build_config './test/config1.json'
@@ -27,14 +29,12 @@
           usrloc: 'location'
           usrloc_options: db: require 'memdown'
         .then ({server}) ->
-          console.log "Server ready"
-          server.on 'listening', ->
-            console.log "Server listening"
-            opensips b_port, compile config
-            Promise.delay 600
-            .then -> done()
+          debug "Server ready"
+          opensips b_port, compile config
+          Promise.delay 600
+          .then -> done()
         .catch (error) ->
-          console.log "Service error: #{error}"
+          debug "Service error: #{error}"
 
       after ->
         kill b_port
@@ -44,5 +44,5 @@
           .query params: 'all,usrloc:location-users,net:,uri:'
           .accept 'json'
         stats.then ({body}) ->
-          console.dir body
+          debug body
           body.should.have.property 'registrar:max_expires', '7200'

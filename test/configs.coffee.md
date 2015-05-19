@@ -96,9 +96,8 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
           host: '172.17.42.1'
           usrloc: 'location'
           usrloc_options: db: require 'memdown'
-        .then ({server}) ->
-          server.on 'listening', ->
-            opensips b_port, compile config
+        .then ->
+          opensips b_port, compile config
         .catch (error) ->
           console.log "Service error: #{error}"
         Promise.delay 1500
@@ -133,9 +132,8 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
           host: '172.17.42.1'
           provisioning: 'provisioning'
           provisioning_options: db: require 'memdown'
-        .then ({server}) ->
-          server.on 'listening', ->
-            opensips b_port, compile config
+        .then ->
+          opensips b_port, compile config
         .catch (error) ->
           console.log "Service error: #{error}"
         Promise.delay 1500

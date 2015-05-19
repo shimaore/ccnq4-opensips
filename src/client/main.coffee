@@ -6,16 +6,18 @@ Promise = require 'bluebird'
 make_id = (t,n) -> [t,n].join ':'
 
 {show,list} = require './opensips'
+zappa_as_promised = require '../zappa-as-promised'
 
 module.exports = (cfg) ->
   cfg.usrloc = new PouchDB cfg.usrloc ? "http://127.0.0.1:5984/location", cfg.usrloc_options
   cfg.port ?= 34340
   cfg.host ?= '127.0.0.1'
 
-  Promise.resolve main cfg
+  zappa_as_promised main, cfg
 
 main = (cfg) ->
-  zappa cfg.port, cfg.host, io:no, ->
+
+  ->
 
     @get '/location/': -> # usrloc_table
 

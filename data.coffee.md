@@ -24,10 +24,8 @@ The service (database proxy) parameters.
 
       service = require "./src/#{type}/main"
       service cfg
-      .then ({server}) ->
-        debug 'Server ready'
-        server.on 'listening', ->
-          debug 'Server listening'
+      .then ->
+        debug 'Service ready'
 
 If there was an issue with the server,
 

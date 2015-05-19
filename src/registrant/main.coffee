@@ -4,6 +4,7 @@ PouchDB = require 'pouchdb'
 pkg = require '../../package.json'
 
 {list} = require './opensips'
+zappa_as_promised = require '../zappa-as-promised'
 
 module.exports = (cfg) ->
   provisioning = new PouchDB cfg.provisioning ? 'http://127.0.0.1:5984/provisioning', cfg.provisioning_options
@@ -18,10 +19,11 @@ module.exports = (cfg) ->
     provisioning.put couchapp
   .then ->
     cfg.provisioning = provisioning
-    main cfg
+    zappa_as_promised main, cfg
 
 main = (cfg) ->
-  zappa cfg.port, cfg.host, io:no, ->
+
+  ->
 
     @get '/registrant/': ->
       if not @query.k?
