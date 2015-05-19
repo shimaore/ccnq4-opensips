@@ -1,4 +1,3 @@
-util = require 'util'
 zappa = require 'zappajs'
 PouchDB = require 'pouchdb'
 Promise = require 'bluebird'
@@ -44,7 +43,7 @@ main = (cfg) ->
           @send list rows, @req, 'location'
         return
 
-      util.error "location: not handled: #{@query.k} #{@query.op} #{@query.v}"
+      console.error "location: not handled: #{@query.k} #{@query.op} #{@query.v}"
       @send ""
 
     @post '/location', ((require 'body-parser').urlencoded extended:false), ->
@@ -68,7 +67,7 @@ main = (cfg) ->
           @res.type 'text/plain'
           @send doc._id
         .catch (error) ->
-          util.error "location: error updating #{doc._id}: #{error}"
+          console.error "location: error updating #{doc._id}: #{error}"
           @send ''
         return
 
@@ -80,7 +79,7 @@ main = (cfg) ->
           doc._rev = _rev
           cfg.usrloc.delete doc
         .catch (error) ->
-          util.error "location: error deleting #{doc._id}: #{error}"
+          console.error "location: error deleting #{doc._id}: #{error}"
         .then =>
           @send ''
         return
