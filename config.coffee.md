@@ -49,19 +49,19 @@ Toolbox
     pkg = require './package.json'
     assert = require 'assert'
     debug = (require 'debug') "#{pkg.name}:config"
+    Promise = require 'bluebird'
+    supervisord = require 'supervisord'
 
     if require.main is module
 
 Build the configuration file.
 
-      console.log "#{pkg.name} #{pkg.version} config -- Starting."
+      debug "#{pkg.name} #{pkg.version} config -- Starting."
       options = build_config process.env.LOCAL_CONFIG ? null
       (require './src/config/compiler') options
 
 Start the data server.
 
-      supervisord = require 'supervisord'
-      Promise = require 'bluebird'
       supervisor = Promise.promisifyAll supervisord.connect process.env.SUPERVISOR
       supervisor.startProcessAsync 'data'
       .then ->
