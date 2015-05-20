@@ -1,6 +1,9 @@
 {
   "name": "ccnq4-opensips",
   "version": "2.0.7",
+  "mediaproxy": {
+    "version": "2.6.1"
+  },
   "private": true,
   "scripts": {
     "pretest": "npm install",

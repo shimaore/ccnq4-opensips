@@ -1,5 +1,6 @@
 NAME ::= shimaore/`jq -r .name package.json`
 TAG ::= `jq -r .version package.json`
+MEDIAPROXY_VERSION ::= `jq -r .mediaproxy.version package.json`
 
 image:
 	docker build -t ${NAME}:${TAG} .
@@ -18,6 +19,6 @@ push: image tests
 
 # Local #
 
-vendor:
+vendor-download:
 	mkdir -p vendor/
-	curl -o vendor/mediaproxy-2.6.1.tar.gz -L http://download.ag-projects.com/MediaProxy/mediaproxy-2.6.1.tar.gz
+	curl -o vendor/mediaproxy-${MEDIAPROXY_VERSION}.tar.gz -L http://download.ag-projects.com/MediaProxy/mediaproxy-${MEDIAPROXY_VERSION}.tar.gz
