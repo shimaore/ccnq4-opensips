@@ -37,8 +37,8 @@ USER opensips
 RUN mkdir -p log run/opensips run/mediaproxy
 # Build mediaproxy-dispatcher
 WORKDIR vendor
-RUN tar xzvf mediaproxy-2.6.1.tar.gz
-WORKDIR mediaproxy-2.6.1
+RUN tar xzvf mediaproxy-MEDIAPROXY_VERSION.tar.gz
+WORKDIR mediaproxy-MEDIAPROXY_VERSION
 RUN ./build_inplace
 WORKDIR ../..
 
