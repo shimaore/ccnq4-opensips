@@ -81,7 +81,7 @@ This is kind of an ad-hoc test, but it should be consistent with our use of Medi
             management_use_tls = no
             log_level = DEBUG
             [TLS]
-            cert_paths = local
+            cert_paths = #{process.env.CERT_PATHS ? 'local'}
 
           """
           debug 'Writing dispatcher configuration'
