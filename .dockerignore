@@ -3,3 +3,5 @@ local
 node_modules
 Makefile
 .dockerignore
+Dockerfile.src
+supervisord.conf.src
