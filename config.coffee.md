@@ -51,6 +51,7 @@ Toolbox
     debug = (require 'debug') "#{pkg.name}:config"
     Promise = require 'bluebird'
     supervisord = require 'supervisord'
+    fs = Promise.promisifyAll require 'fs'
 
     if require.main is module
 
@@ -83,9 +84,11 @@ This is kind of an ad-hoc test, but it should be consistent with our use of Medi
             cert_paths = local
 
           """
-          fs = require 'fs'
-          fs.writeFileSync 'vendor/mediaproxy-2.6.1/config.ini', mp_config
-          supervisor.startProcessAsync 'dispatcher'
+          debug 'Writing dispatcher configuration'
+          fs.writeFileAsync 'vendor/mediaproxy-2.6.1/config.ini', mp_config
+          .then ->
+            debug 'Starting dispatcher'
+            supervisor.startProcessAsync 'dispatcher'
 
       .then ->
         debug "Started."
