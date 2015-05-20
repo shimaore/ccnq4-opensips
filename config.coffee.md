@@ -81,11 +81,11 @@ This is kind of an ad-hoc test, but it should be consistent with our use of Medi
             management_use_tls = no
             log_level = DEBUG
             [TLS]
-            cert_paths = #{process.env.CERT_PATHS ? 'local'}
+            cert_paths = #{process.env.CERT_PATHS ? '/opt/mediaproxy/local'}
 
           """
           debug 'Writing dispatcher configuration'
-          fs.writeFileAsync 'vendor/mediaproxy-2.6.1/config.ini', mp_config
+          fs.writeFileAsync "/opt/mediaproxy/vendor/mediaproxy-#{pkg.mediaproxy.version}/config.ini", mp_config
           .then ->
             debug 'Starting dispatcher'
             supervisor.startProcessAsync 'dispatcher'
