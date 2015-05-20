@@ -2,14 +2,14 @@ NAME ::= shimaore/`jq -r .name package.json`
 TAG ::= `jq -r .version package.json`
 MEDIAPROXY_VERSION ::= `jq -r .mediaproxy.version package.json`
 
-image: Dockerfile
+image: Dockerfile supervisord.conf
 	docker build --rm -t ${NAME}:${TAG} .
 	docker tag -f ${NAME}:${TAG} ${REGISTRY}/${NAME}:${TAG}
 
 tests:
 	npm test
 
-Dockerfile: Dockerfile.src
+%: %.src
 	sed -e "s/MEDIAPROXY_VERSION/${MEDIAPROXY_VERSION}/" $< > $@
 
 push: image tests
