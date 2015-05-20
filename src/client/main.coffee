@@ -81,7 +81,7 @@ main = (cfg) ->
         .then ({_rev}) =>
           if not _rev? then return
           doc._rev = _rev
-          cfg.usrloc.delete doc
+          cfg.usrloc.remove doc
         .catch (error) ->
           console.error "location: error deleting #{doc._id}: #{error}"
         .then =>
