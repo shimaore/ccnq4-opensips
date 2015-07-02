@@ -69,5 +69,7 @@
 
   "provisioning": "http://127.0.0.1:5984/provisioning",
 
+  "nat_keepalive_interval": 150,
+
   "ok":true
 }
