@@ -21,7 +21,6 @@
   "ignore_src_endpoint": true,
   "ignore_account": 1,
   "ignore_location": 1,
-  "ignore_routing_data": 1,
   "skip_lineside": 1,
 
   "source_ip and source_port comment": "source_ip and source_port (which may be overidden by the X-CCNQ3-Registrant-HostPort header) indicate which IP and port we use to send our packets out to the registrar.",
