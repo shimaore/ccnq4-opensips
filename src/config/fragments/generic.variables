@@ -2,7 +2,7 @@
 
 # What IP address to listen onto; no statement == listen on all interfaces
 if proxy_ip
-listen=${proxy_ip}:${proxy_port}
+listen=udp:${proxy_ip}:${proxy_port}
 end if proxy_ip
 
 # Additionally can support multiple listen statements
