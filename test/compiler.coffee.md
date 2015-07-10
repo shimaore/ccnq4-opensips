@@ -2,7 +2,7 @@
 
       {configuration} = require '../src/config/compiler'
 
-      verify = (t,m,p) ->
+      verify = (t,m,p = {}) ->
         (require 'assert').strictEqual t, configuration m, p
 
       it 'should do variable substitution for numbers', ->
@@ -31,3 +31,16 @@
 
       it 'should expand loops', ->
         verify ' a=3  a=9 ', 'for v in it a=${v} end for v in it', it:[3,9]
+
+      it 'should expand macros', ->
+        verify '  yes ', 'macro simple yes end macro simple ${simple}'
+
+      it 'should expand macros with parameters', ->
+        verify '  yes ', 'macro simple $1 end macro simple ${simple yes}'
+        verify '  yes ', 'macro simple $1$2 end macro simple ${simple y es}'
+        verify '  y-es ', 'macro simple $1-$2 end macro simple ${simple y es}'
+        verify ' "yes"  ', '${simple y es} macro simple "$1$2" end macro simple'
+
+      it 'should recursively expand macros', ->
+        verify '  one_foo    ', '${two} macro one one_$1 end macro one macro two ${one foo} end macro two'
+        verify '  one_yes    ', '${two yes} macro one one_$1 end macro one macro two ${one $1} end macro two'

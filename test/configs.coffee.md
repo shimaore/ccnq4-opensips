@@ -17,6 +17,8 @@
             done()
         opensips b_port, """
           mpath="/opt/opensips/lib64/opensips/modules/"
+          loadmodule "proto_udp.so"
+          listen=udp:127.0.0.1:5909
           loadmodule "mi_json.so"
 
           loadmodule "httpd.so"
@@ -48,6 +50,8 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
 
         opensips b_port, """
           mpath="/opt/opensips/lib64/opensips/modules/"
+          loadmodule "proto_udp.so"
+          listen=udp:127.0.0.1:5910
           loadmodule "mi_json.so"
 
           loadmodule "json.so"
