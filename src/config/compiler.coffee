@@ -2,7 +2,6 @@
 # compiler.coffee -- merge OpenSIPS configuration fragments
 
 definitions = (t,params) ->
-
   # Evaluate parameters
   t = t.replace /// \b define \s+ (\w+) \b ///g, (str,$1) ->
     if params[$1]? and params[$1] isnt 1
@@ -19,36 +18,55 @@ definitions = (t,params) ->
       throw new Error "Modifying variable $1 from #{params[$1]} to #{$2}"
     params[$1] = $2
     return ''
+  t = t.replace ///
+    \b macro \s+ (\w+) \b
+    ([\s\S]*?)
+    \b end \s+ macro \s+ \1 \b
+    ///g, (str,$1,$2) ->
+      if params[$1]? and params[$1] isnt $2
+        throw new Error "Modifying macro $1 from #{params[$1]} to #{$2}"
+      params[$1] = $2
+      return ''
 
   t
 
-conditionals = (t,params) ->
+conditionals = (t,params,again) ->
+
   # Since we don't use a real (LR) parser, these are sorted by match order.
   t = t.replace ///
     \b if \s+ not \s+ (\w+) \b
     ([\s\S]*?)
     \b end \s+ if \s+ not \s+ \1 \b
-    ///g, (str,$1,$2) -> if not params[$1] then $2 else ''
+    ///g, (str,$1,$2) ->
+      again = true
+      if not params[$1] then $2 else ''
   t = t.replace ///
     \b if \s+ (\w+) \s+ is \s+ not \s+ (\w+) \b
     ([\s\S]*?)
     \b end \s+ if \s+ \1 \s+ is \s+ not \s+ \2 \b
-    ///g, (str,$1,$2,$3) -> if params[$1] isnt $2 then $3 else ''
+    ///g, (str,$1,$2,$3) ->
+      again = true
+      if params[$1] isnt $2 then $3 else ''
   t = t.replace ///
     \b if \s+ (\w+) \s+ is \s+ (\w+) \b
     ([\s\S]*?)
     \b end \s+ if \s+ \1 \s+ is \s+ \2 \b
-    ///g, (str,$1,$2,$3) -> if params[$1] is $2 then $3 else ''
+    ///g, (str,$1,$2,$3) ->
+      again = true
+      if params[$1] is $2 then $3 else ''
   t = t.replace ///
     \b if \s+ (\w+) \b
     ([\s\S]*?)
     \b end \s+ if \s+ \1 \b
-    ///g, (str,$1,$2) -> if params[$1] then $2 else ''
+    ///g, (str,$1,$2) ->
+      again = true
+      if params[$1] then $2 else ''
   t = t.replace ///
     \b for \s+ (\w+) \s+ in \s+ (\w+) \b
     ([\s\S]*?)
     \b end \s+ for \s+ \1 \s+ in \s+ \2 \b
     ///g, (str,$1,$2,$3) ->
+      again = true
       result = []
       if params[$2]?
         for value in params[$2]
@@ -56,27 +74,47 @@ conditionals = (t,params) ->
           for k,v of params
             ctx[k] = v
           ctx[$1] = value
-          result.push parameters $3, ctx
+          [v,again] = parameters $3, ctx
+          result.push v
       result.join ''
 
-  t
+  [t,again]
 
-parameters = (t,params) ->
+parameters = (t,params,again) ->
+
   # Substitute parameters
   t = t.replace /// \$ \{ (\w+) \} ///g, (str,$1) ->
+    again = true
     if params[$1]?
       return params[$1]
     else
       throw new Error "Undefined #{$1} in #{t}"
 
-  t
+  t = t.replace /// \$ \{ (\w+) \s+ ([^}]+?) \s* \} ///g, (str,$1,$2) ->
+    again = true
+    if params[$1]?
+      params[$1].replace /\$(\d+)/g, (str,k) ->
+        k = parseInt(k)
+        values = $2.split /\s+/
+        if values[k-1]?
+          values[k-1]
+        else
+          throw new Error "Undefined parameter #{k} in macro #{$1} for parameters `#{$2}`."
+    else
+      throw new Error "Undefined #{$1} in #{t}"
+
+  [t,again]
 
 configuration = (t,params) ->
   t = definitions t, params
   # Run conditionals twice to allow for two-level of conditionals (`if` inside `if`. `for` inside `if`, ..).
-  t = conditionals t, params
-  t = conditionals t, params
-  t = parameters t, params
+  again = true
+  while again
+    again = false
+    [t,again] = conditionals t, params, again
+    [t,again] = conditionals t, params, again
+    [t,again] = parameters t, params, again
+    # console.dir {again,t}
   t
 
 ### compile_cfg
