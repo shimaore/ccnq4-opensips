@@ -1,4 +1,4 @@
-FROM shimaore/opensips:1.11.2
+FROM shimaore/opensips:DOCKER_OPENSIPS_VERSION
 MAINTAINER Stéphane Alnet <stephane@shimaore.net>
 
 USER root
