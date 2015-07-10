@@ -14,7 +14,6 @@
   "fork": "yes",
   "log_stderror": "yes",
 
-  "sbc_own_originator":               1,
   "sbc_own_outbound":                 2,
   "sbc_csr_outbound":                10,
 
