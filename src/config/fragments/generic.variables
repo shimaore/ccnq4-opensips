@@ -51,6 +51,10 @@ end if sip_domain_name
 
 event_pkg_threshold = 90
 event_shm_threshold = 90
+# exec_msg_threshold etc.
+
+enable_asserts = true
+abort_on_assert = false
 
 log_name="opensips-${model}"
 sip_warning=${sip_warning}
