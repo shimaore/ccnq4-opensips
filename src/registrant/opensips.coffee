@@ -7,9 +7,9 @@ quote = require '../quote'
   hosts = {}
   lines = []
   header = quote.first_line(types,columns)
-  for own row of rows
+  for row in rows
     do (row) ->
-      host =row.key[0]
+      host = row.key[0]
       if row.value.interfaces?
         hosts[host] = row.value
       else

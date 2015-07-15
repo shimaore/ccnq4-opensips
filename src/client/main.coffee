@@ -1,6 +1,9 @@
 zappa = require 'zappajs'
 PouchDB = require 'pouchdb'
 Promise = require 'bluebird'
+pkg = require '../../package.json'
+debug = (require 'debug') "#{pkg.name}:client"
+body_parser = require 'body-parser'
 
 make_id = (t,n) -> [t,n].join ':'
 
@@ -9,15 +12,21 @@ make_id = (t,n) -> [t,n].join ':'
 zappa_as_promised = require '../zappa-as-promised'
 
 module.exports = (cfg) ->
-  cfg.usrloc = new PouchDB cfg.usrloc ? "http://127.0.0.1:5984/location", cfg.usrloc_options
-  cfg.port ?= 34340
-  cfg.host ?= '127.0.0.1'
+  debug 'Using configuration', cfg
+
+  # If no `usrloc` URI is provided, use a local (LevelDB) registrar DB.
+  cfg.usrloc = new PouchDB cfg.usrloc ? "location", cfg.usrloc_options ? {}
 
   zappa_as_promised main, cfg
 
 main = (cfg) ->
 
   ->
+
+    @get '/', ->
+      @json
+        name: "#{pkg.name}:client"
+        version: pkg.version
 
     @get '/location/': -> # usrloc_table
 
@@ -46,7 +55,7 @@ main = (cfg) ->
       console.error "location: not handled: #{@query.k} #{@query.op} #{@query.v}"
       @send ""
 
-    @post '/location', ((require 'body-parser').urlencoded extended:false), ->
+    @post '/location', (body_parser.urlencoded extended:false), ->
 
       doc = unquote_params(@body.k,@body.v,'location')
       # Note: this allows for easy retrieval, but only one location can be stored.

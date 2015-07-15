@@ -5,6 +5,7 @@
       zappa = require 'zappajs'
       request = require 'superagent-as-promised'
       {opensips,kill} = require './opensips'
+      PouchDB = require 'pouchdb'
 
       it 'should accept simple configuration', (done) ->
         port = 7500
@@ -86,7 +87,7 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
 
         build_config = require '../config'
         {compile} = require '../src/config/compiler'
-        config = build_config './test/config1.json'
+        config = build_config require './config1.json'
         config.startup_route_code = """
             rest_get("http://172.17.42.1:#{a_port}/ok","$var(body)");
             exit;
@@ -122,7 +123,7 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
 
         build_config = require '../config'
         {compile} = require '../src/config/compiler'
-        config = build_config './test/config2.json'
+        config = build_config require './config2.json'
         config.startup_route_code = """
             rest_get("http://172.17.42.1:#{a_port}/ok","$var(body)");
             exit;
@@ -134,8 +135,7 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
         service
           port: 34342
           host: '172.17.42.1'
-          provisioning: 'provisioning'
-          provisioning_options: db: require 'memdown'
+          prov: new PouchDB 'provisioning', db: require 'memdown'
         .then ->
           opensips b_port, compile config
         .catch (error) ->

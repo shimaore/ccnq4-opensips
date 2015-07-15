@@ -18,7 +18,7 @@
         @timeout 8000
         build_config = require '../config'
         {compile} = require '../src/config/compiler'
-        config = build_config './test/config1.json'
+        config = build_config require './config1.json'
         config.httpd_port = b_port
 
         service = require '../src/client/main'

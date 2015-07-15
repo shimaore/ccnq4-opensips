@@ -26,6 +26,7 @@
     "body-parser": "^1.13.2",
     "coffee-script": "^1.9.3",
     "debug": "^2.2.0",
+    "nimble-direction": "^2.1.0",
     "pouchdb": "^3.6.0",
     "royal-thing": "^4.3.0",
     "supervisord": "0.0.4",

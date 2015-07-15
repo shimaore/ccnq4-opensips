@@ -1,18 +1,11 @@
 OpenSIPS / CouchDB data proxy
 -----------------------------
 
-    run = ->
-
-The OpenSIPS parameters.
-
-      config = Config process.env.CONFIG
-
-      db_url = url.parse config.db_url
+    run = (cfg) ->
 
 The service (database proxy) parameters.
 
-      cfg = require './local/config.json'
-
+      db_url = url.parse cfg.db_url
       cfg.port ?= db_url.port
       cfg.host ?= db_url.hostname
 
@@ -49,20 +42,34 @@ Registrant reload on data changes.
             supervisor = Promise.promisifyAll supervisord.connect process.env.SUPERVISOR
           .then ->
             supervisor.stopProcessAsync 'opensips'
+          .catch (error) ->
+            debug "Stop opensips: #{error}"
+            null
           .then ->
             supervisor.startProcessAsync 'opensips'
           .catch (error) ->
-            debug "Restarting opensips: #{error}"
+            debug "Start opensips: #{error}"
 
 
     url = require 'url'
     pkg = require './package.json'
     debug = (require 'debug') "#{pkg.name}:data"
-    Config = require './config'
     RoyalThing = require 'royal-thing'
     supervisord = require 'supervisord'
     Promise = require 'bluebird'
+    Nimble = require 'nimble-direction'
+
+    module.exports = run
+
     if require.main is module
-      run()
-    else
-      module.exports = run
+      debug "#{pkg.name} #{pkg.version} data -- Starting."
+      assert process.env.CONFIG?, 'Missing CONFIG environment.'
+      assert process.env.SUPERVISOR?, 'Missing SUPERVISOR environment.'
+
+      cfg = require process.env.CONFIG
+
+      Nimble cfg
+      .then ->
+        run cfg
+      .then ->
+        debug "Started."

@@ -2,32 +2,31 @@ util = require 'util'
 zappa = require 'zappajs'
 PouchDB = require 'pouchdb'
 pkg = require '../../package.json'
+debug = (require 'debug') "#{pkg.name}:registrant"
 
 {list} = require './opensips'
 zappa_as_promised = require '../zappa-as-promised'
 
 module.exports = (cfg) ->
-  provisioning = new PouchDB cfg.provisioning ? 'http://127.0.0.1:5984/provisioning', cfg.provisioning_options
-  cfg.port ?= 34342
-  cfg.host ?= '127.0.0.1'
 
   couchapp = require './couchapp'
-  provisioning.get couchapp._id
+  cfg.prov.get couchapp._id
   .catch -> {}
   .then ({_rev}) ->
     couchapp._rev = _rev if _rev?
-    provisioning.put couchapp
+    cfg.prov.put couchapp
   .then ->
-    cfg.provisioning = provisioning
     zappa_as_promised main, cfg
 
 main = (cfg) ->
+
+  debug 'Using configuration', cfg
 
   ->
 
     @get '/registrant/': ->
       if not @query.k?
-        cfg.provisioning.query "#{pkg.name}-registrant/registrant_by_host",
+        cfg.prov.query "#{pkg.name}-registrant/registrant_by_host",
           startkey: [cfg.host]
           endkey: [cfg.host,{}]
         .then ({rows}) =>

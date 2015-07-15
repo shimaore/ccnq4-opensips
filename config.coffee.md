@@ -1,12 +1,10 @@
 OpenSIPS script writer
 ----------------------
 
-    module.exports = build_config = (local_config) ->
+    module.exports = Options = (cfg) ->
 
 Configuration for the entire package.
 
-      cfg = try require local_config ? './local/config.json'
-      cfg ?= {}
       cfg.opensips ?= {}
 
       cfg_env =
@@ -20,6 +18,7 @@ Configuration for the entire package.
       for k,v of cfg_env
         cfg.opensips[k] ?= process.env[v] if process.env[v]?
 
+      debug 'Using configuration', cfg
       assert cfg.opensips.model?, 'Missing `model` field in `opensips` object in configuration.'
 
       options = {}
@@ -52,19 +51,28 @@ Toolbox
     Promise = require 'bluebird'
     supervisord = require 'supervisord'
     fs = Promise.promisifyAll require 'fs'
+    Nimble = require 'nimble-direction'
 
     if require.main is module
 
+      debug "#{pkg.name} #{pkg.version} config -- Starting."
+      assert process.env.CONFIG?, 'Missing CONFIG environment.'
+      assert process.env.SUPERVISOR?, 'Missing SUPERVISOR environment.'
+
+      cfg = require process.env.CONFIG
+
+      Nimble cfg
+      .then ->
+
 Build the configuration file.
 
-      debug "#{pkg.name} #{pkg.version} config -- Starting."
-      options = build_config process.env.LOCAL_CONFIG ? null
-      (require './src/config/compiler') options
+        options = Options cfg
+        (require './src/config/compiler') options
 
 Start the data server.
 
-      supervisor = Promise.promisifyAll supervisord.connect process.env.SUPERVISOR
-      supervisor.startProcessAsync 'data'
+        supervisor = Promise.promisifyAll supervisord.connect process.env.SUPERVISOR
+        supervisor.startProcessAsync 'data'
       .then ->
         supervisor.startProcessAsync 'opensips'
       .then ->
