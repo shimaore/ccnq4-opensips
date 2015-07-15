@@ -13,8 +13,8 @@
     "test": "mocha"
   },
   "devDependencies": {
-    "chai": "^2.3.0",
-    "chai-as-promised": "^5.0.0",
+    "chai": "^3.0.0",
+    "chai-as-promised": "^5.1.0",
     "exec-as-promised": "^1.0.1",
     "memdown": "^1.0.0",
     "mocha": "^2.2.5",
@@ -22,14 +22,14 @@
     "superagent-as-promised": "^3.1.1"
   },
   "dependencies": {
-    "bluebird": "^2.9.25",
-    "body-parser": "^1.12.4",
+    "bluebird": "^2.9.33",
+    "body-parser": "^1.13.2",
     "coffee-script": "^1.9.3",
     "debug": "^2.2.0",
-    "pouchdb": "^3.5.0",
+    "pouchdb": "^3.6.0",
     "royal-thing": "^4.3.0",
     "supervisord": "0.0.4",
-    "zappajs": "^2.1.2"
+    "zappajs": "^2.2.0"
   },
   "repository": {
     "type": "git",
