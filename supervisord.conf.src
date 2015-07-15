@@ -2,7 +2,7 @@
 nodaemon=true
 logfile=%(here)s/log/supervisord.log
 pidfile=%(here)s/log/supervisord.pid
-loglevel=debug
+loglevel=info
 
 [inet_http_server]
 port=127.0.0.1:5708
