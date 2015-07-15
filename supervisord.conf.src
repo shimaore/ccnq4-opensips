@@ -28,7 +28,7 @@ stdout_logfile=%(here)s/log/%(program_name)s.log
 stderr_logfile=%(here)s/log/%(program_name)s.log
 
 [program:opensips]
-command = /opt/opensips/sbin/opensips -f /opt/opensips/etc/opensips/opensips.cfg -m 2048 -M 384 -F -E -T -S
+command = /opt/opensips/sbin/opensips -f /opt/opensips/etc/opensips/opensips.cfg -m 2048 -M 384 -F -E
 environment = TZ="UTC"
 priority=50
 autostart=false
