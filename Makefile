@@ -14,8 +14,8 @@ tests:
 	sed -e "s/MEDIAPROXY_VERSION/${MEDIAPROXY_VERSION}/" $< | sed -e "s/DOCKER_OPENSIPS_VERSION/${DOCKER_OPENSIPS_VERSION}/" > $@
 
 push: image tests
-	# docker push ${NAME}:${TAG}
 	docker push ${REGISTRY}/${NAME}:${TAG}
+	docker push ${NAME}:${TAG}
 
 # Local #
 
