@@ -58,6 +58,7 @@ Registrant reload on data changes.
     supervisord = require 'supervisord'
     Promise = require 'bluebird'
     Nimble = require 'nimble-direction'
+    assert = require 'assert'
 
     module.exports = run
 
