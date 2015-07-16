@@ -23,10 +23,21 @@ main = (cfg) ->
 
   ->
 
+    # REST/JSON API
+
     @get '/', ->
       @json
         name: "#{pkg.name}:client"
         version: pkg.version
+
+    @get '/location/:username', ->
+      usrloc.get @param.username
+      .then (doc) ->
+        @json doc
+      , (error) ->
+        @res.status(404).json error: "#{error}"
+
+    # OpenSIPS db_http API (for locations only)
 
     @get '/location/': -> # usrloc_table
 
