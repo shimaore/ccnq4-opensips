@@ -54,10 +54,11 @@ Toolbox
     supervisord = require 'supervisord'
     fs = Promise.promisifyAll require 'fs'
     Nimble = require 'nimble-direction'
+    seem = require 'seem'
 
     module.exports = Options
 
-    if require.main is module
+    main = seem ->
 
       debug "#{pkg.name} #{pkg.version} config -- Starting."
       assert process.env.CONFIG?, 'Missing CONFIG environment.'
@@ -65,42 +66,42 @@ Toolbox
 
       cfg = require process.env.CONFIG
 
-      Nimble cfg
-      .then ->
+      yield Nimble cfg
 
 Build the configuration file.
 
-        options = Options cfg
-        (require './src/config/compiler') options
+      options = Options cfg
+      (require './src/config/compiler') options
 
 Start the data server.
 
-        supervisor = Promise.promisifyAll supervisord.connect process.env.SUPERVISOR
-        supervisor.startProcessAsync 'data'
-      .then ->
-        supervisor.startProcessAsync 'opensips'
-      .then ->
+      supervisor = Promise.promisifyAll supervisord.connect process.env.SUPERVISOR
+      yield supervisor.startProcessAsync 'data'
+      yield supervisor.startProcessAsync 'opensips'
 
 This is kind of an ad-hoc test, but it should be consistent with our use of MediaProxy.
 
-        if 'mediaproxy' in options.recipe
-          mp_config = """
-            [Dispatcher]
-            socket_path = #{options.var_run_mediaproxy}/dispatcher.sock
-            passport = #{process.env.PASSPORT ? 'None'}
-            listen = 0.0.0.0:25060
-            listen_management = 127.0.0.1:25061
-            management_use_tls = no
-            log_level = DEBUG
-            [TLS]
-            cert_paths = #{process.env.CERT_PATHS ? '/home/opensips/local'}
+      if 'mediaproxy' in options.recipe
+        mp_config = """
+          [Dispatcher]
+          socket_path = #{options.var_run_mediaproxy}/dispatcher.sock
+          passport = #{process.env.PASSPORT ? 'None'}
+          listen = 0.0.0.0:25060
+          listen_management = 127.0.0.1:25061
+          management_use_tls = no
+          log_level = DEBUG
+          [TLS]
+          cert_paths = #{process.env.CERT_PATHS ? '/home/opensips/local'}
 
-          """
-          debug 'Writing dispatcher configuration'
-          fs.writeFileAsync "/home/opensips/vendor/mediaproxy-#{pkg.mediaproxy.version}/config.ini", mp_config
-          .then ->
-            debug 'Starting dispatcher'
-            supervisor.startProcessAsync 'dispatcher'
+        """
+        debug 'Writing dispatcher configuration'
+        yield fs.writeFileAsync "/home/opensips/vendor/mediaproxy-#{pkg.mediaproxy.version}/config.ini", mp_config
+        debug 'Starting dispatcher'
+        yield supervisor.startProcessAsync 'dispatcher'
 
-      .then ->
-        debug "Started."
+      debug "Started."
+
+    if require.main is module
+      main()
+      .catch (error) ->
+        debug "Startup failed: #{error}"

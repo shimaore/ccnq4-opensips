@@ -29,6 +29,7 @@
     "nimble-direction": "^2.1.0",
     "pouchdb": "^3.6.0",
     "royal-thing": "^4.3.0",
+    "seem": "^1.0.0",
     "supervisord": "0.0.4",
     "zappajs": "^2.2.0"
   },
