@@ -5,7 +5,7 @@ OpenSIPS / CouchDB data proxy
 
 The service (database proxy) parameters.
 
-      db_url = url.parse cfg.db_url
+      db_url = url.parse cfg.opensips.db_url
       cfg.port ?= db_url.port
       cfg.host ?= db_url.hostname
 
@@ -50,7 +50,6 @@ Registrant reload on data changes.
           .catch (error) ->
             debug "Start opensips: #{error}"
 
-
     url = require 'url'
     pkg = require './package.json'
     debug = (require 'debug') "#{pkg.name}:data"
@@ -58,6 +57,7 @@ Registrant reload on data changes.
     supervisord = require 'supervisord'
     Promise = require 'bluebird'
     Nimble = require 'nimble-direction'
+    Options = require './config'
     assert = require 'assert'
 
     module.exports = run
@@ -71,6 +71,7 @@ Registrant reload on data changes.
 
       Nimble cfg
       .then ->
+        Options cfg
         run cfg
       .then ->
         debug "Started."
