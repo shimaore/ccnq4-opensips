@@ -76,13 +76,10 @@ Build the configuration file.
 
 Replicate the provisioning database
 
-      assert cfg.sip_domain_name?, 'Missing `sip_domain_name` configuration item or DOMAIN environment variable.'
       yield cfg.master_push couch
       yield cfg.replicate 'provisioning', (doc) ->
           debug "Using replication filter #{couch.replication_filter}"
           doc.filter = couch.replication_filter
-          doc.query_params =
-            sip_domain_name: cfg.sip_domain_name
 
 Start the data server.
 
