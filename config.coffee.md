@@ -1,7 +1,7 @@
 OpenSIPS script writer
 ----------------------
 
-    module.exports = Options = (cfg) ->
+    Options = (cfg) ->
 
 Configuration for the entire package.
 
@@ -40,6 +40,8 @@ Override them with any configuration elment found in the configuration's `opensi
       for own k,v of cfg.opensips
         options[k] = v
 
+      cfg.opensips = options
+
       options
 
 Toolbox
@@ -52,6 +54,8 @@ Toolbox
     supervisord = require 'supervisord'
     fs = Promise.promisifyAll require 'fs'
     Nimble = require 'nimble-direction'
+
+    module.exports = Options
 
     if require.main is module
 
