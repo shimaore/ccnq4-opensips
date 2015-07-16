@@ -1,6 +1,6 @@
 {
   "name": "ccnq4-opensips",
-  "version": "6.0.12",
+  "version": "6.0.13",
   "mediaproxy": {
     "version": "2.6.1"
   },
