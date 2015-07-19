@@ -1,5 +1,3 @@
-# mediaproxy.modules -- modules and configuration for mediaproxy.cfg
+loadmodule "rtpengine.so"
 
-loadmodule "mediaproxy.so"
-
-modparam("mediaproxy","mediaproxy_socket", "${var_run_mediaproxy}/dispatcher.sock")
+modparam("rtpengine","rtpengine_sock", "for v in rtpengine ${v} end for v in rtpengine")

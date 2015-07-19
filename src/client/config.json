@@ -10,6 +10,7 @@
     "avpops",
 
     "nat",
+    "rtpengine",
 
     "usrloc_db",
     "register-colocated",
@@ -33,7 +34,6 @@
   "external_ip": "",
 
   "authentication": "database",
-  "mp_allowed": 1,
   "mp_always": 0,
   "debug": 0,
 

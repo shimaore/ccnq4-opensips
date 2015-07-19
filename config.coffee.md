@@ -55,6 +55,7 @@ Toolbox
     Promise = require 'bluebird'
     supervisord = require 'supervisord'
     fs = Promise.promisifyAll require 'fs'
+    os = require 'os'
     Nimble = require 'nimble-direction'
     seem = require 'seem'
     {couch} = require './index'
