@@ -40,6 +40,8 @@ Override them with any configuration elment found in the configuration's `opensi
       for own k,v of cfg.opensips
         options[k] = v
 
+      options.__hostname = os.hostname()
+
       cfg.opensips = options
 
       options
