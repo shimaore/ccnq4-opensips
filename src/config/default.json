@@ -8,7 +8,6 @@
 
   "mpath": "/opt/opensips/lib64/opensips/modules/",
   "var_run_opensips": "/home/opensips/run/opensips",
-  "var_run_mediaproxy": "/home/opensips/run/mediaproxy",
   "max_hops": "10",
   "children": 10,
   "fork": "yes",

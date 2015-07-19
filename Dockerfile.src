@@ -9,14 +9,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   git \
   iptables-dev \
   libjson0 \
-  libnetfilter-conntrack-dev \
   make \
   netcat \
-  python-application \
-  python-cjson \
-  python-dev \
-  python-gnutls \
-  python-twisted-core \
   supervisor
 
 # Install Node.js using `n`.
@@ -27,20 +21,10 @@ WORKDIR ..
 RUN n io 2.3.4
 ENV NODE_ENV production
 
-# Prepare mediaproxy
-RUN mkdir /run/mediaproxy && chown opensips.opensips /run/mediaproxy
-
 # Start opensips part.
 COPY . /home/opensips
 RUN chown -R opensips.opensips /home/opensips
 USER opensips
-RUN mkdir -p log run/opensips run/mediaproxy
-# Build mediaproxy-dispatcher
-WORKDIR vendor
-RUN tar xzvf mediaproxy-MEDIAPROXY_VERSION.tar.gz
-WORKDIR mediaproxy-MEDIAPROXY_VERSION
-RUN ./build_inplace
-WORKDIR ../..
 
 # Node.js code
 RUN npm install && npm cache clean

@@ -10,7 +10,6 @@
     "avpops",
 
     "nat",
-    "mediaproxy",
 
     "usrloc_db",
     "register-colocated",
