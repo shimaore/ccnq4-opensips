@@ -1,4 +1,5 @@
 zappa = require 'zappajs'
+io = require 'socket.io-client'
 PouchDB = require 'pouchdb'
 Promise = require 'bluebird'
 pkg = require '../../package.json'
@@ -10,12 +11,14 @@ make_id = (t,n) -> [t,n].join ':'
 {show,list} = require './opensips'
 {unquote_params} = require '../quote'
 zappa_as_promised = require '../zappa-as-promised'
+hostname = (require 'os').hostname()
 
 module.exports = (cfg) ->
   debug 'Using configuration', cfg
 
   # If no `usrloc` URI is provided, use a local (LevelDB) registrar DB.
   cfg.usrloc = new PouchDB cfg.usrloc ? "location", cfg.usrloc_options ? {}
+  cfg.socket = io cfg.notify if cfg.notify?
 
   zappa_as_promised main, cfg
 
@@ -76,6 +79,11 @@ main = (cfg) ->
       if @body.uk?
         update_doc = unquote_params(@body.uk,@body.uv,'location')
         doc[k] = v for k,v of update_doc
+
+      doc.query_data =
+        hostname: hostname
+        type: @body.query_type
+      cfg.socket?.emit 'location', doc
 
       if @body.query_type is 'insert' or @body.query_type is 'update'
 
