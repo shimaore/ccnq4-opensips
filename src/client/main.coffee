@@ -25,6 +25,7 @@ module.exports = (cfg) ->
 main = (cfg) ->
 
   ->
+    @use morgan:'combined'
 
     # REST/JSON API
 

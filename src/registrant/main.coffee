@@ -23,6 +23,7 @@ main = (cfg) ->
   debug 'Using configuration', cfg
 
   ->
+    @use morgan:'combined'
 
     @get '/registrant/': ->
       if not @query.k?
