@@ -24,7 +24,7 @@
   "usrloc_flags": "f",
 
   "cache_cleanup": 30,
-  "cache_timeout": 45,
+  "cache_timeout": 180,
 
   "voicemail_notifier": "",
 
@@ -36,8 +36,6 @@
   "rate_limit_requests": 50,
   "rate_limit_latency": 60,
   "rate_limit": true,
-
-  "max_channels": true,
 
   "dlg_match_mode": 1,
   "fix_invalid_dialogs": false,
