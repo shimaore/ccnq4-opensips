@@ -1,4 +1,5 @@
 # -- usrloc --
+define usrloc
 loadmodule "usrloc.so"
 # Use usrloc-cl (DB-based)
 modparam("usrloc", "db_url",          "${db_url}")
