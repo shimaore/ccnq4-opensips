@@ -34,7 +34,7 @@ main = (cfg) ->
         name: "#{pkg.name}:client"
         version: pkg.version
 
-    @get '/location/_all', ->
+    @get '/locations', ->
       cfg.usrloc.allDocs()
       .then (docs) =>
         @json docs
