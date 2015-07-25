@@ -36,9 +36,9 @@ main = (cfg) ->
 
     @get '/location/:username', ->
       cfg.usrloc.get @params.username
-      .then (doc) ->
+      .then (doc) =>
         @json doc
-      , (error) ->
+      , (error) =>
         @res.status(404).json error: "#{error}"
 
     # OpenSIPS db_http API (for locations only)
