@@ -35,7 +35,7 @@ main = (cfg) ->
         version: pkg.version
 
     @get '/location/:username', ->
-      usrloc.get @param.username
+      cfg.usrloc.get @param.username
       .then (doc) ->
         @json doc
       , (error) ->
@@ -46,7 +46,7 @@ main = (cfg) ->
     @get '/location/': -> # usrloc_table
 
       if @query.k is 'username' and @query.op is '='
-        usrloc.get @query.v
+        cfg.usrloc.get @query.v
         .then (doc) =>
           @res.type 'text/plain'
           @send show doc, @req, 'location'
