@@ -38,15 +38,14 @@ main = (cfg) ->
       cfg.usrloc.allDocs()
       .then (docs) =>
         @json docs
-      , (error) =>
-        @res.status(404).json error: "#{error}"
 
     @get '/location/:username', ->
       cfg.usrloc.get @params.username
+      .catch (error) =>
+        @res.status 404
+        {}
       .then (doc) =>
         @json doc
-      , (error) =>
-        @res.status(404).json error: "#{error}"
 
     # OpenSIPS db_http API (for locations only)
 
