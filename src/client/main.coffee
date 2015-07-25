@@ -34,6 +34,13 @@ main = (cfg) ->
         name: "#{pkg.name}:client"
         version: pkg.version
 
+    @get '/location/_all', ->
+      cfg.usrloc.allDocs()
+      .then (docs) =>
+        @json docs
+      , (error) =>
+        @res.status(404).json error: "#{error}"
+
     @get '/location/:username', ->
       cfg.usrloc.get @params.username
       .then (doc) =>
