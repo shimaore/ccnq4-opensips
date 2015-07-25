@@ -35,7 +35,7 @@ main = (cfg) ->
         version: pkg.version
 
     @get '/location/:username', ->
-      cfg.usrloc.get @param.username
+      cfg.usrloc.get @params.username
       .then (doc) ->
         @json doc
       , (error) ->
