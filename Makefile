@@ -15,7 +15,7 @@ tests:
 
 push: image tests
 	docker push ${REGISTRY}/${NAME}:${TAG}
-	# docker push ${NAME}:${TAG}
+	docker push ${NAME}:${TAG}
 
 # Local #
 
