@@ -22,6 +22,26 @@ module.exports = (cfg) ->
 
   zappa_as_promised main, cfg
 
+  # Subscribe to the `locations` bus.
+  cfg.socket?.on 'welcome', ->
+    cfg.socket.emit 'configure', locations:true
+
+  # Reply to requests for a single AOR.
+  cfg.socket?.on 'location', (aor) ->
+    cfg.usrloc.get aor
+    .catch -> _id:aor
+    .then (doc) ->
+      doc.hostname = hostname
+      cfg.socket.emit 'location:response', doc
+
+  # Reply to requests for all AORs.
+  cfg.socket?.on 'locations', ->
+    cfg.usrloc.allDocs()
+    .catch -> {}
+    .then (res) ->
+      res.hostname = hostname
+      cfg.socket.emit 'locations:response', res
+
 main = (cfg) ->
 
   ->
