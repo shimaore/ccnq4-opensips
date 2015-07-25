@@ -110,7 +110,7 @@ main = (cfg) ->
       doc.query_data =
         hostname: hostname
         type: @body.query_type
-      cfg.socket?.emit 'location', doc
+      cfg.socket?.emit 'location:update', doc
 
       if @body.query_type is 'insert' or @body.query_type is 'update'
 
