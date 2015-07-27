@@ -5,3 +5,4 @@ Makefile
 .dockerignore
 Dockerfile.src
 supervisord.conf.src
+vendor

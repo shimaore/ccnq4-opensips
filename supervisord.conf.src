@@ -35,11 +35,3 @@ autostart=false
 autorestart=true
 stdout_logfile=%(here)s/log/%(program_name)s.log
 stderr_logfile=%(here)s/log/%(program_name)s.log
-
-[program:dispatcher]
-command=%(here)s/vendor/mediaproxy-MEDIAPROXY_VERSION/media-dispatcher --no-fork
-priority=60
-autostart=false
-autorestart=true
-stdout_logfile=%(here)s/log/%(program_name)s.log
-stderr_logfile=%(here)s/log/%(program_name)s.log

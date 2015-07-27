@@ -1,5 +1,0 @@
-# mediaproxy.modules -- modules and configuration for mediaproxy.cfg
-
-loadmodule "mediaproxy.so"
-
-modparam("mediaproxy","mediaproxy_socket", "${var_run_mediaproxy}/dispatcher.sock")
