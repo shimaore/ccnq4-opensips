@@ -24,7 +24,7 @@ Web Services for Munin
           port = cfg.httpd_port ? 8560
           request
           .get "http://#{ip}:#{port}/json/get_statistics"
-          .query param:'all'
+          .query params:'all'
           .accept 'json'
           .then (doc) ->
             text = """
