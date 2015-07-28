@@ -42,6 +42,10 @@ module.exports = (cfg) ->
       res.hostname = hostname
       cfg.socket.emit 'locations:response', res
 
+  # Ping
+  cfg.socket?.on 'ping', (doc) ->
+    cfg.socket.emit 'pong', host:hostname, in_reply_to:doc, name:pkg.name, version:pkg.version
+
 main = (cfg) ->
 
   ->
