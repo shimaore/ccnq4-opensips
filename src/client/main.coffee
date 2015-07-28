@@ -20,8 +20,6 @@ module.exports = (cfg) ->
   cfg.usrloc = new PouchDB cfg.usrloc ? "location", cfg.usrloc_options ? {}
   cfg.socket = io cfg.notify if cfg.notify?
 
-  zappa_as_promised main, cfg
-
   # Subscribe to the `locations` bus.
   cfg.socket?.on 'welcome', ->
     cfg.socket.emit 'configure', locations:true
@@ -45,6 +43,8 @@ module.exports = (cfg) ->
   # Ping
   cfg.socket?.on 'ping', (doc) ->
     cfg.socket.emit 'pong', host:hostname, in_reply_to:doc, name:pkg.name, version:pkg.version
+
+  zappa_as_promised main, cfg
 
 main = (cfg) ->
 

@@ -1,4 +1,4 @@
-    describe.only 'Config', ->
+    describe 'Config', ->
       it 'should set defaults for client', ->
         build_config = require '../config'
         config = build_config opensips: 
