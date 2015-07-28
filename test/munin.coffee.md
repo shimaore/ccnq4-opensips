@@ -11,7 +11,7 @@
         {server} = munin {}
         server.on 'listening', ->
           request
-          .get 'http://127.0.0.1:3939/autoconf'
+          .get 'http://127.0.0.1:3949/autoconf'
           .then ({text}) ->
             text.should.equal 'yes\n'
             done()

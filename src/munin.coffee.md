@@ -4,7 +4,7 @@ Web Services for Munin
     run = (cfg) ->
       cfg.munin ?= {}
       cfg.munin.host ?= process.env.MUNIN_HOST ? '127.0.0.1'
-      cfg.munin.port ?= process.env.MUNIN_PORT ? 3939
+      cfg.munin.port ?= process.env.MUNIN_PORT ? 3949
       cfg.munin.io ?= false
 
       config = build_config cfg
