@@ -76,6 +76,8 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
 
       it 'should accept `client` configuration', (done) ->
 
+        @timeout 3000
+
         port = 7520
         a_port = port++
         b_port = port++
@@ -111,6 +113,8 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
         return
 
       it 'should accept `registrant` configuration', (done) ->
+
+        @timeout 3000
 
         port = 7530
         a_port = port++
