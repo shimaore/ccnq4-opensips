@@ -26,7 +26,8 @@ Web Services for Munin
           .get "http://#{ip}:#{port}/json/get_statistics"
           .query params:'all'
           .accept 'json'
-          .then (doc) =>
+          .then ({body}) =>
+            doc = body
             text = """
               #{name}_core_rcv_req.value #{doc['core:rcv_requests']}
               #{name}_core_rcv_repl.value #{doc['core:rcv_replies']}

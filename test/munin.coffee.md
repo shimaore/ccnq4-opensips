@@ -25,3 +25,49 @@
           .then ({text}) ->
             text.should.match /opensips_registrar_accepted/
             done()
+
+    describe 'munin live', ->
+
+      Promise = require 'bluebird'
+      {opensips,kill} = require './opensips'
+      port = 7950
+      a_port = port++
+      b_port = port++
+
+      our_server = null
+
+      before (done) ->
+        @timeout 8000
+
+        build_config = require '../config'
+        {compile} = require '../src/config/compiler'
+        config = build_config require './config1.json'
+        config.httpd_ip = null
+        config.httpd_port = b_port
+
+        service = require '../src/client/main'
+        config.db_url = 'http://172.17.42.1:34349'
+        our_server = service
+          port: 34349
+          host: '172.17.42.1'
+          usrloc: 'location'
+          usrloc_options: db: require 'memdown'
+        .then ({server}) ->
+          opensips b_port, compile config
+          Promise.delay 3000
+          .then -> done()
+
+      after ->
+        kill b_port
+
+      it 'should return value', (done) ->
+        munin = require '../src/munin'
+        {server} = munin
+          munin: port:3941
+          httpd_port: b_port
+        server.on 'listening', ->
+          request
+          .get 'http://127.0.0.1:3941/'
+          .then ({text}) ->
+            text.should.match /opensips_registrar_accepted.value 0/
+            done()
