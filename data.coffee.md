@@ -50,6 +50,9 @@ Registrant reload on data changes.
           .catch (error) ->
             debug "Start opensips: #{error}"
 
+      munin = require './src/munin'
+      munin cfg
+
     url = require 'url'
     pkg = require './package.json'
     debug = (require 'debug') "#{pkg.name}:data"
