@@ -19,6 +19,7 @@
         build_config = require '../config'
         {compile} = require '../src/config/compiler'
         config = build_config require './config1.json'
+        config.httpd_ip = null
         config.httpd_port = b_port
 
         service = require '../src/client/main'
@@ -38,6 +39,12 @@
 
       after ->
         kill b_port
+
+      it 'should say which', ->
+        stats = request.get "http://127.0.0.1:#{b_port}/json/which"
+          .accept 'json'
+        stats.then ({body}) ->
+          debug body
 
       it 'should report statistics', ->
         stats = request.get "http://127.0.0.1:#{b_port}/json/get_statistics"
