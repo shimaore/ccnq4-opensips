@@ -8,6 +8,7 @@
       PouchDB = require 'pouchdb'
 
       it 'should accept simple configuration', (done) ->
+        @timeout 4000
         port = 7500
         a_port = port++
         b_port = port++
@@ -30,19 +31,20 @@
             exit;
           }
         """
-        Promise.delay 1500
+        Promise.delay 2500
         .then ->
           kill b_port
         return
 
       it 'should parse JSON', (done) ->
+        @timeout 4000
         port = 7510
         a_port = port++
         b_port = port++
         zappa '172.17.42.1', a_port, io:no, ->
           @get '/foo', ->
             @json foo:'bar'
-          @get '/ok', ->
+          @get '/ok-json', ->
             @json ok:yes
             kill b_port
             done()
@@ -63,35 +65,37 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
             if(rest_get("http://172.17.42.1:#{a_port}/foo","$var(body)")) {
               $json(response) := $var(body);
               if( $json(response/foo) == "bar") {
-                rest_get("http://172.17.42.1:#{a_port}/ok","$var(body)");
+                rest_get("http://172.17.42.1:#{a_port}/ok-json","$var(body)");
               }
             }
             exit;
           }
         """
-        Promise.delay 1500
+        Promise.delay 2500
         .then ->
           kill b_port
         return
 
       it 'should accept `client` configuration', (done) ->
 
-        @timeout 3000
+        @timeout 4000
 
         port = 7520
         a_port = port++
         b_port = port++
+        success = false
         zappa '172.17.42.1', a_port, io:no, ->
-          @get '/ok', ->
+          @get '/ok-client', ->
             @json ok:yes
             kill b_port
-            done()
+            done() unless success
+            success = true
 
         build_config = require '../config'
         {compile} = require '../src/config/compiler'
         config = build_config require './config1.json'
         config.startup_route_code = """
-            rest_get("http://172.17.42.1:#{a_port}/ok","$var(body)");
+            rest_get("http://172.17.42.1:#{a_port}/ok-client","$var(body)");
             exit;
         """
         config.httpd_port = b_port
@@ -107,20 +111,20 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
           opensips b_port, compile config
         .catch (error) ->
           console.log "Service error: #{error}"
-        Promise.delay 1500
+        Promise.delay 2500
         .then ->
           kill b_port
         return
 
       it 'should accept `registrant` configuration', (done) ->
 
-        @timeout 3000
+        @timeout 4000
 
         port = 7530
         a_port = port++
         b_port = port++
         zappa '172.17.42.1', a_port, io:no, ->
-          @get '/ok', ->
+          @get '/ok-registrant', ->
             @json ok:yes
             kill b_port
             done()
@@ -129,7 +133,7 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
         {compile} = require '../src/config/compiler'
         config = build_config require './config2.json'
         config.startup_route_code = """
-            rest_get("http://172.17.42.1:#{a_port}/ok","$var(body)");
+            rest_get("http://172.17.42.1:#{a_port}/ok-registrant","$var(body)");
             exit;
         """
         config.httpd_port = b_port
@@ -144,7 +148,7 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
           opensips b_port, compile config
         .catch (error) ->
           console.log "Service error: #{error}"
-        Promise.delay 1500
+        Promise.delay 2500
         .then ->
           kill b_port
         return

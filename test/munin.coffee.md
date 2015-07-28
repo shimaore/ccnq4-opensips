@@ -65,9 +65,11 @@
         {server} = munin
           munin: port:3941
           httpd_port: b_port
+        success = false
         server.on 'listening', ->
           request
           .get 'http://127.0.0.1:3941/'
           .then ({text}) ->
             text.should.match /opensips_registrar_accepted.value 0/
-            done()
+            done() unless success
+            success = true
