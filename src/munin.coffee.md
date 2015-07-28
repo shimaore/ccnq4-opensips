@@ -29,6 +29,7 @@ Web Services for Munin
           .then ({body}) =>
             doc = body
             text = """
+              mutligraph #{name}_core
               #{name}_core_rcv_req.value #{doc['core:rcv_requests']}
               #{name}_core_rcv_repl.value #{doc['core:rcv_replies']}
               #{name}_core_fwd_req.value #{doc['core:fwd_requests']}
@@ -38,9 +39,11 @@ Web Services for Munin
               #{name}_core_err_req.value #{doc['core:err_requests']}
               #{name}_core_err_repl.value #{doc['core:err_replies']}
 
+              mutligraph #{name}_shmem
               #{name}_shmem_total.value #{doc['shmem:total_size']}
               #{name}_shmem_used.value #{doc['shmem:used_size']}
 
+              mutligraph #{name}_tm
               #{name}_tm_total.value #{doc['tm:UAS_transactions']}
               #{name}_tm_2xx.value #{doc['tm:2xx_transactions']}
               #{name}_tm_3xx.value #{doc['tm:3xx_transactions']}
@@ -48,6 +51,7 @@ Web Services for Munin
               #{name}_tm_5xx.value #{doc['tm:5xx_transactions']}
               #{name}_tm_6xx.value #{doc['tm:6xx_transactions']}
 
+              mutligraph #{name}_dialog
               #{name}_dialog_active.value #{doc['dialog:active_dialogs']}
               #{name}_dialog_processed.value #{doc['dialog:processed_dialogs']}
               #{name}_dialog_failed.value #{doc['dialog:failed_dialogs']}
@@ -58,9 +62,11 @@ Web Services for Munin
                 text += ''
               else
                 text += """
+                  mutligraph #{name}_usrloc
                   #{name}_usrloc_total.value #{doc['usrloc:registered_users']}
                   #{name}_usrloc_location.value #{doc['usrloc:location_contacts']}
 
+                  mutligraph #{name}_registrar
                   #{name}_registrar_accepted.value #{doc['registrar:accepted_regs']}
                   #{name}_registrar_rejected.value #{doc['registrar:rejected_regs']}
                 """
