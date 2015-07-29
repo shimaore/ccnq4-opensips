@@ -29,7 +29,7 @@ Web Services for Munin
           .then ({body}) =>
             doc = body
             text = """
-              mutligraph #{name}_core
+              multigraph #{name}_core
               #{name}_core_rcv_req.value #{doc['core:rcv_requests']}
               #{name}_core_rcv_repl.value #{doc['core:rcv_replies']}
               #{name}_core_fwd_req.value #{doc['core:fwd_requests']}
@@ -39,11 +39,11 @@ Web Services for Munin
               #{name}_core_err_req.value #{doc['core:err_requests']}
               #{name}_core_err_repl.value #{doc['core:err_replies']}
 
-              mutligraph #{name}_shmem
+              multigraph #{name}_shmem
               #{name}_shmem_total.value #{doc['shmem:total_size']}
               #{name}_shmem_used.value #{doc['shmem:used_size']}
 
-              mutligraph #{name}_tm
+              multigraph #{name}_tm
               #{name}_tm_total.value #{doc['tm:UAS_transactions']}
               #{name}_tm_2xx.value #{doc['tm:2xx_transactions']}
               #{name}_tm_3xx.value #{doc['tm:3xx_transactions']}
@@ -51,7 +51,7 @@ Web Services for Munin
               #{name}_tm_5xx.value #{doc['tm:5xx_transactions']}
               #{name}_tm_6xx.value #{doc['tm:6xx_transactions']}
 
-              mutligraph #{name}_dialog
+              multigraph #{name}_dialog
               #{name}_dialog_active.value #{doc['dialog:active_dialogs']}
               #{name}_dialog_processed.value #{doc['dialog:processed_dialogs']}
               #{name}_dialog_failed.value #{doc['dialog:failed_dialogs']}
@@ -62,11 +62,11 @@ Web Services for Munin
                 text += ''
               else
                 text += """
-                  mutligraph #{name}_usrloc
+                  multigraph #{name}_usrloc
                   #{name}_usrloc_total.value #{doc['usrloc:registered_users']}
                   #{name}_usrloc_location.value #{doc['usrloc:location_contacts']}
 
-                  mutligraph #{name}_registrar
+                  multigraph #{name}_registrar
                   #{name}_registrar_accepted.value #{doc['registrar:accepted_regs']}
                   #{name}_registrar_rejected.value #{doc['registrar:rejected_regs']}
                 """
@@ -80,10 +80,11 @@ Munin Configuration
 
     build_config = (cfg) ->
       text = """
-        mutligraph #{name}_core
+        multigraph #{name}_core
         graph_title OpenSIPS core
         graph_vlabel requests / ${graph_period}
         graph_args --base 1000
+        graph_category voice
         #{name}_core_rcv_req.label received requests
         #{name}_core_rcv_req.type DERIVE
         #{name}_core_rcv_req.min 0
@@ -109,16 +110,18 @@ Munin Configuration
         #{name}_core_err_repl.type DERIVE
         #{name}_core_err_repl.min 0
 
-        mutligraph #{name}_shmem
+        multigraph #{name}_shmem
         graph_title OpenSIPS memory pool
         graph_vlabel bytes
+        graph_category voice
         #{name}_shmem_total.label total
         #{name}_shmem_used.label used
 
-        mutligraph #{name}_tm
+        multigraph #{name}_tm
         graph_title OpenSIPS transactions
         graph_vlabel transactions / ${graph_period}
         graph_args --base 1000
+        graph_category voice
         #{name}_tm_total.label total
         #{name}_tm_total.type DERIVE
         #{name}_tm_total.min 0
@@ -138,17 +141,19 @@ Munin Configuration
         #{name}_tm_6xx.type DERIVE
         #{name}_tm_6xx.min 0
 
-        mutligraph #{name}_dialog_active
+        multigraph #{name}_dialog_active
         graph_title OpenSIPS SIP active dialogs
         graph_vlabel active dialogs
         graph_args --base 1000
+        graph_category voice
         #{name}_dialog_active.label active
         #{name}_dialog_active.min 0
 
-        mutligraph #{name}_dialog
+        multigraph #{name}_dialog
         graph_title OpenSIPS SIP dialogs
         graph_vlabel dialogs / ${graph_period}
         graph_args --base 1000
+        graph_category voice
         #{name}_dialog_processed.label processed
         #{name}_dialog_processed.type DERIVE
         #{name}_dialog_processed.min 0
@@ -162,18 +167,20 @@ Munin Configuration
           text += ''
         else
           text += """
-            mutligraph #{name}_usrloc
+            multigraph #{name}_usrloc
             graph_title OpenSIPS registered users
             graph_vlabel users
             graph_args --base 1000
             graph_scale no
+            graph_category voice
             #{name}_usrloc_total.label total
             #{name}_usrloc_location.label locations
 
-            mutligraph #{name}_registrar
+            multigraph #{name}_registrar
             graph_title OpenSIPS registrar
             graph_vlabel registrations / ${graph_period}
             graph_args --base 1000
+            graph_category voice
             #{name}_registrar_accepted.label accepted
             #{name}_registrar_accepted.type DERIVE
             #{name}_registrar_accepted.min 0
