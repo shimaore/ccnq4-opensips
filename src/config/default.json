@@ -5,6 +5,7 @@
   "db_url": "http://127.0.0.1:34340/",
   "services_url": "http://127.0.0.1:5704",
   "startup_route_code": "",
+  "usrloc_db_mode": 2,
 
   "mpath": "/opt/opensips/lib64/opensips/modules/",
   "var_run_opensips": "/home/opensips/run/opensips",
