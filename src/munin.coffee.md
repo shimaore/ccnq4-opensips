@@ -51,8 +51,10 @@ Web Services for Munin
               #{name}_tm_5xx.value #{doc['tm:5xx_transactions']}
               #{name}_tm_6xx.value #{doc['tm:6xx_transactions']}
 
-              multigraph #{name}_dialog
+              multigraph #{name}_dialog_active
               #{name}_dialog_active.value #{doc['dialog:active_dialogs']}
+
+              multigraph #{name}_dialog
               #{name}_dialog_processed.value #{doc['dialog:processed_dialogs']}
               #{name}_dialog_failed.value #{doc['dialog:failed_dialogs']}
 
