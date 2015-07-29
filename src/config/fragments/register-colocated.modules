@@ -16,5 +16,6 @@ modparam("registrar", "max_contacts", ${max_contacts})
 # AVP used by nathelper -- since we do not use the `nathelper` module
 # we only use this for reporting / troubleshooting.
 modparam("registrar", "received_avp", "$avp(received_avp)")
+# modparam("registrar", "attr_avp", "$avp(attr_avp)")
 
 modparam("registrar", "tcp_persistent_flag", "flag_tcp_persistent")

@@ -7,6 +7,37 @@
       {opensips,kill} = require './opensips'
       PouchDB = require 'pouchdb'
 
+      it 'should log time', (done) ->
+        @timeout 4000
+        port = 7490
+        a_port = port++
+        b_port = port++
+        zappa '172.17.42.1', a_port, io:no, ->
+          @get '/time/:time', ->
+            @params.time.should.match /^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\+\d\d\d\d$/
+            @json ok:yes
+            kill b_port
+            done()
+        opensips b_port, """
+          mpath="/opt/opensips/lib64/opensips/modules/"
+          loadmodule "proto_udp.so"
+          listen=udp:127.0.0.1:5911
+          loadmodule "mi_json.so"
+
+          loadmodule "httpd.so"
+          modparam("httpd","port",#{b_port})
+          loadmodule "rest_client.so"
+          startup_route {
+            $var(now) = $time(%FT%T%z);
+            rest_get("http://172.17.42.1:#{a_port}/time/$var(now)","$var(body)");
+            exit;
+          }
+        """
+        Promise.delay 2500
+        .then ->
+          kill b_port
+        return
+
       it 'should accept simple configuration', (done) ->
         @timeout 4000
         port = 7500
