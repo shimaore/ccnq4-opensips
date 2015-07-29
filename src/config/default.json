@@ -32,8 +32,9 @@
   "max_expires": 7200,
 
   "rate_limit_interval": 10,
-  "rate_limit_requests": 50,
+  "rate_limit_requests": null,
   "rate_limit_latency": 60,
+
   "rate_limit": true,
 
   "dlg_match_mode": 1,
