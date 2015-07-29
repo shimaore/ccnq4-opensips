@@ -58,19 +58,6 @@ main = (cfg) ->
         name: "#{pkg.name}:client"
         version: pkg.version
 
-    @get '/locations', ->
-      cfg.usrloc.allDocs()
-      .then (docs) =>
-        @json docs
-
-    @get '/location/:username', ->
-      cfg.usrloc.get @params.username
-      .catch (error) =>
-        @res.status 404
-        {}
-      .then (doc) =>
-        @json doc
-
     # OpenSIPS db_http API (for locations only)
 
     @get '/location/': -> # usrloc_table
