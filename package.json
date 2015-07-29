@@ -21,6 +21,7 @@
     "body-parser": "^1.13.2",
     "coffee-script": "^1.9.3",
     "debug": "^2.2.0",
+    "lru-cache": "^2.6.5",
     "morgan": "^1.6.1",
     "nimble-direction": "^2.1.2",
     "pouchdb": "^3.6.0",

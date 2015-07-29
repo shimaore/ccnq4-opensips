@@ -1,6 +1,6 @@
 zappa = require 'zappajs'
 io = require 'socket.io-client'
-PouchDB = require 'pouchdb'
+LRU = require 'lru-cache'
 Promise = require 'bluebird'
 pkg = require '../../package.json'
 debug = (require 'debug') "#{pkg.name}:client"
@@ -16,8 +16,12 @@ hostname = (require 'os').hostname()
 module.exports = (cfg) ->
   debug 'Using configuration', cfg
 
-  # If no `usrloc` URI is provided, use a local (LevelDB) registrar DB.
-  cfg.usrloc = new PouchDB cfg.usrloc ? "location", cfg.usrloc_options ? {}
+  cfg.usrloc = LRU
+    # Store at most 6000 entries
+    max: 6000
+    # For at most 24 hours
+    maxAge: 24 * 3600 * 1000
+
   cfg.socket = io cfg.notify if cfg.notify?
 
   # Subscribe to the `locations` bus.
@@ -26,19 +30,16 @@ module.exports = (cfg) ->
 
   # Reply to requests for a single AOR.
   cfg.socket?.on 'location', (aor) ->
-    cfg.usrloc.get aor
-    .catch -> _id:aor
-    .then (doc) ->
-      doc.hostname = hostname
-      cfg.socket.emit 'location:response', doc
+    doc = cfg.usrloc.get aor
+    doc ?= _id:aor
+    cfg.socket.emit 'location:response', doc
 
   # Reply to requests for all AORs.
   cfg.socket?.on 'locations', ->
-    cfg.usrloc.allDocs()
-    .catch -> {}
-    .then (res) ->
-      res.hostname = hostname
-      cfg.socket.emit 'locations:response', res
+    docs = {}
+    cfg.usrloc.forEach (value,key) ->
+      docs[key] = value
+    cfg.socket.emit 'locations:response', docs
 
   # Ping
   cfg.socket?.on 'ping', (doc) ->
@@ -63,25 +64,30 @@ main = (cfg) ->
     @get '/location/': -> # usrloc_table
 
       if @query.k is 'username' and @query.op is '='
-        cfg.usrloc.get @query.v
-        .then (doc) =>
+        doc = cfg.usrloc.get @query.v
+        if doc?
           @res.type 'text/plain'
           @send show doc, @req, 'location'
+        else
+          @send ''
         return
 
       if @query.k is 'username,domain' and @query.op is '=,='
         [username,domain] = @query.v.split ','
-        cfg.usrloc.get "#{username}@#{domain}"
-        .then (doc) =>
+        doc = cfg.usrloc.get "#{username}@#{domain}"
+        if doc?
           @res.type 'text/plain'
           @send show doc, @req, 'location'
+        else
+          @send ''
         return
 
       if not @query.k? or (@query.k is 'username' and not @query.op?)
-        cfg.usrloc.allDocs include_docs:true
-        .then ({rows}) =>
-          @res.type 'text/plain'
-          @send list rows, @req, 'location'
+        rows = []
+        cfg.usrloc.forEach (value,key) ->
+          rows.push {key,value}
+        @res.type 'text/plain'
+        @send list rows, @req, 'location'
         return
 
       console.error "location: not handled: #{@query.k} #{@query.op} #{@query.v}"
@@ -98,40 +104,21 @@ main = (cfg) ->
         update_doc = unquote_params(@body.uk,@body.uv,'location')
         doc[k] = v for k,v of update_doc
 
-      doc.query_data =
-        hostname: hostname
-        type: @body.query_type
+      doc.hostname ?= hostname
+      doc.query_type = @body.query_type
       cfg.socket?.emit 'location:update', doc
 
       if @body.query_type is 'insert' or @body.query_type is 'update'
 
-        cfg.usrloc.get doc._id
-        .catch ->
-          {}
-        .then ({_rev}) =>
-          doc._rev = _rev if _rev?
-          cfg.usrloc.put doc
-        .then =>
-          @res.type 'text/plain'
-          @send doc._id
-        .catch (error) ->
-          console.error "location: error updating #{doc._id}: #{error}"
-          @send ''
+        @res.type 'text/plain'
+        @send doc._id
+        cfg.usrloc.set doc._id, doc
         return
 
       if @body.query_type is 'delete'
 
-        cfg.usrloc.get doc._id
-        .catch ->
-          {}
-        .then ({_rev}) =>
-          if not _rev? then return
-          doc._rev = _rev
-          cfg.usrloc.remove doc
-        .catch (error) ->
-          console.error "location: error deleting #{doc._id}: #{error}"
-        .then =>
-          @send ''
+        @send ''
+        cfg.usrloc.del doc._id
         return
 
       util.error "location: not handled: #{util.inspect @req}"
