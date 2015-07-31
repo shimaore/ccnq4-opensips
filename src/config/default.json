@@ -23,8 +23,8 @@
 
   "usrloc_flags": "f",
 
-  "cache_cleanup": 30,
-  "cache_timeout": 180,
+  "cache_cleanup": 60,
+  "cache_timeout": 247,
 
   "voicemail_notifier": "",
 
