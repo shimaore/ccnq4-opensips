@@ -10,7 +10,7 @@
   "mpath": "/opt/opensips/lib64/opensips/modules/",
   "var_run_opensips": "/home/opensips/run/opensips",
   "max_hops": "10",
-  "children": 10,
+  "children": 20,
   "fork": "yes",
   "log_stderror": "yes",
 
