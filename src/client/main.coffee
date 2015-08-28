@@ -121,7 +121,6 @@ main = (cfg) ->
         cfg.usrloc.del doc._id
         return
 
-      util.error "location: not handled: #{util.inspect @req}"
       @send ""
 
     @get '/version/': ->
@@ -133,5 +132,4 @@ main = (cfg) ->
 
         return "int\n#{versions[@query.v]}\n"
 
-      util.error "version not handled: #{util.inspect @req}"
       @send ""

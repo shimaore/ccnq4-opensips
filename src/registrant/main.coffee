@@ -1,4 +1,3 @@
-util = require 'util'
 zappa = require 'zappajs'
 PouchDB = require 'pouchdb'
 pkg = require '../../package.json'
@@ -34,7 +33,6 @@ main = (cfg) ->
           @send list rows, @req, 'registrant'
         return
 
-      util.error "registrant: not handled: #{@query.k}"
       @send ""
 
     @get '/version/': ->
@@ -46,5 +44,4 @@ main = (cfg) ->
 
         return "int\n#{versions[@query.v]}\n"
 
-      util.error "version not handled: #{util.inspect @req}"
       @send ""
