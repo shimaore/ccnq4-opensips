@@ -67,8 +67,6 @@
   "local_port": 5064,
 
   "authentication": "",
-  "mp_allowed": 1,
-  "mp_always": 1,
   "debug": 0,
 
   "inv_timeout": 90,
