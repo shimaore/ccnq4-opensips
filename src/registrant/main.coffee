@@ -27,8 +27,8 @@ main = (cfg) ->
     @get '/registrant/': ->
       if not @query.k?
         cfg.prov.query "#{pkg.name}-registrant/registrant_by_host",
-          startkey: [cfg.host]
-          endkey: [cfg.host,{}]
+          startkey: [cfg.opensips.host]
+          endkey: [cfg.opensips.host,{}]
         .then ({rows}) =>
           @send list rows, @req, 'registrant'
         return
