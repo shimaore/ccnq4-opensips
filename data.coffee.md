@@ -9,7 +9,7 @@ The service (database proxy) parameters.
       cfg.port ?= db_url.port
       cfg.host ?= db_url.hostname
 
-      type = switch cfg.model
+      type = switch cfg.opensips.model
         when 'registrant'
           'registrant'
         else
