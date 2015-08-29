@@ -172,11 +172,12 @@ Munin Configuration
             multigraph #{name}_usrloc
             graph_title OpenSIPS registered users
             graph_vlabel users
-            graph_args --base 1000
+            graph_args --base 1000 -l 0
             graph_scale no
             graph_category voice
             #{name}_usrloc_total.label total
             #{name}_usrloc_location.label locations
+            #{name}_usrloc_location.min 0
 
             multigraph #{name}_registrar
             graph_title OpenSIPS registrar
