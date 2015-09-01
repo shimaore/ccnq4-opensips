@@ -9,11 +9,7 @@ zappa_as_promised = require '../zappa-as-promised'
 module.exports = (cfg) ->
 
   couchapp = require './couchapp'
-  cfg.prov.get couchapp._id
-  .catch -> {}
-  .then ({_rev}) ->
-    couchapp._rev = _rev if _rev?
-    cfg.prov.put couchapp
+  cfg.push couchapp
   .then ->
     zappa_as_promised main, cfg
 

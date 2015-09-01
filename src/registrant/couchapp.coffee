@@ -4,6 +4,7 @@ id = "#{pkg.name}-#{pkg.version}-registrant"
 
 ddoc =
   _id: "_design/#{id}"
+  package: pkg.name
   version: pkg.version
   language: 'javascript'
   views: {}
