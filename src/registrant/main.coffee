@@ -1,7 +1,8 @@
 zappa = require 'zappajs'
 PouchDB = require 'pouchdb'
 pkg = require '../../package.json'
-debug = (require 'debug') "#{pkg.name}:registrant"
+name = "#{pkg.name}:registrant"
+debug = (require 'debug') name
 
 {list} = require './opensips'
 zappa_as_promised = require '../zappa-as-promised'
@@ -19,6 +20,14 @@ main = (cfg) ->
 
   ->
     @use morgan:'combined'
+
+    # REST/JSON API
+
+    @get '/', ->
+      @json {
+        name
+        version: pkg.version
+      }
 
     @get '/registrant/': ->
       if not @query.k?

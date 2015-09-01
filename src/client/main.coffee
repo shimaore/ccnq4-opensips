@@ -3,7 +3,8 @@ io = require 'socket.io-client'
 LRU = require 'lru-cache'
 Promise = require 'bluebird'
 pkg = require '../../package.json'
-debug = (require 'debug') "#{pkg.name}:client"
+name = "#{pkg.name}:client"
+debug = (require 'debug') name
 body_parser = require 'body-parser'
 
 make_id = (t,n) -> [t,n].join ':'
@@ -55,9 +56,10 @@ main = (cfg) ->
     # REST/JSON API
 
     @get '/', ->
-      @json
-        name: "#{pkg.name}:client"
+      @json {
+        name
         version: pkg.version
+      }
 
     # OpenSIPS db_http API (for locations only)
 
