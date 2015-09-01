@@ -4,19 +4,8 @@ MAINTAINER Stéphane Alnet <stephane@shimaore.net>
 USER root
 RUN apt-get update && apt-get install -y --no-install-recommends \
   build-essential \
-  ca-certificates \
-  curl \
   git \
-  iptables-dev \
-  libjson0 \
-  libnetfilter-conntrack-dev \
   make \
-  netcat \
-  python-application \
-  python-cjson \
-  python-dev \
-  python-gnutls \
-  python-twisted-core \
   supervisor
 
 # Install Node.js using `n`.
