@@ -1,8 +1,9 @@
 p_fun = (f) -> '('+f+')'
 pkg = require '../../package.json'
+id = "#{pkg.name}-#{pkg.version}-registrant"
 
 ddoc =
-  _id: "_design/#{pkg.name}-registrant"
+  _id: "_design/#{id}"
   version: pkg.version
   language: 'javascript'
   views: {}
