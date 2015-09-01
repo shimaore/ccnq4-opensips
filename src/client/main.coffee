@@ -54,16 +54,22 @@ main = (cfg) ->
     @use morgan:'combined'
 
     # REST/JSON API
+    queries =
+      location: 0
+      save_location: 0
+      version: 0
 
     @get '/', ->
       @json {
         name
         version: pkg.version
+        queries
       }
 
     # OpenSIPS db_http API (for locations only)
 
     @get '/location/': -> # usrloc_table
+      queries.location++
 
       if @query.k is 'username' and @query.op is '='
         doc = cfg.usrloc.get @query.v
@@ -96,6 +102,7 @@ main = (cfg) ->
       @send ""
 
     @post '/location', (body_parser.urlencoded extended:false), ->
+      queries.save_location++
 
       doc = unquote_params(@body.k,@body.v,'location')
       # Note: this allows for easy retrieval, but only one location can be stored.
@@ -126,6 +133,7 @@ main = (cfg) ->
       @send ""
 
     @get '/version/': ->
+      queries.version++
       if @query.k is 'table_name' and @query.c is 'table_version'
 
         # Versions for OpenSIPS 1.11.0 FIXME

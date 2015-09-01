@@ -22,14 +22,19 @@ main = (cfg) ->
     @use morgan:'combined'
 
     # REST/JSON API
+    queries =
+      version: 0
+      registrant: 0
 
     @get '/', ->
       @json {
         name
         version: pkg.version
+        queries
       }
 
     @get '/registrant/': ->
+      queries.registrant++
       if not @query.k?
         cfg.prov.query "#{pkg.name}-registrant/registrant_by_host",
           startkey: [cfg.opensips.host]
@@ -41,9 +46,9 @@ main = (cfg) ->
       @send ""
 
     @get '/version/': ->
+      queries.version++
       if @query.k is 'table_name' and @query.c is 'table_version'
 
-        # Versions for OpenSIPS 1.11.0 FIXME
         versions =
           registrant: 1
 
