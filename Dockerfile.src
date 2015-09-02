@@ -4,6 +4,7 @@ MAINTAINER Stéphane Alnet <stephane@shimaore.net>
 USER root
 RUN apt-get update && apt-get install -y --no-install-recommends \
   build-essential \
+  curl \
   git \
   make \
   supervisor
