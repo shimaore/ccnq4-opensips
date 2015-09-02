@@ -1,6 +1,6 @@
 {
   "name": "ccnq4-opensips",
-  "version": "8.0.1",
+  "version": "8.1.0",
   "opensips": {
     "version": "2.0.3"
   },
