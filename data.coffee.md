@@ -36,19 +36,13 @@ Registrant reload on data changes.
 
       if type is 'registrant'
         RoyalThing ->
-          supervisor = null
-          Promise.resolve()
+          ip = cfg.httpd_ip ? '127.0.0.1'
+          port = cfg.httpd_port ? 8560
+          request
+          .get "http://#{ip}:#{port}/json/reg_reload"
+          .accept 'json'
           .then ->
-            supervisor = Promise.promisifyAll supervisord.connect process.env.SUPERVISOR
-          .then ->
-            supervisor.stopProcessAsync 'opensips'
-          .catch (error) ->
-            debug "Stop opensips: #{error}"
-            null
-          .then ->
-            supervisor.startProcessAsync 'opensips'
-          .catch (error) ->
-            debug "Start opensips: #{error}"
+            debug "Registrant reload requested"
 
       munin = require './src/munin'
       munin cfg
@@ -57,7 +51,7 @@ Registrant reload on data changes.
     pkg = require './package.json'
     debug = (require 'debug') "#{pkg.name}:data"
     RoyalThing = require 'royal-thing'
-    supervisord = require 'supervisord'
+    request = (require 'superagent-as-promised') require 'superagent'
     Promise = require 'bluebird'
     Nimble = require 'nimble-direction'
     Options = require './config'
