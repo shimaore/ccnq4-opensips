@@ -2,7 +2,7 @@
       exec = require('exec-as-promised') console
       Promise = require 'bluebird'
       fs = Promise.promisifyAll require 'fs'
-      zappa = require 'zappajs'
+      zappa = require '../src/zappa-as-promised'
       request = require 'superagent-as-promised'
       {opensips,kill} = require './opensips'
       PouchDB = require 'pouchdb'
@@ -12,27 +12,29 @@
         port = 7490
         a_port = port++
         b_port = port++
-        zappa '172.17.42.1', a_port, io:no, ->
+        main = ->
           @get '/time/:time', ->
             @params.time.should.match /^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\+\d\d\d\d$/
             @json ok:yes
             kill b_port
             done()
-        opensips b_port, """
-          mpath="/opt/opensips/lib64/opensips/modules/"
-          loadmodule "proto_udp.so"
-          listen=udp:127.0.0.1:5911
-          loadmodule "mi_json.so"
+        zappa (-> main), host:'172.17.42.1', port:a_port
+        .then ->
+          opensips b_port, """
+            mpath="/opt/opensips/lib64/opensips/modules/"
+            loadmodule "proto_udp.so"
+            listen=udp:127.0.0.1:5911
+            loadmodule "mi_json.so"
 
-          loadmodule "httpd.so"
-          modparam("httpd","port",#{b_port})
-          loadmodule "rest_client.so"
-          startup_route {
-            $var(now) = $time(%FT%T%z);
-            rest_get("http://172.17.42.1:#{a_port}/time/$var(now)","$var(body)");
-            exit;
-          }
-        """
+            loadmodule "httpd.so"
+            modparam("httpd","port",#{b_port})
+            loadmodule "rest_client.so"
+            startup_route {
+              $var(now) = $time(%FT%T%z);
+              rest_get("http://172.17.42.1:#{a_port}/time/$var(now)","$var(body)");
+              exit;
+            }
+          """
         Promise.delay 2500
         .then ->
           kill b_port
@@ -43,25 +45,27 @@
         port = 7500
         a_port = port++
         b_port = port++
-        zappa '172.17.42.1', a_port, io:no, ->
+        main = ->
           @get '/', ->
             @json ok:yes
             kill b_port
             done()
-        opensips b_port, """
-          mpath="/opt/opensips/lib64/opensips/modules/"
-          loadmodule "proto_udp.so"
-          listen=udp:127.0.0.1:5909
-          loadmodule "mi_json.so"
+        zappa (-> main), host:'172.17.42.1', port:a_port
+        .then ->
+          opensips b_port, """
+            mpath="/opt/opensips/lib64/opensips/modules/"
+            loadmodule "proto_udp.so"
+            listen=udp:127.0.0.1:5909
+            loadmodule "mi_json.so"
 
-          loadmodule "httpd.so"
-          modparam("httpd","port",#{b_port})
-          loadmodule "rest_client.so"
-          startup_route {
-            rest_get("http://172.17.42.1:#{a_port}","$var(body)");
-            exit;
-          }
-        """
+            loadmodule "httpd.so"
+            modparam("httpd","port",#{b_port})
+            loadmodule "rest_client.so"
+            startup_route {
+              rest_get("http://172.17.42.1:#{a_port}","$var(body)");
+              exit;
+            }
+          """
         Promise.delay 2500
         .then ->
           kill b_port
@@ -72,36 +76,38 @@
         port = 7510
         a_port = port++
         b_port = port++
-        zappa '172.17.42.1', a_port, io:no, ->
+        main = ->
           @get '/foo', ->
             @json foo:'bar'
           @get '/ok-json', ->
             @json ok:yes
             kill b_port
             done()
+        zappa (-> main), host:'172.17.42.1', port:a_port
+        .then ->
 
 Notice: `rest_get(url,"$json(response)")` does not work, one must go through a variable.
 
-        opensips b_port, """
-          mpath="/opt/opensips/lib64/opensips/modules/"
-          loadmodule "proto_udp.so"
-          listen=udp:127.0.0.1:5910
-          loadmodule "mi_json.so"
+          opensips b_port, """
+            mpath="/opt/opensips/lib64/opensips/modules/"
+            loadmodule "proto_udp.so"
+            listen=udp:127.0.0.1:5910
+            loadmodule "mi_json.so"
 
-          loadmodule "json.so"
-          loadmodule "httpd.so"
-          modparam("httpd","port",#{b_port})
-          loadmodule "rest_client.so"
-          startup_route {
-            if(rest_get("http://172.17.42.1:#{a_port}/foo","$var(body)")) {
-              $json(response) := $var(body);
-              if( $json(response/foo) == "bar") {
-                rest_get("http://172.17.42.1:#{a_port}/ok-json","$var(body)");
+            loadmodule "json.so"
+            loadmodule "httpd.so"
+            modparam("httpd","port",#{b_port})
+            loadmodule "rest_client.so"
+            startup_route {
+              if(rest_get("http://172.17.42.1:#{a_port}/foo","$var(body)")) {
+                $json(response) := $var(body);
+                if( $json(response/foo) == "bar") {
+                  rest_get("http://172.17.42.1:#{a_port}/ok-json","$var(body)");
+                }
               }
+              exit;
             }
-            exit;
-          }
-        """
+          """
         Promise.delay 2500
         .then ->
           kill b_port
@@ -115,7 +121,7 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
         a_port = port++
         b_port = port++
         success = false
-        zappa '172.17.42.1', a_port, io:no, ->
+        main = ->
           @get '/ok-client', ->
             @json ok:yes
             kill b_port
@@ -133,11 +139,14 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
 
         service = require '../src/client/main'
         config.db_url = 'http://172.17.42.1:34340'
-        service
-          port: 34340
-          host: '172.17.42.1'
-          usrloc: 'location'
-          usrloc_options: db: require 'memdown'
+
+        zappa (-> main), host:'172.17.42.1', port:a_port
+        .then ->
+          service
+            port: 34340
+            host: '172.17.42.1'
+            usrloc: 'location'
+            usrloc_options: db: require 'memdown'
         .then ->
           opensips b_port, compile config
         .catch (error) ->
@@ -154,7 +163,7 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
         port = 7530
         a_port = port++
         b_port = port++
-        zappa '172.17.42.1', a_port, io:no, ->
+        main = ->
           @get '/ok-registrant', ->
             @json ok:yes
             kill b_port
@@ -171,11 +180,14 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
 
         service = require '../src/registrant/main'
         config.db_url = 'http://172.17.42.1:34342'
-        service
-          port: 34342
-          host: '172.17.42.1'
-          prov: new PouchDB 'provisioning', db: require 'memdown'
-          push: -> Promise.resolve()
+
+        zappa (-> main), host:'172.17.42.1', port:a_port
+        .then ->
+          service
+            port: 34342
+            host: '172.17.42.1'
+            prov: new PouchDB 'provisioning', db: require 'memdown'
+            push: -> Promise.resolve()
         .then ->
           opensips b_port, compile config
         .catch (error) ->
