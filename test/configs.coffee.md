@@ -188,6 +188,8 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
             host: '172.17.42.1'
             prov: new PouchDB 'provisioning', db: require 'memdown'
             push: -> Promise.resolve()
+            opensips:
+              host: 'example.net'
         .then ->
           opensips b_port, compile config
         .catch (error) ->
