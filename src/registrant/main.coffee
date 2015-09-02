@@ -41,6 +41,9 @@ main = (cfg) ->
           endkey: [cfg.opensips.host,{}]
         .then ({rows}) =>
           @send list rows, @req, 'registrant'
+        .catch (error) =>
+          debug "query: #{error}"
+          @send ""
         return
 
       @send ""
