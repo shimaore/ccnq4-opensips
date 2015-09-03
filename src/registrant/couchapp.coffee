@@ -37,6 +37,7 @@ ddoc.views.registrant_by_host =
         [hostname,port] = host.split /:/
         port ?= 5070
         value.binding_URI = "sip:00#{doc.number}@#{hostname}:#{port}"
+        value.forced_socket = "udp:#{doc.registrant_socket}"
         emit [hostname,1], value
 
     if doc.type? and doc.type is 'host' and doc.applications.indexOf('applications/registrant') >= 0
