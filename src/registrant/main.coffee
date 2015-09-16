@@ -3,16 +3,41 @@ PouchDB = require 'pouchdb'
 pkg = require '../../package.json'
 name = "#{pkg.name}:registrant"
 debug = (require 'debug') name
+seem = require 'seem'
 
 {list} = require './opensips'
 couchapp = require './couchapp'
 zappa_as_promised = require '../zappa-as-promised'
 
-module.exports = (cfg) ->
+request = (require 'superagent-as-promised') require 'superagent'
+url = require 'url'
 
-  cfg.push couchapp
-  .then ->
-    zappa_as_promised main, cfg
+module.exports = seem (cfg) ->
+
+  yield cfg.push couchapp
+
+  cfg.socket = io cfg.notify if cfg.notify?
+
+  # Subscribe to the `locations` bus.
+  cfg.socket?.on 'welcome', ->
+    cfg.socket.emit 'configure', locations:true
+
+  # Reply to requests for all AORs.
+  cfg.socket?.on 'registrants', seem ->
+    cfg.socket.emit 'registrants:response',
+      yield request
+        .get url.format
+          protocol: 'http'
+          hostname: cfg.opensips.httpd_ip
+          port: cfg.opensips.httpd_port
+          pathname: '/json/reg_list'
+        .type 'json'
+
+  # Ping
+  cfg.socket?.on 'ping', (doc) ->
+    cfg.socket.emit 'pong', host:hostname, in_reply_to:doc, name:pkg.name, version:pkg.version
+
+  zappa_as_promised main, cfg
 
 main = (cfg) ->
 
