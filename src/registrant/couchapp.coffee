@@ -16,6 +16,8 @@ module.exports = ddoc
 ddoc.views.registrant_by_host =
   map: p_fun (doc) ->
 
+    return if doc.disabled
+
     if doc.type? and doc.type is 'number' and doc.registrant_password? and doc.registrant_host? and doc.registrant_remote_ipv4?
       value =
         registrar: "sip:#{doc.registrant_remote_ipv4}"
