@@ -1,4 +1,5 @@
 zappa = require 'zappajs'
+io = require 'socket.io-client'
 PouchDB = require 'pouchdb'
 pkg = require '../../package.json'
 name = "#{pkg.name}:registrant"
