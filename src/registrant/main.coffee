@@ -26,6 +26,7 @@ module.exports = seem (cfg) ->
 
   # Reply to requests for all AORs.
   cfg.socket?.on 'registrants', seem ->
+    debug 'socket: registrants'
     cfg.socket.emit 'registrants:response',
       yield request
         .get url.format
@@ -34,6 +35,7 @@ module.exports = seem (cfg) ->
           port: cfg.opensips.httpd_port
           pathname: '/json/reg_list'
         .type 'json'
+    debug 'socket: registrants done'
 
   # Ping
   cfg.socket?.on 'ping', (doc) ->
