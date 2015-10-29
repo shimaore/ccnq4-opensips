@@ -9,6 +9,7 @@ seem = require 'seem'
 {list} = require './opensips'
 couchapp = require './couchapp'
 zappa_as_promised = require '../zappa-as-promised'
+hostname = (require 'os').hostname()
 
 request = (require 'superagent-as-promised') require 'superagent'
 url = require 'url'
