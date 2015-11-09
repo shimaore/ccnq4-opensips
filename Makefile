@@ -2,7 +2,7 @@ NAME ::= shimaore/`jq -r .name package.json`
 TAG ::= `jq -r .version package.json`
 DOCKER_OPENSIPS_VERSION ::= `jq -r .opensips.version package.json`
 
-image: Dockerfile supervisord.conf
+image: Dockerfile
 	docker build -t ${NAME}:${TAG} .
 	docker tag -f ${NAME}:${TAG} ${REGISTRY}/${NAME}:${TAG}
 
