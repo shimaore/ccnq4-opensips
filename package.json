@@ -10,11 +10,11 @@
     "test": "mocha"
   },
   "devDependencies": {
-    "chai": "^3.0.0",
+    "chai": "^3.4.1",
     "chai-as-promised": "^5.1.0",
     "exec-as-promised": "^1.1.0",
-    "memdown": "^1.0.0",
-    "mocha": "^2.2.5"
+    "memdown": "^1.1.0",
+    "mocha": "^2.3.3"
   },
   "dependencies": {
     "bluebird": "^3.0.5",
