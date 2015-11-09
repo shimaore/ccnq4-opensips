@@ -5,21 +5,21 @@ pidfile=%(here)s/log/supervisord.pid
 loglevel=info
 
 [inet_http_server]
-port=127.0.0.1:5708
+port=127.0.0.1:SUPERVISORD_PORT
 
 [rpcinterface:supervisor]
 supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface
 
 [program:config]
 command=%(here)s/node_modules/.bin/coffee %(here)s/config.coffee.md
-environment = SUPERVISOR="http://127.0.0.1:5708"
+environment = SUPERVISOR="http://127.0.0.1:SUPERVISORD_PORT"
 priority=10
 stdout_logfile=%(here)s/log/%(program_name)s.log
 stderr_logfile=%(here)s/log/%(program_name)s.log
 
 [program:data]
 command=%(here)s/node_modules/.bin/coffee %(here)s/data.coffee.md
-environment = SUPERVISOR="http://127.0.0.1:5708",CONFIG_READONLY="true"
+environment = SUPERVISOR="http://127.0.0.1:SUPERVISORD_PORT",CONFIG_READONLY="true"
 priority=20
 autostart=false
 autorestart=true
