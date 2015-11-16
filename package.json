@@ -23,7 +23,7 @@
     "debug": "^2.2.0",
     "lru-cache": "^2.7.0",
     "morgan": "^1.6.1",
-    "nimble-direction": "^3.0.1",
+    "nimble-direction": "^4.0.0",
     "pouchdb": "^5.1.0",
     "royal-thing": "^5.0.0",
     "seem": "^1.1.0",
