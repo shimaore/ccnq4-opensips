@@ -1,2 +1,0 @@
-common/munin/plugins/opensips* /usr/share/munin/plugins
-common/munin/plugin-conf.d/ccnq3-munin-opensips-latest /etc/munin/plugin-conf.d
