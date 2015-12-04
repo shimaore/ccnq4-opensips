@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   curl \
   git \
   make \
+  python-pkg-resources \
   supervisor
 
 # Install Node.js using `n`.
