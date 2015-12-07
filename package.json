@@ -2,7 +2,7 @@
   "name": "ccnq4-opensips",
   "version": "11.2.0",
   "opensips": {
-    "version": "2.0.3"
+    "version": "2.0.4"
   },
   "private": true,
   "scripts": {
