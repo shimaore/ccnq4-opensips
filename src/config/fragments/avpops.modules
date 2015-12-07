@@ -1,5 +1,0 @@
-# -- avpops --
-loadmodule "avpops.so"
-modparam("avpops", "avp_table",       "avpops")
-modparam("avpops", "use_domain",      1)
-modparam("avpops", "buf_size",        8192) # 8192 bytes to store JSON data
