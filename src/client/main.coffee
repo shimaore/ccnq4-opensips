@@ -33,7 +33,7 @@ module.exports = (cfg) ->
   # Reply to requests for a single AOR.
   cfg.socket?.on 'location', (aor) ->
     doc = cfg.usrloc.get aor
-    doc ?= _id:aor
+    doc ?= _id:aor, hostname:cfg.host
     cfg.socket.emit 'location:response', doc
 
   # Reply to requests for all AORs.
