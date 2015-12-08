@@ -13,8 +13,9 @@
       'list'
       # 'location
       'number'
-      # 'rule'
-      # 'ruleset'
+      'number_domain'
+      # 'rule'    # No longer in provisioning
+      # 'ruleset' # No longer in provisioning
     ]
 
     @couch = replication_filter_doc pkg, replicate_types
