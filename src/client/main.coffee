@@ -12,10 +12,11 @@ make_id = (t,n) -> [t,n].join ':'
 {show,list} = require './opensips'
 {unquote_params} = require '../quote'
 zappa_as_promised = require '../zappa-as-promised'
-hostname = (require 'os').hostname()
 
 module.exports = (cfg) ->
   debug 'Using configuration', cfg
+
+  cfg.host ?= (require 'os').hostname()
 
   cfg.usrloc = LRU
     # Store at most 6000 entries
@@ -44,7 +45,7 @@ module.exports = (cfg) ->
 
   # Ping
   cfg.socket?.on 'ping', (doc) ->
-    cfg.socket.emit 'pong', host:hostname, in_reply_to:doc, name:pkg.name, version:pkg.version
+    cfg.socket.emit 'pong', host:cfg.host, in_reply_to:doc, name:pkg.name, version:pkg.version
 
   zappa_as_promised main, cfg
 
@@ -113,7 +114,7 @@ main = (cfg) ->
         update_doc = unquote_params(@body.uk,@body.uv,'location')
         doc[k] = v for k,v of update_doc
 
-      doc.hostname ?= hostname
+      doc.hostname ?= cfg.host
       doc.query_type = @body.query_type
       cfg.socket?.emit 'location:update', doc
 
