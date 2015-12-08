@@ -120,18 +120,25 @@ Convert an OpenSIPS value `x` of type `t` into a JavaScript value.
       if not x?
         return x
 
+      if x is '\u0000'
+        return null
+
       if t is 'int'
         return parseInt(x)
       if t is 'double'
         return parseFloat(x)
-      # Not sure what the issue is, but we're getting garbage at the end of dates.
+
       if t is 'date'
-        d = new Date(x)
-        # Format expected by db_str2time() in db/db_ut.c
-        # Note: This requires opensips to be started in UTC, assuming
-        #       toISOString() outputs using UTC (which it does in Node.js 0.4.11).
-        #       Our script ccnq3-opensips.postinst makes sure this is the case.
-        return d.toISOString().replace 'T', ' '
+        try
+          x = x.replace /[^\u0020-\u007f]/g, ''
+          d = new Date x
+
+Format expected by `db_str2time()` in `db/db_ut.c`.
+Note: This requires opensips to be started in UTC, assuming toISOString() outputs using UTC (which it does in Node.js 0.4.11).
+
+          return d.toISOString().replace 'T', ' '
+        catch
+          return null
 
       # string, blob, ...
       return x.toString()
@@ -152,6 +159,7 @@ Convert an OpenSIPS value `x` of type `t` into a JavaScript value.
         ]
         date: [
           '2014-09-16 22:59:00.000Z'
+          # 'Tue Dec  8 01:15:48 2015\n'
         ]
         ###
         string: [
