@@ -5,6 +5,7 @@ ENV NODE_ENV production
 USER root
 RUN apt-get update && apt-get install -y --no-install-recommends \
   build-essential \
+  ca-certificates \
   curl \
   git \
   make \
@@ -22,6 +23,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY . /home/opensips
 RUN chown -R opensips.opensips /home/opensips
 USER opensips
+WORKDIR /home/opensips
 
 RUN mkdir -p log run/opensips \
   && npm install && npm cache clean
@@ -30,6 +32,9 @@ USER root
 RUN \
   apt-get purge -y \
     build-essential \
+    ca-certificates \
+    cpp-5 \
+    gcc-5 \
     curl \
     git \
     make \
