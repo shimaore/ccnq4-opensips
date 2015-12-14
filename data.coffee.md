@@ -6,8 +6,9 @@ OpenSIPS / CouchDB data proxy
 The service (database proxy) parameters.
 
       db_url = url.parse cfg.opensips.db_url
-      cfg.port ?= db_url.port
-      cfg.host ?= db_url.hostname
+      cfg.web ?= {}
+      cfg.web.port ?= db_url.port
+      cfg.web.host ?= db_url.hostname
 
       type = switch cfg.opensips.model
         when 'registrant'

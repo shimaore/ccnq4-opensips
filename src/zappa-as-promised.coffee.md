@@ -5,7 +5,7 @@
           {server} = z = Zappa.app (func cfg), io:no
           server.on 'listening', ->
             resolve z
-          server.listen cfg.port, cfg.host
+          server.listen cfg.web.port, cfg.web.host
         catch error
           reject error
 
