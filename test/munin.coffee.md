@@ -48,8 +48,9 @@
         service = require '../src/client/main'
         config.db_url = 'http://172.17.42.1:34349'
         our_server = service
-          port: 34349
-          host: '172.17.42.1'
+          web:
+            port: 34349
+            host: '172.17.42.1'
           usrloc: 'location'
           usrloc_options: db: require 'memdown'
         .then ({server}) ->

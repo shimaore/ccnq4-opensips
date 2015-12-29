@@ -18,7 +18,7 @@
             @json ok:yes
             kill b_port
             done()
-        zappa (-> main), host:'172.17.42.1', port:a_port
+        zappa (-> main), web: {host:'172.17.42.1', port:a_port}
         .then ->
           opensips b_port, """
             mpath="/opt/opensips/lib64/opensips/modules/"
@@ -50,7 +50,7 @@
             @json ok:yes
             kill b_port
             done()
-        zappa (-> main), host:'172.17.42.1', port:a_port
+        zappa (-> main), web: {host:'172.17.42.1', port:a_port}
         .then ->
           opensips b_port, """
             mpath="/opt/opensips/lib64/opensips/modules/"
@@ -83,7 +83,7 @@
             @json ok:yes
             kill b_port
             done()
-        zappa (-> main), host:'172.17.42.1', port:a_port
+        zappa (-> main), web: {host:'172.17.42.1', port:a_port}
         .then ->
 
 Notice: `rest_get(url,"$json(response)")` does not work, one must go through a variable.
@@ -140,7 +140,7 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
         service = require '../src/client/main'
         config.db_url = 'http://172.17.42.1:34340'
 
-        zappa (-> main), host:'172.17.42.1', port:a_port
+        zappa (-> main), web: {host:'172.17.42.1', port:a_port}
         .then ->
           service
             port: 34340
@@ -181,7 +181,7 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
         service = require '../src/registrant/main'
         config.db_url = 'http://172.17.42.1:34342'
 
-        zappa (-> main), host:'172.17.42.1', port:a_port
+        zappa (-> main), web: {host:'172.17.42.1', port:a_port}
         .then ->
           service
             port: 34342
