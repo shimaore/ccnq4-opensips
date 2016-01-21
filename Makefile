@@ -7,7 +7,7 @@ image: Dockerfile
 	docker tag -f ${NAME}:${TAG} ${REGISTRY}/${NAME}:${TAG}
 
 tests:
-	npm test
+	DEBUG='ccnq4-opensips:*' npm test
 
 %: %.src
 	sed -e "s/DOCKER_OPENSIPS_VERSION/${DOCKER_OPENSIPS_VERSION}/" $< > $@
