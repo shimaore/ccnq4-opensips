@@ -115,11 +115,12 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
 
       it 'should accept `client` configuration', (done) ->
 
-        @timeout 4000
+        @timeout 10000
 
         port = 7520
         a_port = port++
         b_port = port++
+        c_port = port++
         success = false
         main = ->
           @get '/ok-client', ->
@@ -138,19 +139,24 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
         config.httpd_port = b_port
 
         service = require '../src/client/main'
-        config.db_url = 'http://172.17.42.1:34340'
+        config.db_url = "http://172.17.42.1:#{c_port}"
 
         zappa (-> main), web: {host:'172.17.42.1', port:a_port}
         .then ->
           service
-            port: 34340
+            port: c_port
             host: '172.17.42.1'
             usrloc: 'location'
             usrloc_options: db: require 'memdown'
+            web:
+              port: c_port
+              host: '172.17.42.1'
+        .catch (error) ->
+          console.log "Service error: #{error}"
         .then ->
           opensips b_port, compile config
         .catch (error) ->
-          console.log "Service error: #{error}"
+          console.log "OpenSIPS error: #{error}"
         Promise.delay 2500
         .then ->
           kill b_port
@@ -158,11 +164,12 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
 
       it 'should accept `registrant` configuration', (done) ->
 
-        @timeout 4000
+        @timeout 10000
 
-        port = 7530
+        port = 27530
         a_port = port++
         b_port = port++
+        c_port = port++
         main = ->
           @get '/ok-registrant', ->
             @json ok:yes
@@ -179,21 +186,26 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
         config.httpd_port = b_port
 
         service = require '../src/registrant/main'
-        config.db_url = 'http://172.17.42.1:34342'
+        config.db_url = "http://172.17.42.1:#{c_port}"
 
         zappa (-> main), web: {host:'172.17.42.1', port:a_port}
         .then ->
           service
-            port: 34342
+            port: c_port
             host: '172.17.42.1'
             prov: new PouchDB 'provisioning', db: require 'memdown'
             push: -> Promise.resolve()
             opensips:
               host: 'example.net'
+            web:
+              port: c_port
+              host: '172.17.42.1'
+        .catch (error) ->
+          console.log "Service error: #{error}"
         .then ->
           opensips b_port, compile config
         .catch (error) ->
-          console.log "Service error: #{error}"
+          console.log "OpenSIPS error: #{error}"
         Promise.delay 2500
         .then ->
           kill b_port
