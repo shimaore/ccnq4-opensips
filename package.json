@@ -12,7 +12,7 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "chai-as-promised": "^5.2.0",
+    "chai-as-promised": "^5.3.0",
     "exec-as-promised": "^2.0.0",
     "memdown": "^1.1.2",
     "mocha": "^2.4.5"
@@ -22,15 +22,15 @@
     "body-parser": "^1.15.0",
     "coffee-script": "^1.10.0",
     "debug": "^2.2.0",
-    "lru-cache": "^4.0.0",
+    "lru-cache": "^4.0.1",
     "morgan": "^1.7.0",
     "nimble-direction": "^4.1.2",
-    "pouchdb": "^5.3.0",
+    "pouchdb": "^5.3.1",
     "royal-thing": "^6.0.1",
     "seem": "^1.1.1",
     "socket.io-client": "^1.4.5",
-    "superagent": "^1.7.2",
-    "superagent-as-promised": "^3.2.1",
+    "superagent": "^1.8.2",
+    "superagent-as-promised": "^4.0.0",
     "supervisord": "0.1.0",
     "zappajs": "^4.0.2"
   },
