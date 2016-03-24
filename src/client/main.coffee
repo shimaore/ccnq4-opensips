@@ -116,8 +116,18 @@ main = (cfg) ->
 
       doc.hostname ?= cfg.host
       doc.query_type = @body.query_type
-      cfg.socket?.emit 'location:update', doc
 
+      # Socket.IO notification
+      notification =
+        _in: [
+          "domain:#{doc.domain}"
+          "endpoint:#{doc._id}"
+        ]
+      for own k,v of doc
+        notification[k] = v
+      cfg.socket?.emit 'location:update', notification
+
+      # Storage
       if @body.query_type is 'insert' or @body.query_type is 'update'
 
         @res.type 'text/plain'
