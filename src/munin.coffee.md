@@ -71,6 +71,7 @@ Web Services for Munin
                   multigraph #{name}_registrar
                   #{name}_registrar_accepted.value #{doc['registrar:accepted_regs']}
                   #{name}_registrar_rejected.value #{doc['registrar:rejected_regs']}
+
                 """
             @send text
 
