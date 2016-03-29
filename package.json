@@ -29,7 +29,7 @@
     "royal-thing": "^6.0.1",
     "seem": "^1.1.1",
     "socket.io-client": "^1.4.5",
-    "superagent": "^1.8.2",
+    "superagent": "^1.8.3",
     "superagent-as-promised": "^4.0.0",
     "supervisord": "0.1.0",
     "zappajs": "^4.0.2"
