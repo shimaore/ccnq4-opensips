@@ -73,6 +73,19 @@ Web Services for Munin
                   #{name}_registrar_rejected.value #{doc['registrar:rejected_regs']}
 
                 """
+
+            memory = process.memoryUsage()
+            text += """
+              multigraph #{name}_node_uptime
+              #{name}_node_uptime.value #{process.uptime()}
+
+              multigraph #{name}_node_memory
+              #{name}_node_memory_rss.value #{memory.rss}
+              #{name}_node_memory_heap_total.value #{memory.heapTotal}
+              #{name}_node_memory_heap_used.value #{memory.heapUsed}
+
+            """
+
             @send text
 
 
