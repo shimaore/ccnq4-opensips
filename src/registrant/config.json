@@ -65,6 +65,8 @@
   "local_ip": "",
   "local_port": 5064,
 
+  "notify_registrant_errors": true,
+
   "authentication": "",
   "debug": 0,
 
