@@ -34,6 +34,13 @@ module.exports = (cfg) ->
   cfg.socket?.on 'location', (aor) ->
     doc = cfg.usrloc.get aor
     doc ?= _id:aor, hostname:cfg.host
+
+    doc._in = [
+      "endpoint:#{aor}"
+    ]
+    [username,domain] = aor.split '@'
+    if username? and domain?
+      doc._in.push "domain:#{domain}"
     cfg.socket.emit 'location:response', doc
 
   # Reply to requests for all AORs.
