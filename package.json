@@ -19,20 +19,20 @@
   },
   "dependencies": {
     "bluebird": "^3.3.5",
-    "body-parser": "^1.15.0",
+    "body-parser": "^1.15.1",
     "coffee-script": "^1.10.0",
     "debug": "^2.2.0",
     "lru-cache": "^4.0.1",
     "morgan": "^1.7.0",
     "nimble-direction": "^4.1.2",
-    "pouchdb": "^5.3.1",
+    "pouchdb": "^5.3.2",
     "royal-thing": "^6.0.1",
     "seem": "^1.1.1",
-    "socket.io-client": "^1.4.5",
+    "socket.io-client": "^1.4.6",
     "superagent": "^1.8.3",
     "superagent-as-promised": "^4.0.0",
     "supervisord": "0.1.0",
-    "zappajs": "^4.1.1"
+    "zappajs": "^4.1.2"
   },
   "repository": {
     "type": "git",
