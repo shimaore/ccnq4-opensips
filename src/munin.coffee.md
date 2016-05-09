@@ -20,15 +20,27 @@ Web Services for Munin
           return
 
         @get '/', ->
+          text = ''
           ip = cfg.httpd_ip ? '127.0.0.1'
           port = cfg.httpd_port ? 8560
           request
-          .get "http://#{ip}:#{port}/json/get_statistics"
-          .query params:'all'
+          .get "http://#{ip}:#{port}/json/uptime"
           .accept 'json'
           .then ({body}) =>
+            uptime = parseInt body['Up time']
+            text += """
+              multigraph #{name}_uptime
+              #{name}_node_uptime.value #{uptime}
+
+            """
+
+            request
+            .get "http://#{ip}:#{port}/json/get_statistics"
+            .query params:'all'
+            .accept 'json'
+          .then ({body}) =>
             doc = body
-            text = """
+            text += """
               multigraph #{name}_core
               #{name}_core_rcv_req.value #{doc['core:rcv_requests']}
               #{name}_core_rcv_repl.value #{doc['core:rcv_replies']}
@@ -96,6 +108,15 @@ Munin Configuration
 
     build_config = (cfg) ->
       text = """
+        multigraph #{name}_uptime
+        graph_title OpenSIPS uptime
+        graph_args --base 1000 -l 0
+        graph_scale no
+        graph_vlabel seconds
+        graph_category voice
+        #{name}_node_uptime.label uptime
+        #{name}_node_uptime.draw AREA
+
         multigraph #{name}_core
         graph_title OpenSIPS core
         graph_vlabel requests / ${graph_period}
