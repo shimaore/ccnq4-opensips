@@ -28,7 +28,7 @@ stdout_logfile=%(here)s/log/%(program_name)s.log
 stderr_logfile=%(here)s/log/%(program_name)s.log
 
 [program:opensips]
-command = /opt/opensips/sbin/opensips -f /opt/opensips/etc/opensips/opensips.cfg -m 32 -M 16 -F -E -w /tmp
+command = /opt/opensips/sbin/opensips -f /opt/opensips/etc/opensips/opensips.cfg -m SHARED_MEMORY -M PACKAGE_MEMORY -F -E -w /tmp
 environment = TZ="UTC"
 priority=50
 autostart=false
