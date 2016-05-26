@@ -9,6 +9,7 @@
     "db_http",
 
     "nat",
+    "presence",
 
     "usrloc_db",
     "register-colocated",
