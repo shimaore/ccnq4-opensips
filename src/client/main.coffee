@@ -65,6 +65,12 @@ main = (cfg) ->
     queries =
       location: 0
       save_location: 0
+      presentity: 0
+      save_presentity: 0
+      active_watchers: 0
+      save_active_watchers: 0
+      watchers: 0
+      save_watchers: 0
       version: 0
 
     @get '/', ->
@@ -106,8 +112,8 @@ main = (cfg) ->
         @send list rows, @req, 'location'
         return
 
-      console.error "location: not handled: #{@query.k} #{@query.op} #{@query.v}"
-      @send ""
+      debug "location: not handled: #{@query.k} #{@query.op} #{@query.v}"
+      @send ''
 
     @post '/location', (body_parser.urlencoded extended:false), ->
       queries.save_location++
@@ -148,7 +154,43 @@ main = (cfg) ->
         cfg.usrloc.del doc._id
         return
 
-      @send ""
+      @send ''
+
+    @get '/presentity/': ->
+      queries.presentity++
+
+      debug 'presentity: not handled', @query
+      @send ''
+
+    @post '/presentity', (body_parser.urlencoded extended:false), ->
+      queries.save_presentity++
+
+      debug 'active_watchers: not handled', @body
+      @send ''
+
+    @get '/active_watchers/': ->
+      queries.active_watchers++
+
+      debug 'active_watchers: not handled', @query
+      @send ''
+
+    @post '/active_watchers', (body_parser.urlencoded extended:false), ->
+      queries.save_active_watchers++
+
+      debug 'active_watchers: not handled', @body
+      @send ''
+
+    @get '/watchers/': ->
+      queries.watchers++
+
+      debug 'watchers: not handled', @query
+      @send ''
+
+    @post '/watchers', (body_parser.urlencoded extended:false), ->
+      queries.save_watchers++
+
+      debug 'watchers: not handled', @body
+      @send ''
 
     @get '/version/': ->
       queries.version++
@@ -160,4 +202,4 @@ main = (cfg) ->
 
         return "int\n#{versions[@query.v]}\n"
 
-      @send ""
+      @send ''

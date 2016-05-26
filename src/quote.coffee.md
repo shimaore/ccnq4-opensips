@@ -83,6 +83,54 @@
         binding_params:'string'
         expiry:'int'
         forced_socket:'string'
+      presentity:
+        id:'int'
+        # index
+        username:'string'
+        domain:'string'
+        event:'string'
+        etag:'string'
+        # data
+        expires:'int'
+        received_time:'int'
+        body:'string' # binary
+        extra_hdrs:'string' # binary
+        sender:'string'
+      active_watchers:
+        id:'int'
+        # index
+        presentity_uri:'string'
+        callid:'string'
+        to_tag:'string'
+        from_tag:'string'
+        # data
+        watcher_username:'string'
+        watcher_domain:'string'
+        to_user:'string'
+        to_domain:'string'
+        event:'string'
+        event_id:'string'
+        local_cseq:'int'
+        remote_cseq:'int'
+        contact:'string'
+        record_route:'string'
+        expires:'int'
+        status:'int'
+        reason:'string'
+        version:'int'
+        socket_info:'string'
+        local_contact:'string'
+      watchers:
+        id:'int'
+        # index
+        presentity_uri:'string'
+        watcher_username:'string'
+        watcher_domain:'string'
+        event:'string'
+        # data
+        status:'int'
+        reason:'string'
+        inserted_time:'int'
 
 quote_value
 -----------

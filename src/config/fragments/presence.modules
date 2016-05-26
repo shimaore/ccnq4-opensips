@@ -1,0 +1,11 @@
+/* [presence](http://www.opensips.org/html/docs/modules/2.1.x/presence.html) */
+loadmodule "presence.so"
+
+modparam("presence", "db_url", "${db_url}")
+modparam("presence", "fallback2db", 0)
+modparam("presence", "db_update_period", 0)
+
+/* Probably will look into mix_dialog_presence, but it requires `dialoginfo`, `presence_dialoginfo`, `pua_dialoginfo`, `dialog` and `pua` -- hence more testing. */
+
+/* [presence_mwi](http://www.opensips.org/html/docs/modules/2.1.x/presence_mwi.html) */
+loadmodule "presence_mwi.so"
