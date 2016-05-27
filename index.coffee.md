@@ -5,7 +5,6 @@
       'carrier'
       'config'
       'domain'
-      'destination' # ?
       # 'emergency
       'endpoint'
       # 'gateway'
@@ -15,7 +14,7 @@
       'number'
       'number_domain'
       # 'rule'    # No longer in provisioning
-      # 'ruleset' # No longer in provisioning
+      # 'ruleset'
     ]
 
     @couch = replication_filter_doc pkg, replicate_types
