@@ -83,6 +83,7 @@ Replicate the provisioning database
       yield cfg.replicate 'provisioning', (doc) ->
           debug "Using replication filter #{couch.replication_filter}"
           doc.filter = couch.replication_filter
+          doc.comment += " for #{pkg.name}"
 
 Start the data server.
 
