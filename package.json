@@ -24,15 +24,15 @@
     "debug": "^2.2.0",
     "lru-cache": "^4.0.1",
     "morgan": "^1.7.0",
-    "nimble-direction": "^4.1.2",
+    "nimble-direction": "^4.2.1",
     "pouchdb": "^5.3.2",
     "royal-thing": "^6.0.1",
-    "seem": "^1.1.1",
+    "seem": "^1.2.0",
     "socket.io-client": "^1.4.6",
-    "superagent": "^1.8.3",
+    "superagent": "^2.0.0",
     "superagent-as-promised": "^4.0.0",
     "supervisord": "0.1.0",
-    "zappajs": "^4.1.4"
+    "zappajs": "^5.0.0"
   },
   "repository": {
     "type": "git",
