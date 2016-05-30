@@ -214,19 +214,19 @@ POST (delete all)
 Versions
 ========
 
-      @get '/version/': ->
-        queries.version++
-        if @query.k is 'table_name' and @query.c is 'table_version'
+        @get '/version/': ->
+          queries.version++
+          if @query.k is 'table_name' and @query.c is 'table_version'
 
-          debug 'version for', @query.v
+            debug 'version for', @query.v
 
-          # Versions for OpenSIPS 2.1
-          versions =
-            location: 1009
-            presentity: 5
-            active_watchers: 10
-            watchers: 4
+            # Versions for OpenSIPS 2.1
+            versions =
+              location: 1009
+              presentity: 5
+              active_watchers: 10
+              watchers: 4
 
-          return "int\n#{versions[@query.v]}\n"
+            return "int\n#{versions[@query.v]}\n"
 
-        @send ''
+          @send ''
