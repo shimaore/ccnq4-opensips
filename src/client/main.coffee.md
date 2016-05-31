@@ -30,6 +30,18 @@
         # For at most 24 hour
         maxAge: 24 * 3600 * 1000
 
+      cfg.active_watchers = LRU
+        # Store at most 6000 entries
+        max: 6000
+        # For at most 24 hour
+        maxAge: 24 * 3600 * 1000
+
+      cfg.watchers = LRU
+        # Store at most 6000 entries
+        max: 6000
+        # For at most 24 hour
+        maxAge: 24 * 3600 * 1000
+
       cfg.socket = io cfg.notify if cfg.notify?
 
       # Subscribe to the `locations` bus.
@@ -62,6 +74,9 @@
 
       zappa_as_promised main, cfg
 
+ZappaJS server
+==============
+
     main = (cfg) ->
 
       ->
@@ -86,7 +101,11 @@
             queries
           }
 
-        # OpenSIPS db_http API (for locations only)
+OpenSIPS db_http API
+====================
+
+Location
+--------
 
         @get '/location/': -> # usrloc_table
           queries.location++
@@ -125,8 +144,10 @@
           queries.save_location++
 
           doc = unquote_params(@body.k,@body.v,'location')
-          # Note: this allows for easy retrieval, but only one location can be stored.
-          # The entire key should also have `callid` and `contact`.
+
+Note: this allows for easy retrieval, but only one location can be stored.
+The entire key should also have `callid` and `contact`.
+
           doc._id = "#{doc.username}@#{doc.domain}"
 
           if @body.uk?
@@ -163,14 +184,27 @@
           @send ''
 
 Presentity
-==========
-
-GET with c='username,domain,event,expires,etag'
+----------
 
         @get '/presentity/': ->
           queries.presentity++
 
-          # in modules/presence/publish.c, 'cleaning expired presentity information'
+At startup
+> GET with c='username,domain,event,expires,etag'
+
+          if not @query.k?
+            rows = []
+            cfg.presentities.forEach (value,key) ->
+              rows.push {key,value}
+
+            @res.type 'text/plain'
+            @send list rows, @req, 'presentity'
+            return
+
+Upon PUBLISH
+in modules/presence/publish.c, 'cleaning expired presentity information'
+> GET with { k: 'expires', op: '<', v: '1464611367', c: 'username,domain,etag,event' }
+
           if @query.k is 'expires' and @query.op is '<'
             v = parseInt @query.v
             rows = []
@@ -208,15 +242,24 @@ GET with c='username,domain,event,expires,etag'
 
 
 Active Watchers
-===============
+---------------
 
 We are getting two requests:
 
 > GET with c='presentity_uri,expires,event,event_id,to_user,to_domain,watcher_username,watcher_domain,callid,to_tag,from_tag,local_cseq,remote_cseq,record_route,socket_info,contact,local_contact,version,status,reason'
-> POST (delete) all
 
         @get '/active_watchers/': ->
           queries.active_watchers++
+
+          if not @query.k?
+            debug 'return all active watchers'
+            rows = []
+            cfg.presentities.forEach (value,key) ->
+              rows.push {key,value}
+
+            @res.type 'text/plain'
+            @send list rows, @req, 'presentity'
+            return
 
           debug 'active_watchers: not handled', @query
           @send ''
@@ -224,13 +267,39 @@ We are getting two requests:
         @post '/active_watchers', (body_parser.urlencoded extended:false), ->
           queries.save_active_watchers++
 
+> POST (delete) all ... with query_type: 'delete'
+
+          if not @query.k and @body.query_type is 'delete'
+            debug 'delete all active watchers'
+            cfg.active_watchers.reset()
+            @res.type 'text/plain'
+            @send ''
+            return
+
+          doc = unquote_params(@body.k,@body.v,'presentity')
+          doc._id = "#{doc.username}@#{doc.domain}/#{doc.event}/#{doc.etag}"
+
+          doc.hostname ?= cfg.host
+          doc.query_type = @body.query_type
+
+> POST with { k: 'domain,username,event,etag,expires,sender,body,received_time', v: 'test.centrex.phone.kwaoo.net,10,message-summary,a.1464611276.25.1.0,1464615873,,Message-Waiting: yes,1464612273', query_type: 'insert' }
+
+          if @body.query_type is 'insert'
+            debug 'save', doc
+
+            @res.type 'text/plain'
+            @send doc._id
+            cfg.active_watchers.set doc._id, doc
+            return
+
+
           debug 'active_watchers: not handled', @body
           @send ''
 
 Watchers
-========
+--------
 
-POST (delete all)
+> POST (delete all)
 
         @get '/watchers/': ->
           queries.watchers++
@@ -241,11 +310,18 @@ POST (delete all)
         @post '/watchers', (body_parser.urlencoded extended:false), ->
           queries.save_watchers++
 
+          if not @query.k? and @body.query_type is 'delete'
+            debug 'delete all watchers'
+            cfg.watchers.reset()
+            @res.type 'text/plain'
+            @send ''
+            return
+
           debug 'watchers: not handled', @body
           @send ''
 
 Versions
-========
+--------
 
         @get '/version/': ->
           queries.version++
