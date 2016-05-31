@@ -234,7 +234,7 @@ in modules/presence/publish.c, 'cleaning expired presentity information'
 
             @res.type 'text/plain'
             @send doc._id
-            cfg.presentity.set doc._id, doc
+            cfg.presentities.set doc._id, doc
             return
 
           debug 'active_watchers: not handled', @body
