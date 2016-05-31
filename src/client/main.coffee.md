@@ -249,6 +249,8 @@ in modules/presence/publish.c, 'cleaning expired presentity information'
             maxAge = doc.expires*1000 - Date.now()
             debug 'save presentity', doc, maxAge
 
+FIXME should prune old presentities in the `o` while we are at it.
+
             o = cfg.presentities.get doc._upid
             o ?= {}
             o[doc.etag] = doc
