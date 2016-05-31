@@ -219,6 +219,18 @@ in modules/presence/publish.c, 'cleaning expired presentity information'
             @send list rows, @req, 'presentity'
             return
 
+> GET { k: 'domain,username,event', v: 'test.phone.kwaoo.net,0972222713,message-summary', c: 'body,extra_hdrs,expires,etag' }
+
+          if @query.k is 'domain,username,event'
+            debug 'get presentities for', @query.k
+            o = cfg.presentities.get @query.k
+            rows = []
+            for key,value of o
+              rows.push {key,value}
+            @res.type 'text/plain'
+            @send list rows, @req, 'presentity'
+            return
+
           debug 'presentity: not handled', @query
           @send ''
 
@@ -227,15 +239,20 @@ in modules/presence/publish.c, 'cleaning expired presentity information'
 
           doc = unquote_params(@body.k,@body.v,'presentity')
           doc._id = "#{doc.username}@#{doc.domain}/#{doc.event}/#{doc.etag}"
+          doc._upid = [doc.domain,doc.username,doc.event].join ','
 
           doc.hostname ?= cfg.host
           doc.query_type = @body.query_type
 
           # Storage
           if @body.query_type is 'insert'
-            debug 'save presentity', doc
+            maxAge = doc.expires*1000 - Date.now()
+            debug 'save presentity', doc, maxAge
 
-            cfg.presentities.set doc._id, doc
+            o = cfg.presentities.get doc._upid
+            o ?= {}
+            o[doc.etag] = doc
+            cfg.presentities.set doc._upid, doc, maxAge
 
             @res.type 'text/plain'
             @send doc._id
