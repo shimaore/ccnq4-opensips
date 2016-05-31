@@ -241,9 +241,17 @@ in modules/presence/publish.c, 'cleaning expired presentity information'
             @send doc._id
             return
 
+          if @body.k is 'expires' and and @body.op is '<' and @body.query_type is 'delete'
+            debug 'delete presentity older than', @body.v
+
+No action is needed, we're using the LRU maxAge (see above).
+
+            @res.type 'text/plain'
+            @send ''
+            return
+
           debug 'presentity: not handled', @body
           @send ''
-
 
 Active Watchers
 ---------------
