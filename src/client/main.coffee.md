@@ -279,7 +279,7 @@ Active Watchers
             return
 
           if @body.k is 'expires' and @body.op is '<' and @body.query_type is 'delete'
-            debug 'delete all active-watchers older than', @body.v
+            debug 'delete active-watchers older than', @body.v
 
 No action is needed, we're using the LRU maxAge (see below).
 
@@ -291,7 +291,7 @@ No action is needed, we're using the LRU maxAge (see below).
 > POST with { k: 'presentity_uri,callid,to_tag,from_tag', v: 'sip:0972222713@test.phone.kwaoo.net,dea356ce-265e2f4b@192.168.1.106,5f158970a8f4a54eb5ed152ac4e28c95.3e20,4ea68f2f193a377', uk: 'expires,status,reason,remote_cseq,local_cseq,contact,version', uv: '1464697125,1,,54092,3,sip:0972222713@80.67.176.127:5063,3', query_type: 'update' }
 
           doc = unquote_params(@body.k,@body.v,'active_watchers')
-          doc._id = "#{doc.username}@#{doc.domain}/#{doc.event}/#{doc.etag}"
+          doc._id = [doc.presentity_uri,doc.callid,doc.to_tag,doc.from_tag].join ','
 
           doc.hostname ?= cfg.host
           doc.query_type = @body.query_type
