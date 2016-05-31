@@ -248,12 +248,10 @@ in modules/presence/publish.c, 'cleaning expired presentity information'
 Active Watchers
 ---------------
 
-We are getting two requests:
-
-> GET with c='presentity_uri,expires,event,event_id,to_user,to_domain,watcher_username,watcher_domain,callid,to_tag,from_tag,local_cseq,remote_cseq,record_route,socket_info,contact,local_contact,version,status,reason'
-
         @get '/active_watchers/': ->
           queries.active_watchers++
+
+> GET with c='presentity_uri,expires,event,event_id,to_user,to_domain,watcher_username,watcher_domain,callid,to_tag,from_tag,local_cseq,remote_cseq,record_route,socket_info,contact,local_contact,version,status,reason'
 
           if not @query.k?
             debug 'return all active watchers'
@@ -262,7 +260,7 @@ We are getting two requests:
               rows.push {key,value}
 
             @res.type 'text/plain'
-            @send list rows, @req, 'presentity'
+            @send list rows, @req, 'active_watchers'
             return
 
           debug 'active_watchers: not handled', @query
@@ -283,27 +281,33 @@ We are getting two requests:
           if @body.k is 'expires' and @body.op is '<' and @body.query_type is 'delete'
             debug 'delete all active-watchers older than', @body.v
 
+No action is needed, we're using the LRU maxAge (see below).
+
             @res.type 'text/plain'
             @send ''
             return
 
-          doc = unquote_params(@body.k,@body.v,'presentity')
+> POST with { k: 'domain,username,event,etag,expires,sender,body,received_time', v: 'test.centrex.phone.kwaoo.net,10,message-summary,a.1464611276.25.1.0,1464615873,,Message-Waiting: yes,1464612273', query_type: 'insert' }
+> POST with { k: 'presentity_uri,callid,to_tag,from_tag', v: 'sip:0972222713@test.phone.kwaoo.net,dea356ce-265e2f4b@192.168.1.106,5f158970a8f4a54eb5ed152ac4e28c95.3e20,4ea68f2f193a377', uk: 'expires,status,reason,remote_cseq,local_cseq,contact,version', uv: '1464697125,1,,54092,3,sip:0972222713@80.67.176.127:5063,3', query_type: 'update' }
+
+          doc = unquote_params(@body.k,@body.v,'active_watchers')
           doc._id = "#{doc.username}@#{doc.domain}/#{doc.event}/#{doc.etag}"
 
           doc.hostname ?= cfg.host
           doc.query_type = @body.query_type
 
-> POST with { k: 'domain,username,event,etag,expires,sender,body,received_time', v: 'test.centrex.phone.kwaoo.net,10,message-summary,a.1464611276.25.1.0,1464615873,,Message-Waiting: yes,1464612273', query_type: 'insert' }
+          if @body.uk?
+            update_doc = unquote_params(@body.uk,@body.uv,'active_watchers')
+            doc[k] = v for k,v of update_doc
 
-          if @body.query_type is 'insert'
+          if @body.query_type is 'insert' or @body.query_type is 'update'
             maxAge = doc.expires*1000 - Date.now()
-            debug 'save', doc, maxAge
+            debug 'save active-watchers', doc, maxAge
 
+            cfg.active_watchers.set doc._id, doc, maxAge
             @res.type 'text/plain'
             @send doc._id
-            cfg.active_watchers.set doc._id, doc, maxAge
             return
-
 
           debug 'active_watchers: not handled', @body
           @send ''
