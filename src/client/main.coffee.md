@@ -24,6 +24,12 @@
         # For at most 24 hours
         maxAge: 24 * 3600 * 1000
 
+      cfg.presentities = LRU
+        # Store at most 6000 entries
+        max: 6000
+        # For at most 24 hour
+        maxAge: 24 * 3600 * 1000
+
       cfg.socket = io cfg.notify if cfg.notify?
 
       # Subscribe to the `locations` bus.
@@ -120,7 +126,7 @@
 
           doc = unquote_params(@body.k,@body.v,'location')
           # Note: this allows for easy retrieval, but only one location can be stored.
-          # Use "callid" as an extra key parameter otherwise.
+          # The entire key should also have `callid` and `contact`.
           doc._id = "#{doc.username}@#{doc.domain}"
 
           if @body.uk?
@@ -164,11 +170,37 @@ GET with c='username,domain,event,expires,etag'
         @get '/presentity/': ->
           queries.presentity++
 
+          if @query.k is 'expires' and @query.op is '<'
+            v = parseInt @query.v
+            rows = []
+            cfg.presentities.forEach (value,key) ->
+              if v < value.expires
+                rows.push {key,value}
+
+            @res.type 'text/plain'
+            @send list rows, @req, 'presentity'
+            return
+
           debug 'presentity: not handled', @query
           @send ''
 
         @post '/presentity', (body_parser.urlencoded extended:false), ->
           queries.save_presentity++
+
+          doc = unquote_params(@body.k,@body.v,'presentity')
+          doc._id = "#{doc.username}@#{doc.domain}/#{doc.event}/#{doc.etag}"
+
+          doc.hostname ?= cfg.host
+          doc.query_type = @body.query_type
+
+          # Storage
+          if @body.query_type is 'insert'
+            debug 'save', doc
+
+            @res.type 'text/plain'
+            @send doc._id
+            cfg.presentity.set doc._id, doc
+            return
 
           debug 'active_watchers: not handled', @body
           @send ''
