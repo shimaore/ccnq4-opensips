@@ -206,7 +206,8 @@ in modules/presence/publish.c, 'cleaning expired presentity information'
 > GET with { k: 'expires', op: '<', v: '1464611367', c: 'username,domain,etag,event' }
 
           if @query.k is 'expires' and @query.op is '<'
-            v = parseInt @query.v
+            v = @query.v
+            debug 'get presentities expiring before', v
             rows = []
             cfg.presentities.forEach (value,key) ->
               if value.expires < v
@@ -269,9 +270,16 @@ We are getting two requests:
 
 > POST (delete) all ... with query_type: 'delete'
 
-          if not @query.k and @body.query_type is 'delete'
+          if @query.k is '' and @body.query_type is 'delete'
             debug 'delete all active watchers'
             cfg.active_watchers.reset()
+            @res.type 'text/plain'
+            @send ''
+            return
+
+          if @body.k is 'expires' and @body.op is '<' and @body.query_type is 'delete'
+            debug 'delete all active-watchers older than', @body.v
+
             @res.type 'text/plain'
             @send ''
             return
@@ -285,11 +293,12 @@ We are getting two requests:
 > POST with { k: 'domain,username,event,etag,expires,sender,body,received_time', v: 'test.centrex.phone.kwaoo.net,10,message-summary,a.1464611276.25.1.0,1464615873,,Message-Waiting: yes,1464612273', query_type: 'insert' }
 
           if @body.query_type is 'insert'
-            debug 'save', doc
+            maxAge = doc.expires*1000 - Date.now()
+            debug 'save', doc, maxAge
 
             @res.type 'text/plain'
             @send doc._id
-            cfg.active_watchers.set doc._id, doc
+            cfg.active_watchers.set doc._id, doc, maxAge
             return
 
 
