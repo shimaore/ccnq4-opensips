@@ -170,11 +170,12 @@ GET with c='username,domain,event,expires,etag'
         @get '/presentity/': ->
           queries.presentity++
 
+          # in modules/presence/publish.c, 'cleaning expired presentity information'
           if @query.k is 'expires' and @query.op is '<'
             v = parseInt @query.v
             rows = []
             cfg.presentities.forEach (value,key) ->
-              if v < value.expires
+              if value.expires < v
                 rows.push {key,value}
 
             @res.type 'text/plain'
