@@ -3,7 +3,7 @@ loadmodule "presence.so"
 
 modparam("presence", "db_url", "${db_url}")
 modparam("presence", "fallback2db", 0)
-modparam("presence", "db_update_period", 0)
+modparam("presence", "db_update_period", 67)
 if presence_domain_name
 modparam("presence", "server_address", "sip:${presence_domain_name}")
 end if presence_domain_name
