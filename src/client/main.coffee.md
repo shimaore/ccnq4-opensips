@@ -270,7 +270,7 @@ We are getting two requests:
 
 > POST (delete) all ... with query_type: 'delete'
 
-          if @query.k is '' and @body.query_type is 'delete'
+          if not @body.k? and @body.query_type is 'delete'
             debug 'delete all active watchers'
             cfg.active_watchers.reset()
             @res.type 'text/plain'
@@ -319,7 +319,7 @@ Watchers
         @post '/watchers', (body_parser.urlencoded extended:false), ->
           queries.save_watchers++
 
-          if not @query.k? and @body.query_type is 'delete'
+          if not @body.k? and @body.query_type is 'delete'
             debug 'delete all watchers'
             cfg.watchers.reset()
             @res.type 'text/plain'
