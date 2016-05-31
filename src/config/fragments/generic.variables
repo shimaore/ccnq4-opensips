@@ -48,6 +48,9 @@ user_agent_header="User-Agent: ${pkg_name} ${pkg_version} ${model}"
 if sip_domain_name
 alias="${sip_domain_name}"
 end if sip_domain_name
+if presence_domain_name
+alias="${presence_domain_name}"
+end if presence_domain_name
 
 event_pkg_threshold = 90
 event_shm_threshold = 90
