@@ -186,6 +186,8 @@ The entire key should also have `callid` and `contact`.
 Presentity
 ----------
 
+Status for a given presentity.
+
         @get '/presentity/': ->
           queries.presentity++
 
@@ -231,14 +233,15 @@ in modules/presence/publish.c, 'cleaning expired presentity information'
 
           # Storage
           if @body.query_type is 'insert'
-            debug 'save', doc
+            debug 'save presentity', doc
+
+            cfg.presentities.set doc._id, doc
 
             @res.type 'text/plain'
             @send doc._id
-            cfg.presentities.set doc._id, doc
             return
 
-          debug 'active_watchers: not handled', @body
+          debug 'presentity: not handled', @body
           @send ''
 
 
