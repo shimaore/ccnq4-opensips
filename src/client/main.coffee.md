@@ -68,6 +68,18 @@
           docs[key] = value
         cfg.socket.emit 'locations:response', docs
 
+      cfg.socket?.on 'presentities', ->
+        docs = {}
+        cfg.presentities.forEach (value,key) ->
+          docs[key] = value
+        cfg.socket.emit 'presentities:response', docs
+
+      cfg.socket?.on 'active_watchers', ->
+        docs = {}
+        cfg.active_watchers.forEach (value,key) ->
+          docs[key] = value
+        cfg.socket.emit 'active_watchers:response', docs
+
       # Ping
       cfg.socket?.on 'ping', (doc) ->
         cfg.socket.emit 'pong', host:cfg.host, in_reply_to:doc, name:pkg.name, version:pkg.version
