@@ -1,7 +1,9 @@
+    chai = require 'chai'
+    chai.should()
     describe 'Config', ->
       it 'should set defaults for client', ->
         build_config = require '../config'
-        config = build_config opensips: 
+        config = build_config opensips:
           model:'client'
           foo:42
         config.should.have.property 'db_url', 'http://127.0.0.1:34340/'
