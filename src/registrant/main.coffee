@@ -27,14 +27,14 @@ module.exports = seem (cfg) ->
   # Reply to requests for all AORs.
   cfg.socket?.on 'registrants', seem ->
     debug 'socket: registrants'
-    cfg.socket.emit 'registrants:response',
-      yield request
-        .get url.format
-          protocol: 'http'
-          hostname: cfg.opensips.httpd_ip
-          port: cfg.opensips.httpd_port
-          pathname: '/json/reg_list'
-        .type 'json'
+    {body} = yield request
+      .get url.format
+        protocol: 'http'
+        hostname: cfg.opensips.httpd_ip
+        port: cfg.opensips.httpd_port
+        pathname: '/json/reg_list'
+      .accept 'json'
+    cfg.socket.emit 'registrants:response', body
     debug 'socket: registrants done'
 
   # Ping
