@@ -15,17 +15,9 @@ for v in source_ports
 listen=udp:${source_ip}:${v}
 end for v in source_ports
 
-## ------- Binary Internal Interface ---- ##
-
-if mated_host
-bin_listen = ${mated_host}:${bin_port}
-bin_children = 2
-end if mated_host
-
 ## ------- Variables ---------- ##
 
-debug=${debug}
-fork=${fork}
+log_level=${debug}
 log_stderror=${log_stderror}
 
 # Children=4 or higher (in production)
