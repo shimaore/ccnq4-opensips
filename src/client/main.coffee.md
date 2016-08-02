@@ -386,9 +386,9 @@ Versions
 
             # Versions for OpenSIPS 2.1
             versions =
-              location: 1009
+              location: 1011
               presentity: 5
-              active_watchers: 10
+              active_watchers: 11
               watchers: 4
 
             return "int\n#{versions[@query.v]}\n"

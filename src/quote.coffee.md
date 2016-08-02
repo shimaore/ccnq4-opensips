@@ -53,6 +53,7 @@
         type: 'int'
         value: 'string'
       location:
+        contact_id:'int'
         # keys
         username:'string'
         contact:'string'
@@ -63,7 +64,7 @@
         q:'double'
         cseq:'int'
         flags:'int'
-        cflags:'int'
+        cflags:'string'
         user_agent:'string'
         received:'string'
         path:'string'
