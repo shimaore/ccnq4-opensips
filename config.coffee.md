@@ -89,7 +89,10 @@ Start the data server.
 
       supervisor = Promise.promisifyAll supervisord.connect process.env.SUPERVISOR
       yield supervisor.startProcessAsync 'data'
-      yield supervisor.startProcessAsync 'opensips'
+      debug 'Started data server'
+      unless cfg.server_only is true
+        yield supervisor.startProcessAsync 'opensips'
+        debug 'Started opensips'
 
       debug "Started."
 
