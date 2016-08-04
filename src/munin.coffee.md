@@ -120,7 +120,7 @@ Munin Configuration
         multigraph #{name}_core
         graph_title OpenSIPS core
         graph_vlabel requests / ${graph_period}
-        graph_args --base 1000
+        graph_args --base 1000 -l 0
         graph_category voice
         #{name}_core_rcv_req.label received requests
         #{name}_core_rcv_req.type DERIVE
@@ -148,6 +148,7 @@ Munin Configuration
         #{name}_core_err_repl.min 0
 
         multigraph #{name}_shmem
+        graph_args --base 1024 -l 0
         graph_title OpenSIPS memory pool
         graph_vlabel bytes
         graph_category voice
@@ -157,7 +158,7 @@ Munin Configuration
         multigraph #{name}_tm
         graph_title OpenSIPS transactions
         graph_vlabel transactions / ${graph_period}
-        graph_args --base 1000
+        graph_args --base 1000 -l 0
         graph_category voice
         #{name}_tm_total.label total
         #{name}_tm_total.type DERIVE
@@ -181,7 +182,7 @@ Munin Configuration
         multigraph #{name}_dialog_active
         graph_title OpenSIPS SIP active dialogs
         graph_vlabel active dialogs
-        graph_args --base 1000
+        graph_args --base 1000 -l 0
         graph_category voice
         #{name}_dialog_active.label active
         #{name}_dialog_active.min 0
@@ -189,7 +190,7 @@ Munin Configuration
         multigraph #{name}_dialog
         graph_title OpenSIPS SIP dialogs
         graph_vlabel dialogs / ${graph_period}
-        graph_args --base 1000
+        graph_args --base 1000 -l 0
         graph_category voice
         #{name}_dialog_processed.label processed
         #{name}_dialog_processed.type DERIVE
@@ -217,7 +218,7 @@ Munin Configuration
             multigraph #{name}_registrar
             graph_title OpenSIPS registrar
             graph_vlabel registrations / ${graph_period}
-            graph_args --base 1000
+            graph_args --base 1000 -l 0
             graph_category voice
             #{name}_registrar_accepted.label accepted
             #{name}_registrar_accepted.type DERIVE
@@ -239,6 +240,7 @@ Munin Configuration
         #{name}_node_uptime.draw AREA
 
         multigraph #{name}_node_memory
+        graph_args --base 1024 -l 0
         graph_title OpenSIPS Node.js memory
         graph_vlabel bytes
         graph_category voice
