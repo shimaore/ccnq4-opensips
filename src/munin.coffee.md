@@ -109,19 +109,19 @@ Munin Configuration
     build_config = (cfg) ->
       text = """
         multigraph #{name}_uptime
-        graph_title OpenSIPS uptime
         graph_args --base 1000 -l 0
-        graph_scale no
-        graph_vlabel seconds
         graph_category voice
+        graph_scale no
+        graph_title OpenSIPS uptime
+        graph_vlabel seconds
         #{name}_node_uptime.label uptime
         #{name}_node_uptime.draw AREA
 
         multigraph #{name}_core
-        graph_title OpenSIPS core
-        graph_vlabel requests / ${graph_period}
         graph_args --base 1000 -l 0
         graph_category voice
+        graph_title OpenSIPS core
+        graph_vlabel requests / ${graph_period}
         #{name}_core_rcv_req.label received requests
         #{name}_core_rcv_req.type DERIVE
         #{name}_core_rcv_req.min 0
@@ -149,17 +149,17 @@ Munin Configuration
 
         multigraph #{name}_shmem
         graph_args --base 1024 -l 0
+        graph_category voice
         graph_title OpenSIPS memory pool
         graph_vlabel bytes
-        graph_category voice
         #{name}_shmem_total.label total
         #{name}_shmem_used.label used
 
         multigraph #{name}_tm
-        graph_title OpenSIPS transactions
-        graph_vlabel transactions / ${graph_period}
         graph_args --base 1000 -l 0
         graph_category voice
+        graph_title OpenSIPS transactions
+        graph_vlabel transactions / ${graph_period}
         #{name}_tm_total.label total
         #{name}_tm_total.type DERIVE
         #{name}_tm_total.min 0
@@ -180,18 +180,18 @@ Munin Configuration
         #{name}_tm_6xx.min 0
 
         multigraph #{name}_dialog_active
-        graph_title OpenSIPS SIP active dialogs
-        graph_vlabel active dialogs
         graph_args --base 1000 -l 0
         graph_category voice
+        graph_title OpenSIPS SIP active dialogs
+        graph_vlabel active dialogs
         #{name}_dialog_active.label active
         #{name}_dialog_active.min 0
 
         multigraph #{name}_dialog
-        graph_title OpenSIPS SIP dialogs
-        graph_vlabel dialogs / ${graph_period}
         graph_args --base 1000 -l 0
         graph_category voice
+        graph_title OpenSIPS SIP dialogs
+        graph_vlabel dialogs / ${graph_period}
         #{name}_dialog_processed.label processed
         #{name}_dialog_processed.type DERIVE
         #{name}_dialog_processed.min 0
@@ -206,20 +206,20 @@ Munin Configuration
         else
           text += """
             multigraph #{name}_usrloc
+            graph_args --base 1000 -l 0
+            graph_category voice
+            graph_scale no
             graph_title OpenSIPS registered users
             graph_vlabel users
-            graph_args --base 1000 -l 0
-            graph_scale no
-            graph_category voice
             #{name}_usrloc_total.label total
             #{name}_usrloc_location.label locations
             #{name}_usrloc_location.min 0
 
             multigraph #{name}_registrar
-            graph_title OpenSIPS registrar
-            graph_vlabel registrations / ${graph_period}
             graph_args --base 1000 -l 0
             graph_category voice
+            graph_title OpenSIPS registrar
+            graph_vlabel registrations / ${graph_period}
             #{name}_registrar_accepted.label accepted
             #{name}_registrar_accepted.type DERIVE
             #{name}_registrar_accepted.min 0
@@ -231,19 +231,19 @@ Munin Configuration
 
       text += """
         multigraph #{name}_node_uptime
-        graph_title OpenSIPS Node.js uptime
         graph_args --base 1000 -l 0
-        graph_scale no
-        graph_vlabel seconds
         graph_category voice
+        graph_scale no
+        graph_title OpenSIPS Node.js uptime
+        graph_vlabel seconds
         #{name}_node_uptime.label uptime
         #{name}_node_uptime.draw AREA
 
         multigraph #{name}_node_memory
         graph_args --base 1024 -l 0
+        graph_category voice
         graph_title OpenSIPS Node.js memory
         graph_vlabel bytes
-        graph_category voice
         #{name}_node_memory_rss.label rss
         #{name}_node_memory_rss.min 0
         #{name}_node_memory_heap_total.label heap (total)
