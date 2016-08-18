@@ -23,11 +23,11 @@
         config.httpd_port = b_port
 
         service = require '../src/client/main'
-        config.db_url = 'http://172.17.42.1:34344'
+        config.db_url = 'http://172.17.0.1:34344'
         our_server = service
           web:
             port: 34344
-            host: '172.17.42.1'
+            host: '172.17.0.1'
           usrloc: 'location'
           usrloc_options: db: require 'memdown'
         .then ({server}) ->

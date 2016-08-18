@@ -18,7 +18,7 @@
             @json ok:yes
             kill b_port
             done()
-        zappa (-> main), web: {host:'172.17.42.1', port:a_port}
+        zappa (-> main), web: {host:'172.17.0.1', port:a_port}
         .then ->
           opensips b_port, """
             mpath="/opt/opensips/lib64/opensips/modules/"
@@ -31,7 +31,7 @@
             loadmodule "rest_client.so"
             startup_route {
               $var(now) = $time(%FT%T%z);
-              rest_get("http://172.17.42.1:#{a_port}/time/$var(now)","$var(body)");
+              rest_get("http://172.17.0.1:#{a_port}/time/$var(now)","$var(body)");
               exit;
             }
           """
@@ -50,7 +50,7 @@
             @json ok:yes
             kill b_port
             done()
-        zappa (-> main), web: {host:'172.17.42.1', port:a_port}
+        zappa (-> main), web: {host:'172.17.0.1', port:a_port}
         .then ->
           opensips b_port, """
             mpath="/opt/opensips/lib64/opensips/modules/"
@@ -62,7 +62,7 @@
             modparam("httpd","port",#{b_port})
             loadmodule "rest_client.so"
             startup_route {
-              rest_get("http://172.17.42.1:#{a_port}","$var(body)");
+              rest_get("http://172.17.0.1:#{a_port}","$var(body)");
               exit;
             }
           """
@@ -83,7 +83,7 @@
             @json ok:yes
             kill b_port
             done()
-        zappa (-> main), web: {host:'172.17.42.1', port:a_port}
+        zappa (-> main), web: {host:'172.17.0.1', port:a_port}
         .then ->
 
 Notice: `rest_get(url,"$json(response)")` does not work, one must go through a variable.
@@ -99,10 +99,10 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
             modparam("httpd","port",#{b_port})
             loadmodule "rest_client.so"
             startup_route {
-              if(rest_get("http://172.17.42.1:#{a_port}/foo","$var(body)")) {
+              if(rest_get("http://172.17.0.1:#{a_port}/foo","$var(body)")) {
                 $json(response) := $var(body);
                 if( $json(response/foo) == "bar") {
-                  rest_get("http://172.17.42.1:#{a_port}/ok-json","$var(body)");
+                  rest_get("http://172.17.0.1:#{a_port}/ok-json","$var(body)");
                 }
               }
               exit;
@@ -133,24 +133,24 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
         {compile} = require '../src/config/compiler'
         config = build_config require './config1.json'
         config.startup_route_code = """
-            rest_get("http://172.17.42.1:#{a_port}/ok-client","$var(body)");
+            rest_get("http://172.17.0.1:#{a_port}/ok-client","$var(body)");
             exit;
         """
         config.httpd_port = b_port
 
         service = require '../src/client/main'
-        config.db_url = "http://172.17.42.1:#{c_port}"
+        config.db_url = "http://172.17.0.1:#{c_port}"
 
-        zappa (-> main), web: {host:'172.17.42.1', port:a_port}
+        zappa (-> main), web: {host:'172.17.0.1', port:a_port}
         .then ->
           service
             port: c_port
-            host: '172.17.42.1'
+            host: '172.17.0.1'
             usrloc: 'location'
             usrloc_options: db: require 'memdown'
             web:
               port: c_port
-              host: '172.17.42.1'
+              host: '172.17.0.1'
         .catch (error) ->
           console.log "Service error: #{error}"
         .then ->
@@ -180,26 +180,26 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
         {compile} = require '../src/config/compiler'
         config = build_config require './config2.json'
         config.startup_route_code = """
-            rest_get("http://172.17.42.1:#{a_port}/ok-registrant","$var(body)");
+            rest_get("http://172.17.0.1:#{a_port}/ok-registrant","$var(body)");
             exit;
         """
         config.httpd_port = b_port
 
         service = require '../src/registrant/main'
-        config.db_url = "http://172.17.42.1:#{c_port}"
+        config.db_url = "http://172.17.0.1:#{c_port}"
 
-        zappa (-> main), web: {host:'172.17.42.1', port:a_port}
+        zappa (-> main), web: {host:'172.17.0.1', port:a_port}
         .then ->
           service
             port: c_port
-            host: '172.17.42.1'
+            host: '172.17.0.1'
             prov: new PouchDB 'provisioning', db: require 'memdown'
             push: -> Promise.resolve()
             opensips:
               host: 'example.net'
             web:
               port: c_port
-              host: '172.17.42.1'
+              host: '172.17.0.1'
         .catch (error) ->
           console.log "Service error: #{error}"
         .then ->
