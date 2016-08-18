@@ -26,7 +26,7 @@
     "morgan": "^1.7.0",
     "nimble-direction": "^4.2.1",
     "pouchdb": "^5.4.5",
-    "royal-thing": "^6.0.1",
+    "royal-thing": "^7.0.0",
     "seem": "^2.0.0",
     "socket.io-client": "^1.4.8",
     "superagent": "^2.1.0",
