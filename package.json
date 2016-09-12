@@ -14,25 +14,25 @@
     "chai": "^3.5.0",
     "chai-as-promised": "^5.3.0",
     "exec-as-promised": "^2.0.0",
-    "memdown": "^1.2.0",
-    "mocha": "^3.0.0"
+    "memdown": "^1.2.1",
+    "mocha": "^3.0.2"
   },
   "dependencies": {
-    "bluebird": "^3.4.1",
+    "bluebird": "^3.4.6",
     "body-parser": "^1.15.2",
     "coffee-script": "^1.10.0",
     "debug": "^2.2.0",
     "lru-cache": "^4.0.1",
     "morgan": "^1.7.0",
-    "nimble-direction": "^4.2.1",
-    "pouchdb": "^5.4.5",
+    "nimble-direction": "^4.2.2",
+    "pouchdb": "^6.0.4",
     "royal-thing": "^7.0.0",
     "seem": "^2.0.0",
     "socket.io-client": "^1.4.8",
-    "superagent": "^2.1.0",
+    "superagent": "^2.2.0",
     "superagent-as-promised": "^4.0.0",
     "supervisord": "0.1.0",
-    "zappajs": "^5.0.1"
+    "zappajs": "^6.0.2"
   },
   "repository": {
     "type": "git",
