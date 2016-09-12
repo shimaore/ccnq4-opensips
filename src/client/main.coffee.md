@@ -18,9 +18,19 @@
 
       cfg.host ?= (require 'os').hostname()
 
+user-location indexed on AOR
+
       cfg.usrloc = LRU
         # Store at most 6000 entries
         max: 6000
+        # For at most 24 hours
+        maxAge: 24 * 3600 * 1000
+
+AORs indexed on contact-id
+
+      cfg.usrloc_aor_by_contact_id = LRU
+        # Store at most 18000 entries
+        max: 3*6000
         # For at most 24 hours
         maxAge: 24 * 3600 * 1000
 
@@ -157,17 +167,57 @@ Location
 
           doc = unquote_params(@body.k,@body.v,'location')
 
-Note: this allows for easy retrieval, but only one location can be stored.
-The entire key should also have `callid` and `contact`.
+OpenSIPS 2.2 only gives us the `contact_id` on updates; we get username and domain only on inserts.
 
-          doc._id = "#{doc.username}@#{doc.domain}"
+          if doc.username? and doc.domain?
+            aor = "#{doc.username}@#{doc.domain}"
+            cfg.usrloc_aor_by_contact_id.set doc.contact_id, aor
+          else
+            aor = cfg.usrloc_aor_by_contact_id.get doc.contact_id
+            unless aor?
+              debug 'Unable to map to AOR', doc.contact_id
+              @send ''
+              return
 
           if @body.uk?
             update_doc = unquote_params(@body.uk,@body.uv,'location')
             doc[k] = v for k,v of update_doc
 
+Essentially we're seeing:
+
+- insert messages with
+
+```
+k=contact_id,username,contact,expires,q,callid,cseq,flags,cflags,user_agent,received,path,socket,methods,last_modified,sip_instance,attr,domain
+v=231442799600541130,0972222713,sip%3a0972222713%4092.154.0.220%3a52354%3bob,Fri%20Sep%20%209%2013%3a22%3a08%202016%0a,-1.000000,0.w0Ds-AHS5LYhvlmXNws87m.Le-feo9,46721,0,bflag_request_mp_callee,CSipSimple_GT-N7000-19%2fr2459,sip%3a92.154.0.220%3a52354,%00,udp%3a178.250.209.56%3a5062,8063,Fri%20Sep%20%209%2013%3a07%3a08%202016%0a,%00,%00,c.phone.example.net
+query_type=insert
+```
+
+- update messages with
+
+```
+k=contact_id
+v=1349672513327611708
+uk=expires,q,cseq,flags,cflags,user_agent,received,path,socket,methods,last_modified,attr,callid
+uv=Fri%20Sep%20%209%2014%3a06%3a59%202016%0a,-1.000000,213,0,,ICOTERA%20i4600%20%281.8.2%29,sip%3a81.28.202.247%3a5060,%00,udp%3a178.250.209.56%3a5062,%00,Fri%20Sep%20%209%2013%3a06%3a59%202016%0a,%00,649c94b04228c7035ea75b0e5dc7afc3%4081.28.202.247
+query_type=update
+```
+
+In the dump we get:
+
+```
+curl -G 'http://127.0.0.1:8560/json/ul_show_contact?params=location%2C0972222713@c.phone.example.net'
+{"AOR": [{"value":"0972222713@c.phone.example.net", "children":{"Contact": [{"value":"sip:0972222713@92.154.0.220:52354;ob", "attributes":{"Q": null}, "children":{"Expires": "296", "Callid": "0.w0Ds-AHS5LYhvlmXNws87m.Le-feo9", "Cseq": "46723", "User-agent": "CSipSimple_GT-N7000-19/r2459", "Received": "sip:92.154.0.220:52354", "State": "CS_SYNC", "Flags": "0", "Cflags": "bflag_request_mp_callee", "Socket": "udp:178.250.209.56:5062", "Methods": "8063"}}]}}]}
+```
+
+          doc._id = aor
+          doc.key = [doc.contact,doc.callid].join ' / '
+
           doc.hostname ?= cfg.host
           doc.query_type = @body.query_type
+
+          aor_doc = cfg.usrloc.get aor
+          aor_doc ?= {}
 
           # Socket.IO notification
           notification =
@@ -175,8 +225,14 @@ The entire key should also have `callid` and `contact`.
               "domain:#{doc.domain}"
               "endpoint:#{doc._id}"
             ]
+
           for own k,v of doc
             notification[k] = v
+            aor_doc[k] = v
+
+          aor_doc.locations ?= {}
+          aor_doc.locations[doc.key] = doc
+
           cfg.socket?.emit 'location:update', notification
 
           # Storage
@@ -184,13 +240,17 @@ The entire key should also have `callid` and `contact`.
 
             @res.type 'text/plain'
             @send doc._id
-            cfg.usrloc.set doc._id, doc
+            cfg.usrloc.set aor, aor_doc
             return
 
           if @body.query_type is 'delete'
 
             @send ''
-            cfg.usrloc.del doc._id
+            if @body.k is 'contact_id'
+              delete aor_doc.locations[doc.key]
+              cfg.usrloc.set aor, aor_doc
+            else
+              cfg.usrloc.del aor
             return
 
           @send ''
