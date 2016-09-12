@@ -53,7 +53,7 @@
         type: 'int'
         value: 'string'
       location:
-        contact_id:'int'
+        contact_id:'string'
         # keys
         username:'string'
         contact:'string'
