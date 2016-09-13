@@ -7,8 +7,6 @@
     debug = (require 'debug') name
     body_parser = require 'body-parser'
 
-    make_id = (t,n) -> [t,n].join ':'
-
     {show,list} = require './opensips'
     {unquote_params} = require '../quote'
     zappa_as_promised = require '../zappa-as-promised'
@@ -18,7 +16,7 @@
 
       cfg.host ?= (require 'os').hostname()
 
-user-location indexed on AOR
+User-location indexed on AOR
 
       cfg.usrloc = LRU
         # Store at most 6000 entries
@@ -234,6 +232,8 @@ curl -G 'http://127.0.0.1:8560/json/ul_show_contact?params=location%2C0972222713
           aor_doc.locations[doc.key] = doc
 
           cfg.socket?.emit 'location:update', notification
+
+          debug 'location', {aor_doc}
 
           # Storage
           if @body.query_type is 'insert' or @body.query_type is 'update'
