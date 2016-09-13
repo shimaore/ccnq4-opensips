@@ -20,7 +20,7 @@
   "sbc_own_upstream":                 1,
 
   "usrloc_table": "location",
-
+  "usrloc_db_timer": 31,
   "usrloc_flags": "f",
 
   "cache_cleanup": 60,
