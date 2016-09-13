@@ -10,7 +10,7 @@
     @opensips = (port,cfg) ->
       fs.writeFileAsync "/tmp/config-#{port}", cfg
       .then ->
-        exec "docker run --rm=true -v /tmp/config-#{port}:/tmp/config -p 127.0.0.1:#{port}:#{port} shimaore/opensips:#{docker_opensips} /opt/opensips/sbin/opensips -f /tmp/config -m 32 -M 16 -F -E"
+        exec "docker run --rm=true -v /tmp/config-#{port}:/tmp/config -p 127.0.0.1:#{port}:#{port} shimaore/opensips:#{docker_opensips} /opt/opensips/sbin/opensips -f /tmp/config -m 64 -M 32 -F -E"
 
     @kill = (port) ->
       request.get "http://127.0.0.1:#{port}/json/kill"

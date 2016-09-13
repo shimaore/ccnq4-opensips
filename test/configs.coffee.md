@@ -41,7 +41,7 @@
         return
 
       it 'should accept simple configuration', (done) ->
-        @timeout 4000
+        @timeout 8000
         port = 7500
         a_port = port++
         b_port = port++
@@ -72,7 +72,7 @@
         return
 
       it 'should parse JSON', (done) ->
-        @timeout 4000
+        @timeout 8000
         port = 7510
         a_port = port++
         b_port = port++
