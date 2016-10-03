@@ -12,24 +12,24 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "chai-as-promised": "^5.3.0",
+    "chai-as-promised": "^6.0.0",
     "exec-as-promised": "^2.0.0",
-    "memdown": "^1.2.1",
-    "mocha": "^3.0.2"
+    "memdown": "^1.2.2",
+    "mocha": "^3.1.0"
   },
   "dependencies": {
     "bluebird": "^3.4.6",
     "body-parser": "^1.15.2",
-    "coffee-script": "^1.10.0",
+    "coffee-script": "^1.11.1",
     "debug": "^2.2.0",
     "lru-cache": "^4.0.1",
     "morgan": "^1.7.0",
     "nimble-direction": "^4.2.2",
-    "pouchdb": "^6.0.4",
+    "pouchdb": "^6.0.6",
     "royal-thing": "^7.0.0",
     "seem": "^2.0.0",
     "socket.io-client": "^1.4.8",
-    "superagent": "^2.2.0",
+    "superagent": "^2.3.0",
     "superagent-as-promised": "^4.0.0",
     "supervisord": "0.1.0",
     "zappajs": "^6.0.2"
