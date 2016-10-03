@@ -38,6 +38,7 @@
         groupid:'int'
       domain:
         domain: 'string'
+        attrs: 'string'
       subscriber:
         username: 'string'
         domain: 'string'

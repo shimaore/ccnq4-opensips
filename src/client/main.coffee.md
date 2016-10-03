@@ -1,3 +1,4 @@
+    seem = require 'seem'
     zappa = require 'zappajs'
     io = require 'socket.io-client'
     LRU = require 'lru-cache'
@@ -49,6 +50,25 @@ AORs indexed on contact-id
         max: 6000
         # For at most 24 hour
         maxAge: 24 * 3600 * 1000
+
+      cfg.domains = LRU
+        # Store at most 100 entries
+        max: 100
+        # For at most 1 minute
+        maxAge: 60 * 1000
+
+      cfg.get_domain = seem (domain) ->
+        v = cfg.domains.get domain
+        return v.doc if v?
+
+        doc = yield cfg.prov
+          .get "number_domain:#{domain}"
+          .catch ->
+            null
+        if doc?
+          doc.domain ?= doc.number_domain
+        cfg.domains.set domain, {doc}
+        return doc
 
       cfg.socket = io cfg.notify if cfg.notify?
 
@@ -104,6 +124,7 @@ ZappaJS server
 
         # REST/JSON API
         queries =
+          domain: 0
           location: 0
           save_location: 0
           presentity: 0
@@ -123,6 +144,20 @@ ZappaJS server
 
 OpenSIPS db_http API
 ====================
+
+Domain
+------
+
+        @get '/domain/', seem ->
+          queries.domain++
+          if @query.k is 'domain' and (not @query.op? or @query.op is '=')
+            doc = yield cfg.get_domain @query.v
+            @res.type 'text/plain'
+            @send show doc, @req, 'domain'
+            return
+
+          debug "domain: not handled: #{@query.k} #{@query.op} #{@query.v}"
+          @send ''
 
 Location
 --------

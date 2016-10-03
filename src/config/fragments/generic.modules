@@ -68,3 +68,8 @@ end if notify
 
 loadmodule "rest_client.so"
 loadmodule "statistics.so"
+
+if support_alternate_domains
+  loadmodule "domain.so"
+  modparam("domain", "db_url", "${db_url}")
+end if support_alternate_domains
