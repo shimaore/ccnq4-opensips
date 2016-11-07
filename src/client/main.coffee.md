@@ -231,6 +231,7 @@ OpenSIPS 2.2 only gives us the `contact_id` on updates; we get username and doma
 
           doc.hostname ?= cfg.host
           doc.query_type = @body.query_type
+          doc.query_time = new Date().toJSON()
 
           if @body.query_type is 'delete'
             doc._deleted = true
@@ -341,6 +342,7 @@ in modules/presence/publish.c, 'cleaning expired presentity information'
 
           doc.hostname ?= cfg.host
           doc.query_type = @body.query_type
+          doc.query_time = new Date().toJSON()
 
           # Storage
           if @body.query_type is 'insert'
@@ -420,6 +422,7 @@ No action is needed, we're using the LRU maxAge (see below).
 
           doc.hostname ?= cfg.host
           doc.query_type = @body.query_type
+          doc.query_time = new Date().toJSON()
 
           if @body.uk?
             update_doc = unquote_params(@body.uk,@body.uv,'active_watchers')
