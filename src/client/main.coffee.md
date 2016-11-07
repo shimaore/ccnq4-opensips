@@ -17,7 +17,7 @@
 
       cfg.host ?= (require 'os').hostname()
 
-User-location indexed on AOR
+Map AOR to a list of contact IDs
 
       cfg.usrloc = LRU
         # Store at most 6000 entries
@@ -25,9 +25,9 @@ User-location indexed on AOR
         # For at most 24 hours
         maxAge: 24 * 3600 * 1000
 
-AORs indexed on contact-id
+Contact records, indexed on contact IDs
 
-      cfg.usrloc_aor_by_contact_id = LRU
+      cfg.usrloc_data = LRU
         # Store at most 18000 entries
         max: 3*6000
         # For at most 24 hours
@@ -78,22 +78,31 @@ AORs indexed on contact-id
 
       # Reply to requests for a single AOR.
       cfg.socket?.on 'location', (aor) ->
-        doc = cfg.usrloc.get aor
-        doc ?= _id:aor, hostname:cfg.host
-
-        doc._in = [
-          "endpoint:#{aor}"
-        ]
         [username,domain] = aor.split '@'
-        if username? and domain?
-          doc._in.push "domain:#{domain}"
-        cfg.socket.emit 'location:response', doc
+        send_doc = (doc) ->
+          doc._in = [
+            "endpoint:#{aor}"
+          ]
+          if username? and domain?
+            doc._in.push "domain:#{domain}"
+          cfg.socket.emit 'location:response', doc
+          return
+
+        cids = cfg.usrloc.get aor
+        cids ?= []
+        if cids.length > 0
+          cids.forEach (cid) ->
+            send_doc cfg.usrloc_data.get cid
+        else
+          send_doc _id:aor, hostname:cfg.host
 
       # Reply to requests for all AORs.
       cfg.socket?.on 'locations', ->
         docs = {}
-        cfg.usrloc.forEach (value,key) ->
-          docs[key] = value
+        cfg.usrloc.forEach (cids,aor) ->
+          docs[aor] = []
+          cids.forEach (cid) ->
+            docs[aor][cid] = cfg.usrloc_data.get cid
         cfg.socket.emit 'locations:response', docs
 
       cfg.socket?.on 'presentities', ->
@@ -166,28 +175,33 @@ Location
           queries.location++
 
           if @query.k is 'username' and @query.op is '='
-            doc = cfg.usrloc.get @query.v
-            if doc?
-              @res.type 'text/plain'
-              @send show doc, @req, 'location'
-            else
-              @send ''
-            return
+            rows = []
+
+            aor = @query.v
 
           if @query.k is 'username,domain' and @query.op is '=,='
+            rows = []
             [username,domain] = @query.v.split ','
-            doc = cfg.usrloc.get "#{username}@#{domain}"
-            if doc?
-              @res.type 'text/plain'
-              @send show doc, @req, 'location'
-            else
-              @send ''
+
+            aor = "#{username}@#{domain}"
+
+          if aor?
+            cids = cfg.usrloc.get aor
+            cids ?= []
+            cids.forEach (cid) ->
+              doc = cfg.usrloc_data.get cid
+
+            @res.type 'text/plain'
+            @send list rows, @req, 'location'
             return
 
           if not @query.k? or (@query.k is 'username' and not @query.op?)
             rows = []
-            cfg.usrloc.forEach (value,key) ->
-              rows.push {key,value}
+            cfg.usrloc.forEach (cids,aor) ->
+              cids.forEach (cid) ->
+                doc = cfg.usrloc_data.get cid
+                rows.push {doc}
+
             @res.type 'text/plain'
             @send list rows, @req, 'location'
             return
@@ -204,90 +218,67 @@ OpenSIPS 2.2 only gives us the `contact_id` on updates; we get username and doma
 
           if doc.username? and doc.domain?
             aor = "#{doc.username}@#{doc.domain}"
-            cfg.usrloc_aor_by_contact_id.set doc.contact_id, aor
-          else
-            aor = cfg.usrloc_aor_by_contact_id.get doc.contact_id
-            unless aor?
-              debug 'Unable to map to AOR', doc.contact_id
-              @send ''
-              return
+            doc.aor = aor
+            cids = cfg.usrloc.get aor
+            cids ?= []
 
           if @body.uk?
             update_doc = unquote_params(@body.uk,@body.uv,'location')
             doc[k] = v for k,v of update_doc
 
-Essentially we're seeing:
-
-- insert messages with
-
-```
-k=contact_id,username,contact,expires,q,callid,cseq,flags,cflags,user_agent,received,path,socket,methods,last_modified,sip_instance,attr,domain
-v=231442799600541130,0972222713,sip%3a0972222713%4092.154.0.220%3a52354%3bob,Fri%20Sep%20%209%2013%3a22%3a08%202016%0a,-1.000000,0.w0Ds-AHS5LYhvlmXNws87m.Le-feo9,46721,0,bflag_request_mp_callee,CSipSimple_GT-N7000-19%2fr2459,sip%3a92.154.0.220%3a52354,%00,udp%3a178.250.209.56%3a5062,8063,Fri%20Sep%20%209%2013%3a07%3a08%202016%0a,%00,%00,c.phone.example.net
-query_type=insert
-```
-
-- update messages with
-
-```
-k=contact_id
-v=1349672513327611708
-uk=expires,q,cseq,flags,cflags,user_agent,received,path,socket,methods,last_modified,attr,callid
-uv=Fri%20Sep%20%209%2014%3a06%3a59%202016%0a,-1.000000,213,0,,ICOTERA%20i4600%20%281.8.2%29,sip%3a81.28.202.247%3a5060,%00,udp%3a178.250.209.56%3a5062,%00,Fri%20Sep%20%209%2013%3a06%3a59%202016%0a,%00,649c94b04228c7035ea75b0e5dc7afc3%4081.28.202.247
-query_type=update
-```
-
-In the dump we get:
-
-```
-curl -G 'http://127.0.0.1:8560/json/ul_show_contact?params=location%2C0972222713@c.phone.example.net'
-{"AOR": [{"value":"0972222713@c.phone.example.net", "children":{"Contact": [{"value":"sip:0972222713@92.154.0.220:52354;ob", "attributes":{"Q": null}, "children":{"Expires": "296", "Callid": "0.w0Ds-AHS5LYhvlmXNws87m.Le-feo9", "Cseq": "46723", "User-agent": "CSipSimple_GT-N7000-19/r2459", "Received": "sip:92.154.0.220:52354", "State": "CS_SYNC", "Flags": "0", "Cflags": "bflag_request_mp_callee", "Socket": "udp:178.250.209.56:5062", "Methods": "8063"}}]}}]}
-```
-
-          doc._id = aor
-          doc.key = [doc.contact,doc.callid].join ' / '
+          cid = doc.contact_id
+          doc._id = cid
 
           doc.hostname ?= cfg.host
           doc.query_type = @body.query_type
 
-          aor_doc = cfg.usrloc.get aor
-          aor_doc ?= {}
+          if @body.query_type is 'delete'
+            doc._deleted = true
 
-          # Socket.IO notification
+Keep any data previously stored with the same contact-id.
+
+          if cid?
+            old_doc = cfg.usrloc_data.get cid
+          if old_doc?
+            for own k,v of old_doc
+              doc[k] ?= v
+
+Data is now finalized, store it.
+
+          cfg.usrloc_data.set cid, doc
+
+          if cids and cid not in cids
+            cids.push cid
+            cfg.usrloc.set aor, cids
+
+Socket.IO notification
+
           notification =
             _in: [
               "domain:#{doc.domain}"
-              "endpoint:#{doc._id}"
+              "endpoint:#{doc.aor}"
             ]
 
           for own k,v of doc
             notification[k] = v
-            aor_doc[k] = v
-
-          aor_doc.locations ?= {}
-          aor_doc.locations[doc.key] = doc
 
           cfg.socket?.emit 'location:update', notification
 
-          debug 'location', {aor_doc}
+          debug 'location', {doc}
 
-          # Storage
+Response
+
           if @body.query_type is 'insert' or @body.query_type is 'update'
 
             @res.type 'text/plain'
             @send doc._id
-            cfg.usrloc.set aor, aor_doc
             return
 
           if @body.query_type is 'delete'
-
             @send ''
-            if @body.k is 'contact_id'
-              delete aor_doc.locations[doc.key]
-              cfg.usrloc.set aor, aor_doc
-            else
-              cfg.usrloc.del aor
             return
 
+          debug "location: not handled: #{@query.k} #{@query.op} #{@query.v}"
           @send ''
 
 Presentity
