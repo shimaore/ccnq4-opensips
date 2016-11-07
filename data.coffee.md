@@ -61,7 +61,6 @@ Registrant reload on data changes.
     debug = (require 'debug') "#{pkg.name}:data"
     RoyalThing = require 'royal-thing'
     request = (require 'superagent-as-promised') require 'superagent'
-    Promise = require 'bluebird'
     Nimble = require 'nimble-direction'
     Options = require './config'
     assert = require 'assert'

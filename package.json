@@ -15,7 +15,7 @@
     "chai-as-promised": "^6.0.0",
     "exec-as-promised": "^2.0.0",
     "memdown": "^1.2.2",
-    "mocha": "^3.1.0"
+    "mocha": "^3.1.2"
   },
   "dependencies": {
     "bluebird": "^3.4.6",
@@ -24,15 +24,15 @@
     "debug": "^2.2.0",
     "lru-cache": "^4.0.1",
     "morgan": "^1.7.0",
-    "nimble-direction": "^4.2.2",
-    "pouchdb": "^6.0.6",
+    "nimble-direction": "^5.0.0",
+    "pouchdb": "^6.0.7",
     "royal-thing": "^7.0.0",
     "seem": "^2.0.0",
-    "socket.io-client": "^1.4.8",
+    "socket.io-client": "^1.5.1",
     "superagent": "^2.3.0",
     "superagent-as-promised": "^4.0.0",
     "supervisord": "0.1.0",
-    "zappajs": "^6.0.2"
+    "zappajs": "^6.0.4"
   },
   "repository": {
     "type": "git",
