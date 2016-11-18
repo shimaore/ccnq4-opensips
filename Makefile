@@ -4,7 +4,7 @@ DOCKER_OPENSIPS_VERSION := $(shell jq -r .opensips.version package.json)
 
 image: Dockerfile
 	docker build -t ${NAME}:${TAG} .
-	docker tag -f ${NAME}:${TAG} ${REGISTRY}/${NAME}:${TAG}
+	docker tag ${NAME}:${TAG} ${REGISTRY}/${NAME}:${TAG}
 
 tests:
 	DEBUG='ccnq4-opensips:*' npm test

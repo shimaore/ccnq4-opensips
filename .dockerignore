@@ -3,6 +3,7 @@ local
 node_modules
 Makefile
 .dockerignore
+Dockerfile
 Dockerfile.src
 supervisord.conf
 vendor

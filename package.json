@@ -7,14 +7,14 @@
   },
   "private": true,
   "scripts": {
-    "pretest": "npm install",
+    "pretest": "npm install && npm install --only=dev",
     "test": "mocha"
   },
   "devDependencies": {
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
     "exec-as-promised": "^2.0.0",
-    "memdown": "^1.2.2",
+    "memdown": "*",
     "mocha": "^3.1.2"
   },
   "dependencies": {
