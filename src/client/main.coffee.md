@@ -57,6 +57,11 @@ Contact records, indexed on contact IDs
         # For at most 1 minute
         maxAge: 60 * 1000
 
+Retrieve domain data
+--------------------
+
+Using the database with a LRU for cache.
+
       cfg.get_domain = seem (domain) ->
         v = cfg.domains.get domain
         return v.doc if v?
@@ -72,37 +77,86 @@ Contact records, indexed on contact IDs
 
       cfg.socket = io cfg.notify if cfg.notify?
 
-      # Subscribe to the `locations` bus.
+Subscribe to the `locations` bus.
+
       cfg.socket?.on 'welcome', ->
         cfg.socket.emit 'configure', locations:true
 
-      # Reply to requests for a single AOR.
-      cfg.socket?.on 'location', (aor) ->
-        [username,domain] = aor.split '@'
-        send_doc = (doc) ->
+Iterate over all AORs / all contacts,
+generating at least one document per known AOR.
+
+      cfg.all_contacts = (handler) ->
+        cfg.usrloc.forEach (cids,aor) ->
+          cfg.for_contact_in_aor aor, handler
+
+Iterate over all contacts for the AOR,
+generating at least one document.
+
+      cfg.for_contact_in_aor = (aor,handler) ->
+        extend = (doc) ->
+          doc._id ?= aor
+          doc.hostname ?= cfg.host
           doc._in = [
             "endpoint:#{aor}"
           ]
-          if username? and domain?
+          if domain?
             doc._in.push "domain:#{domain}"
+          doc
+
+        cids = cfg.get_cids_for_aor aor
+        if cids.length > 0
+          cids.forEach (cid) ->
+            doc = cfg.get_doc_for_cid cid
+            handler extend doc
+        else
+          doc = _missing:true, aor:aor
+          handler extend doc
+        null
+
+(Internal) returns an array containing all Contact IDs for an AOR.
+Contact IDs are used internally by OpenSIPS to identify unique Contacts for an AOR.
+
+      cfg.get_cids_for_aor = (aor) ->
+        cids = cfg.usrloc.get aor
+        cids ?= []
+
+Add a given Contact ID to the AOR.
+
+      cfg.add_cid_to_aor = (aor,cid) ->
+        cids = cfg.get_cids_for_aor aor
+        if cid not in cids
+          cids.push cid
+        cfg.usrloc.set aor, cids
+
+Retrieve the document for a given Contact ID.
+
+      cfg.get_doc_for_cid = (cid) ->
+        doc = cfg.usrloc_data.get cid
+        doc ?= _missing:true, contact_id:cid
+
+Save the document for a given Contact.
+
+      cfg.save_contact = (doc) ->
+        cfg.usrloc_data.set doc._id, doc
+
+Reply to requests for a single AOR.
+----------------------------------
+
+      cfg.socket?.on 'location', (aor) ->
+        [username,domain] = aor.split '@'
+        cfg.for_contact_in_aor aor, (doc) ->
           cfg.socket.emit 'location:response', doc
           return
 
-        cids = cfg.usrloc.get aor
-        cids ?= []
-        if cids.length > 0
-          cids.forEach (cid) ->
-            send_doc cfg.usrloc_data.get cid
-        else
-          send_doc _id:aor, hostname:cfg.host
 
-      # Reply to requests for all AORs.
+Reply to requests for all AORs.
+------------------------------
+
       cfg.socket?.on 'locations', ->
         docs = {}
-        cfg.usrloc.forEach (cids,aor) ->
-          docs[aor] = []
-          cids.forEach (cid) ->
-            docs[aor][cid] = cfg.usrloc_data.get cid
+        cfg.for_contact_in_aor (doc) ->
+          docs[doc.aor] ?= []
+          docs[doc.aor].push doc
         cfg.socket.emit 'locations:response', docs
 
       cfg.socket?.on 'presentities', ->
@@ -117,7 +171,9 @@ Contact records, indexed on contact IDs
           docs[key] = value
         cfg.socket.emit 'active_watchers:response', docs
 
-      # Ping
+Ping
+----
+
       cfg.socket?.on 'ping', (doc) ->
         cfg.socket.emit 'pong', host:cfg.host, in_reply_to:doc, name:pkg.name, version:pkg.version
 
@@ -131,7 +187,8 @@ ZappaJS server
       ->
         @use morgan:'combined'
 
-        # REST/JSON API
+REST/JSON API
+
         queries =
           domain: 0
           location: 0
@@ -175,21 +232,16 @@ Location
           queries.location++
 
           if @query.k is 'username' and @query.op is '='
-            rows = []
-
             aor = @query.v
 
           if @query.k is 'username,domain' and @query.op is '=,='
-            rows = []
             [username,domain] = @query.v.split ','
-
             aor = "#{username}@#{domain}"
 
           if aor?
-            cids = cfg.usrloc.get aor
-            cids ?= []
-            cids.forEach (cid) ->
-              doc = cfg.usrloc_data.get cid
+            rows = []
+            cfg.for_contact_in_aor aor, (doc) ->
+              rows.push {doc} unless doc._deleted or doc._missing
 
             @res.type 'text/plain'
             @send list rows, @req, 'location'
@@ -197,10 +249,8 @@ Location
 
           if not @query.k? or (@query.k is 'username' and not @query.op?)
             rows = []
-            cfg.usrloc.forEach (cids,aor) ->
-              cids.forEach (cid) ->
-                doc = cfg.usrloc_data.get cid
-                rows.push {doc}
+            cfg.all_contacts (doc) ->
+              rows.push {doc} unless doc._deleted or doc._missing
 
             @res.type 'text/plain'
             @send list rows, @req, 'location'
@@ -217,17 +267,13 @@ Location
 OpenSIPS 2.2 only gives us the `contact_id` on updates; we get username and domain only on inserts.
 
           if doc.username? and doc.domain?
-            aor = "#{doc.username}@#{doc.domain}"
-            doc.aor = aor
-            cids = cfg.usrloc.get aor
-            cids ?= []
+            doc.aor ?= "#{doc.username}@#{doc.domain}"
 
           if @body.uk?
             update_doc = unquote_params(@body.uk,@body.uv,'location')
             doc[k] = v for k,v of update_doc
 
-          cid = doc.contact_id
-          doc._id = cid
+          doc._id = doc.contact_id
 
           doc.hostname ?= cfg.host
           doc.query_type = @body.query_type
@@ -238,19 +284,17 @@ OpenSIPS 2.2 only gives us the `contact_id` on updates; we get username and doma
 
 Keep any data previously stored with the same contact-id.
 
-          if cid?
-            old_doc = cfg.usrloc_data.get cid
+          if doc.contact_id?
+            old_doc = cfg.usrloc_data.get doc.contact_id
           if old_doc?
             for own k,v of old_doc
               doc[k] ?= v
 
 Data is now finalized, store it.
 
-          cfg.usrloc_data.set cid, doc
+          cfg.save_contact doc
 
-          if cids and cid not in cids
-            cids.push cid
-            cfg.usrloc.set aor, cids
+          cfg.add_cid_to_aor doc.aor, doc.contact_id
 
 Socket.IO notification
 
