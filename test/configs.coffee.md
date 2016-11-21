@@ -7,23 +7,28 @@
       {opensips,kill} = require './opensips'
       PouchDB = require 'pouchdb'
 
+      random = (n) ->
+        n + Math.ceil 100 * Math.random()
+
       it 'should log time', (done) ->
-        @timeout 4000
-        port = 7490
+        after ->
+          kill b_port
+        @timeout 8000
+        port = random 7000
         a_port = port++
         b_port = port++
+        c_port = port++
         main = ->
           @get '/time/:time', ->
             @params.time.should.match /^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\+\d\d\d\d$/
             @json ok:yes
-            kill b_port
             done()
         zappa (-> main), web: {host:'172.17.0.1', port:a_port}
         .then ->
           opensips b_port, """
             mpath="/opt/opensips/lib64/opensips/modules/"
             loadmodule "proto_udp.so"
-            listen=udp:127.0.0.1:5911
+            listen=udp:127.0.0.1:#{c_port}
             loadmodule "mi_json.so"
 
             loadmodule "httpd.so"
@@ -35,27 +40,26 @@
               exit;
             }
           """
-        Promise.delay 2500
-        .then ->
-          kill b_port
         return
 
       it 'should accept simple configuration', (done) ->
+        after ->
+          kill b_port
         @timeout 8000
-        port = 7500
+        port = random 8000
         a_port = port++
         b_port = port++
+        c_port = port++
         main = ->
           @get '/', ->
             @json ok:yes
-            kill b_port
             done()
         zappa (-> main), web: {host:'172.17.0.1', port:a_port}
         .then ->
           opensips b_port, """
             mpath="/opt/opensips/lib64/opensips/modules/"
             loadmodule "proto_udp.so"
-            listen=udp:127.0.0.1:5909
+            listen=udp:127.0.0.1:#{c_port}
             loadmodule "mi_json.so"
 
             loadmodule "httpd.so"
@@ -72,16 +76,18 @@
         return
 
       it 'should parse JSON', (done) ->
+        after ->
+          kill b_port
         @timeout 8000
-        port = 7510
+        port = random 9000
         a_port = port++
         b_port = port++
+        c_port = port++
         main = ->
           @get '/foo', ->
             @json foo:'bar'
           @get '/ok-json', ->
             @json ok:yes
-            kill b_port
             done()
         zappa (-> main), web: {host:'172.17.0.1', port:a_port}
         .then ->
@@ -91,7 +97,7 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
           opensips b_port, """
             mpath="/opt/opensips/lib64/opensips/modules/"
             loadmodule "proto_udp.so"
-            listen=udp:127.0.0.1:5910
+            listen=udp:127.0.0.1:#{c_port}
             loadmodule "mi_json.so"
 
             loadmodule "json.so"
@@ -108,16 +114,13 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
               exit;
             }
           """
-        Promise.delay 2500
-        .then ->
-          kill b_port
         return
 
       it 'should accept `client` configuration', (done) ->
-
+        after ->
+          kill b_port
         @timeout 10000
-
-        port = 7520
+        port = random 10000
         a_port = port++
         b_port = port++
         c_port = port++
@@ -125,7 +128,6 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
         main = ->
           @get '/ok-client', ->
             @json ok:yes
-            kill b_port
             done() unless success
             success = true
 
@@ -157,23 +159,20 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
           opensips b_port, compile config
         .catch (error) ->
           console.log "OpenSIPS error: #{error}"
-        Promise.delay 2500
-        .then ->
-          kill b_port
         return
 
       it 'should accept `registrant` configuration', (done) ->
-
+        after ->
+          kill b_port
         @timeout 10000
 
-        port = 27530
+        port = random 11000
         a_port = port++
         b_port = port++
         c_port = port++
         main = ->
           @get '/ok-registrant', ->
             @json ok:yes
-            kill b_port
             done()
 
         build_config = require '../config'
@@ -206,7 +205,4 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
           opensips b_port, compile config
         .catch (error) ->
           console.log "OpenSIPS error: #{error}"
-        Promise.delay 2500
-        .then ->
-          kill b_port
         return

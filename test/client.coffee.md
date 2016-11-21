@@ -15,7 +15,7 @@
       our_server = null
 
       before ->
-        @timeout 8000
+        @timeout 15000
         build_config = require '../config'
         {compile} = require '../src/config/compiler'
         config = build_config require './config1.json'
@@ -33,7 +33,7 @@
         .then ({server}) ->
           debug "Server ready"
           opensips b_port, compile config
-          Promise.delay 3000
+          Promise.delay 5000
 
       after ->
         kill b_port

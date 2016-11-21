@@ -10,7 +10,6 @@
         catch error
           reject error
 
-    Promise = require 'bluebird'
     Zappa = require 'zappajs'
     pkg = require '../package'
     debug = (require 'debug') "#{pkg.name}:zappa-as-promised"
