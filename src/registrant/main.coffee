@@ -66,8 +66,8 @@ main = (cfg) ->
       queries.registrant++
       if not @query.k?
         cfg.prov.query "#{couchapp.id}/registrant_by_host",
-          startkey: [cfg.opensips.host]
-          endkey: [cfg.opensips.host,{}]
+          startkey: [ cfg.opensips.host ]
+          endkey: [ cfg.opensips.host, {} ]
         .then ({rows}) =>
           @send list rows, @req, 'registrant'
         .catch (error) =>
