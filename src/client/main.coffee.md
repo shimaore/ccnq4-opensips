@@ -93,8 +93,11 @@ Iterate over all contacts for the AOR,
 generating at least one document.
 
       cfg.for_contact_in_aor = (aor,handler) ->
+        [username,domain] = aor.split '@'
         extend = (doc) ->
-          doc._id ?= aor
+          doc.aor ?= aor
+          doc.username ?= username
+          doc.domain ?= domain
           doc.hostname ?= cfg.host
           doc._in = [
             "endpoint:#{aor}"
@@ -109,7 +112,7 @@ generating at least one document.
             doc = cfg.get_doc_for_cid cid
             handler extend doc
         else
-          doc = _missing:true, aor:aor
+          doc = _missing:true
           handler extend doc
         null
 
@@ -143,7 +146,6 @@ Reply to requests for a single AOR.
 ----------------------------------
 
       cfg.socket?.on 'location', (aor) ->
-        [username,domain] = aor.split '@'
         cfg.for_contact_in_aor aor, (doc) ->
           cfg.socket.emit 'location:response', doc
           return
