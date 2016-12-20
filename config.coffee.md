@@ -81,6 +81,7 @@ Replicate the provisioning database
 
       couch = Couch cfg.opensips.model
       yield cfg.master_push couch
+      yield cfg.reject_tombstones cfg.prov
       yield cfg.replicate 'provisioning', (doc) ->
           debug "Using replication filter #{couch.replication_filter}"
           doc.filter = couch.replication_filter
