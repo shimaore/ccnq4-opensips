@@ -58,7 +58,7 @@ Toolbox
     os = require 'os'
     Nimble = require 'nimble-direction'
     seem = require 'seem'
-    {couch} = require './index'
+    Couch = require './index'
 
     module.exports = Options
 
@@ -79,6 +79,7 @@ Build the configuration file.
 
 Replicate the provisioning database
 
+      couch = Couch cfg.opensips.model
       yield cfg.master_push couch
       yield cfg.replicate 'provisioning', (doc) ->
           debug "Using replication filter #{couch.replication_filter}"
