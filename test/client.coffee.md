@@ -33,7 +33,7 @@
         .then ({server}) ->
           debug "Server ready"
           opensips b_port, compile config
-          Promise.delay 5000
+          Promise.delay 8000
 
       after ->
         kill b_port
