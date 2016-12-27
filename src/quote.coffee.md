@@ -168,7 +168,7 @@ Convert an OpenSIPS value `x` of type `t` into a JavaScript value.
     unquote_value = (t,x) ->
 
       if not x?
-        return x
+        return null
 
       if x is '\u0000'
         return null
@@ -240,7 +240,7 @@ Note: This requires opensips to be started in UTC, assuming toISOString() output
       values = v.split ','
       types = column_types[table]
 
-      doc[names[i]] = unquote_value(types[names[i]],values[i]) for i in [0..names.length]
+      doc[names[i]] = unquote_value(types[names[i]],values[i]) for i in [0...names.length]
 
       return doc
 
