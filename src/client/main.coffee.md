@@ -270,49 +270,53 @@ Location
             update_doc = unquote_params(@body.uk,@body.uv,'location')
             doc[k] = v for own k,v of update_doc
 
+Keep any data previously stored with the same contact-id.
+
+          old_doc = cfg.get_doc_for_cid doc.contact_id
+          unless old_doc._missing
+            for own k,v of old_doc
+              doc[k] ?= v
+
 OpenSIPS 2.2 only gives us the `contact_id` on updates; we get username and domain only on inserts.
 
           if doc.username? and doc.domain?
             doc.aor ?= "#{doc.username}@#{doc.domain}"
 
+          if @body.query_type is 'delete'
+            doc._deleted = true
+          else
+            doc._deleted = null
 
           doc._id = doc.contact_id
 
-          doc.hostname ?= cfg.host
+          doc.hostname = cfg.host
           doc.query_type = @body.query_type
           doc.query_time = new Date().toJSON()
-
-          if @body.query_type is 'delete'
-            doc._deleted = true
-
-Keep any data previously stored with the same contact-id.
-
-          if doc.contact_id?
-            old_doc = cfg.usrloc_data.get doc.contact_id
-          if old_doc?
-            for own k,v of old_doc
-              doc[k] ?= v
 
 Data is now finalized, store it.
 
           cfg.save_contact doc
 
-          cfg.add_cid_to_aor doc.aor, doc.contact_id
+          if doc.aor?
+            cfg.add_cid_to_aor doc.aor, doc.contact_id
+          else
+            debug 'Missing aor'
 
 Socket.IO notification
 
           notification =
-            _in: [
-              "domain:#{doc.domain}"
-              "endpoint:#{doc.aor}"
-            ]
+            _in: []
+          if doc.domain?
+            notification._in.push "domain:#{doc.domain}"
+          if doc.aor?
+            notification._in.push "endpoint:#{doc.aor}"
 
           for own k,v of doc
             notification[k] = v
 
           cfg.socket?.emit 'location:update', notification
 
-          debug 'location', {doc}
+          debug 'location', doc
 
 Response
 
