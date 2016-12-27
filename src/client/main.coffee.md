@@ -93,6 +93,7 @@ Iterate over all contacts for the AOR,
 generating at least one document.
 
       cfg.for_contact_in_aor = (aor,handler) ->
+        return unless aor?
         [username,domain] = aor.split '@'
         extend = (doc) ->
           doc.aor ?= aor
@@ -120,12 +121,14 @@ generating at least one document.
 Contact IDs are used internally by OpenSIPS to identify unique Contacts for an AOR.
 
       cfg.get_cids_for_aor = (aor) ->
+        return unless aor?
         cids = cfg.usrloc.get aor
         cids ?= []
 
 Add a given Contact ID to the AOR.
 
       cfg.add_cid_to_aor = (aor,cid) ->
+        return unless aor? and cid?
         cids = cfg.get_cids_for_aor aor
         if cid not in cids
           cids.push cid
@@ -156,7 +159,7 @@ Reply to requests for all AORs.
 
       cfg.socket?.on 'locations', ->
         docs = {}
-        cfg.for_contact_in_aor (doc) ->
+        cfg.all_contacts (doc) ->
           docs[doc.aor] ?= []
           docs[doc.aor].push doc
         cfg.socket.emit 'locations:response', docs
