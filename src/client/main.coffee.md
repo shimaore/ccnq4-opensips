@@ -208,6 +208,25 @@ REST/JSON API
             name
             version: pkg.version
             queries
+            cache:
+              usrloc:
+                length: cfg.usrloc.length
+                count:  cfg.usrloc.itemCount
+              usrloc_data:
+                length: cfg.usrloc_data.length
+                count:  cfg.usrloc_data.itemCount
+              presentities:
+                length: cfg.presentities.length
+                count:  cfg.presentities.itemCount
+              active_watchers:
+                length: cfg.active_watchers.length
+                count:  cfg.active_watchers.itemCount
+              watchers:
+                length: cfg.watchers.length
+                count:  cfg.watchers.itemCount
+              domains:
+                length: cfg.domains.length
+                count:  cfg.domains.itemCount
           }
 
 OpenSIPS db_http API
