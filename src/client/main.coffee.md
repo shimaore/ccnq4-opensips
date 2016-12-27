@@ -266,14 +266,15 @@ Location
 
           doc = unquote_params(@body.k,@body.v,'location')
 
+          if @body.uk?
+            update_doc = unquote_params(@body.uk,@body.uv,'location')
+            doc[k] = v for own k,v of update_doc
+
 OpenSIPS 2.2 only gives us the `contact_id` on updates; we get username and domain only on inserts.
 
           if doc.username? and doc.domain?
             doc.aor ?= "#{doc.username}@#{doc.domain}"
 
-          if @body.uk?
-            update_doc = unquote_params(@body.uk,@body.uv,'location')
-            doc[k] = v for k,v of update_doc
 
           doc._id = doc.contact_id
 
@@ -370,7 +371,7 @@ in modules/presence/publish.c, 'cleaning expired presentity information'
             debug 'get presentities for', @query.k
             o = cfg.presentities.get @query.k
             rows = []
-            for key,value of o
+            for own key,value of o
               rows.push {key,value}
             @res.type 'text/plain'
             @send list rows, @req, 'presentity'
@@ -472,7 +473,7 @@ No action is needed, we're using the LRU maxAge (see below).
 
           if @body.uk?
             update_doc = unquote_params(@body.uk,@body.uv,'active_watchers')
-            doc[k] = v for k,v of update_doc
+            doc[k] = v for own k,v of update_doc
 
           if @body.query_type is 'insert' or @body.query_type is 'update'
             maxAge = doc.expires*1000 - Date.now()
