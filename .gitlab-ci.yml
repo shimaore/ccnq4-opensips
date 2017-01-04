@@ -7,7 +7,7 @@ build:
 test:
   stage: test
   script:
-  - docker run --rm ${CI_REGISTRY_IMAGE}:${PROJECT_TAG} /bin/bash -c 'npm install --only=dev && mocha test/compiler.coffee.md test/config.coffee.md test/munin.coffee.md'
+  - docker run --rm ${CI_REGISTRY_IMAGE}:${PROJECT_TAG} /bin/bash -c 'npm install --only=dev && npm run test-simple'
 
 push:
   stage: deploy
