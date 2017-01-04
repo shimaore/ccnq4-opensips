@@ -1,0 +1,5 @@
+#!/bin/bash
+sed -i -e "s/^  PROJECT_TAG:.*$/  PROJECT_TAG: \"`jq -r .version package.json`\"/
+           s/^  DOCKER_OPENSIPS_VERSION:.*$/  DOCKER_OPENSIPS_VERSION: \"`jq -r '.opensips.version' package.json`\"/
+          " .gitlab-ci.yml
+git add .gitlab-ci.yml
