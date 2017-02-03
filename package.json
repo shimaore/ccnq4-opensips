@@ -22,7 +22,7 @@
   "dependencies": {
     "bluebird": "^3.4.7",
     "body-parser": "^1.16.0",
-    "coffee-script": "^1.12.3",
+    "coffee-script": "1.12.2",
     "debug": "^2.6.0",
     "lru-cache": "^4.0.2",
     "morgan": "^1.7.0",
