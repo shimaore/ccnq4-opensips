@@ -1,25 +1,14 @@
 build:
   stage: build
-  tags:
-  - shell
+  only:
+  - tags
+  before_script:
+  - docker login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
+  - docker pull shimaore/opensips:${DOCKER_OPENSIPS_VERSION}
   script:
   - sed -e "s/DOCKER_OPENSIPS_VERSION/${DOCKER_OPENSIPS_VERSION}/" Dockerfile.src > Dockerfile
   - docker build -t ${CI_REGISTRY_IMAGE}:${PROJECT_TAG} .
-
-test:
-  stage: test
-  tags:
-  - shell
-  script:
-  - docker run --rm ${CI_REGISTRY_IMAGE}:${PROJECT_TAG} /bin/bash -c 'npm install --only=dev && echo Bypass'
-
-push:
-  stage: deploy
-  tags:
-  - shell
-  only:
-  - opensips-2.2
-  script:
+  - docker run --rm ${CI_REGISTRY_IMAGE}:${PROJECT_TAG} /bin/bash -c 'npm test'
   - docker push ${CI_REGISTRY_IMAGE}:${PROJECT_TAG}
 
 variables:
