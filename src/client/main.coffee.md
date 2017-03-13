@@ -490,7 +490,7 @@ Active Watchers
           if not @query.k?
             debug 'return all active watchers'
             rows = []
-            cfg.presentities.forEach (value,key) ->
+            cfg.active_watchers.forEach (value,key) ->
               rows.push {key,value}
 
             @res.type 'text/plain'
