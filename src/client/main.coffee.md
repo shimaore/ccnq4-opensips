@@ -436,6 +436,27 @@ FIXME should prune old presentities in the `o` while we are at it.
             @send doc._id
             return
 
+          if @body.query_type is 'update' and @query.k is 'domain,username,event,etag'
+            update_doc = unquote_params(@body.uk,@body.uv,'presentity')
+
+            debug 'update presentity', doc, update_doc
+            o = cfg.presentities.get doc._upid
+            o ?= {}
+
+            new_doc = {}
+            new_doc[k] = v for own k,v of doc
+            new_doc[k] = v for own k,v of update_doc
+            maxAge = new_doc.expires*1000 - Date.now()
+
+            if doc.etag isnt new_doc.etag
+              delete o[doc.etag]
+            o[new_doc.etag] = new_doc
+
+            cfg.presentities.set doc._upid, o, maxAge
+            @res.type 'text/plain'
+            @send doc._id
+            return
+
           if @body.k is 'expires' and @body.op is '<' and @body.query_type is 'delete'
             debug 'delete presentity older than', @body.v
 
