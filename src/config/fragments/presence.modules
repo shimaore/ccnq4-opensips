@@ -8,7 +8,21 @@ if presence_domain_name
 modparam("presence", "server_address", "sip:${presence_domain_name}")
 end if presence_domain_name
 
-/* Probably will look into mix_dialog_presence, but it requires `dialoginfo`, `presence_dialoginfo`, `pua_dialoginfo`, `dialog` and `pua` -- hence more testing. */
-
 /* [presence_mwi](http://www.opensips.org/html/docs/modules/2.1.x/presence_mwi.html) */
 loadmodule "presence_mwi.so"
+
+/* [presence_dialoginfo](http://www.opensips.org/html/docs/modules/2.2.x/presence_dialoginfo.html) */
+/* Analyzes calls and injects data into the presence module. */
+loadmodule "presence_dialoginfo.so"
+
+/* Presence client / User Agent */
+loadmodule "pua.so"
+modparam("pua", "db_url", "${db_url}")
+
+define has_dialoginfo_set
+/* [pua_dialoginfo](http://www.opensips.org/html/docs/modules/2.2.x/pua_dialoginfo.html) */
+/* Publishes dialog state changes through the Presence UA */
+loadmodule "pua_dialoginfo.so"
+modparam("pua_dialoginfo", "publish_on_trying", 1)
+# modparam("pua_dialoginfo", "caller_spec_param", "$avp(caller_spec)") # Defaults to From header
+# modparam("pua_dialoginfo", "callee_spec_param", "$avp(callee_spec)") # Defaults to To header + RURI

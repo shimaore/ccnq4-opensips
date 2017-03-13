@@ -204,6 +204,8 @@ REST/JSON API
           save_active_watchers: 0
           watchers: 0
           save_watchers: 0
+          pua: 0
+          save_pua: 0
           version: 0
 
         @get '/', ->
@@ -537,6 +539,21 @@ Watchers
           debug 'watchers: not handled', @body
           @send ''
 
+Presence client / User Agent
+----------------------------
+
+        @get '/pua/': ->
+          queries.pua++
+
+          debug 'pua: not handled', @query
+          @send ''
+
+        @post '/pua', (body_parser.urlencoded extended:false), ->
+          queries.save_pua++
+
+          debug 'pua: not handled', @body
+          @send ''
+
 Versions
 --------
 
@@ -552,6 +569,7 @@ Versions
               presentity: 5
               active_watchers: 11
               watchers: 4
+              pua: 8
 
             return "int\n#{versions[@query.v]}\n"
 
