@@ -466,6 +466,16 @@ No action is needed, we're using the LRU maxAge (see above).
             @send ''
             return
 
+          if @body.query_type is 'delete' and @query.k is 'domain,username,event,etag'
+            debug 'delete presentity', doc._upid
+            o = cfg.presentities.get doc._upid
+            o ?= {}
+            delete o[doc.etag]
+            cfg.presentities.set doc._upid, o, maxAge
+            @res.type 'text/plain'
+            @send ''
+            return
+
           debug 'presentity: not handled', @body
           @send ''
 
