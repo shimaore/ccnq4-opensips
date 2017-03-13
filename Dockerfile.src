@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   make install && \
   cd .. && \
   rm -rf n.git && \
-  n 7.4.0
+  n 7.7.2
 
 # Start opensips part.
 COPY . /home/opensips
@@ -31,8 +31,8 @@ RUN \
   apt-get purge -y \
     build-essential \
     ca-certificates \
-    cpp-5 \
-    gcc-5 \
+    cpp-6 \
+    gcc-6 \
     curl \
     git \
     make \
