@@ -396,8 +396,9 @@ in modules/presence/publish.c, 'cleaning expired presentity information'
 > GET { k: 'domain,username,event', v: 'test.phone.kwaoo.net,0972222713,message-summary', c: 'body,extra_hdrs,expires,etag' }
 
           if @query.k is 'domain,username,event'
-            debug 'get presentities for', @query.k
-            o = cfg.presentities.get @query.k
+            _upid = @query.v.join ','
+            debug 'get presentities for', _upid
+            o = cfg.presentities.get _upid
             rows = []
             for own key,value of o
               rows.push {key,value}
