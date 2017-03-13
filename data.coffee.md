@@ -60,7 +60,7 @@ Registrant reload on data changes.
     pkg = require './package.json'
     debug = (require 'debug') "#{pkg.name}:data"
     RoyalThing = require 'royal-thing'
-    request = (require 'superagent-as-promised') require 'superagent'
+    request = require 'superagent'
     Nimble = require 'nimble-direction'
     Options = require './config'
     assert = require 'assert'

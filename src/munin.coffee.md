@@ -262,7 +262,7 @@ Toolbox
     Zappa = require 'zappajs'
     pkg = require '../package.json'
     debug = (require 'debug') "#{pkg.name}:munin"
-    request = (require 'superagent-as-promised') require 'superagent'
+    request = require 'superagent'
     seconds = 1000
     minutes = 60*seconds
 

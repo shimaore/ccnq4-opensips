@@ -2,7 +2,7 @@
     chai.use require 'chai-as-promised'
     chai.should()
 
-    request = (require 'superagent-as-promised') require 'superagent'
+    request = require 'superagent'
 
     describe "munin", ->
       @timeout 4000

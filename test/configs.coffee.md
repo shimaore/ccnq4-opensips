@@ -3,7 +3,7 @@
       Promise = require 'bluebird'
       fs = Promise.promisifyAll require 'fs'
       zappa = require '../src/zappa-as-promised'
-      request = require 'superagent-as-promised'
+      request = require 'superagent'
       {opensips,kill} = require './opensips'
       PouchDB = require 'pouchdb'
 

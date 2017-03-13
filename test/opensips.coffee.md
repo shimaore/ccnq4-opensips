@@ -1,7 +1,7 @@
     exec = require('exec-as-promised') console
     Promise = require 'bluebird'
     fs = Promise.promisifyAll require 'fs'
-    request = (require 'superagent-as-promised') require 'superagent'
+    request = require 'superagent'
 
     pkg = require '../package.json'
 
