@@ -11,5 +11,5 @@ build:
   - docker push ${CI_REGISTRY_IMAGE}:${PROJECT_TAG}
 
 variables:
-  PROJECT_TAG: "15.1.7"
+  PROJECT_TAG: "15.2.0"
   DOCKER_OPENSIPS_VERSION: "4.2.0"
