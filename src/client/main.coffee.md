@@ -430,7 +430,7 @@ FIXME should prune old presentities in the `o` while we are at it.
             o = cfg.presentities.get doc._upid
             o ?= {}
             o[doc.etag] = doc
-            cfg.presentities.set doc._upid, doc, maxAge
+            cfg.presentities.set doc._upid, o, maxAge
 
             @res.type 'text/plain'
             @send doc._id
