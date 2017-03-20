@@ -2,19 +2,20 @@ p_fun = (f) -> '('+f+')'
 pkg = require '../../package.json'
 id = "#{pkg.name}-#{pkg.version}-registrant"
 
-ddoc =
-  _id: "_design/#{id}"
-  id: id
-  package: pkg.name
-  version: pkg.version
-  language: 'javascript'
-  views: {}
-  lib: {}
+module.exports = (cfg) ->
+  ddoc =
+    _id: "_design/#{id}"
+    id: id
+    package: pkg.name
+    version: pkg.version
+    language: 'javascript'
+    views: {}
+    lib: {}
+    views:
+      registrant_by_host:
+        map: registrant_by_host_map.replace 'DEFAULT_REGISTRANT_EXPIRY', cfg.default_registrant_expiry ? 86400
 
-module.exports = ddoc
-
-ddoc.views.registrant_by_host =
-  map: p_fun (doc) ->
+registrant_by_host_map = p_fun (doc) ->
 
     return if doc.disabled
 
@@ -28,7 +29,7 @@ ddoc.views.registrant_by_host =
         password: doc.registrant_password
         # binding_URI: "sip:00#{doc.number}@#{p.interfaces.primary.ipv4 ? p.host}:5070"
         # binding_params: null
-        expiry: doc.registrant_expiry ? 86400
+        expiry: doc.registrant_expiry ? DEFAULT_REGISTRANT_EXPIRY
         # forced_socket: null
 
       hosts = doc.registrant_host

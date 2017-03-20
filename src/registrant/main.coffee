@@ -16,7 +16,7 @@ url = require 'url'
 
 module.exports = seem (cfg) ->
 
-  yield cfg.push couchapp
+  yield cfg.push couchapp cfg
 
   cfg.socket = io cfg.notify if cfg.notify?
 
