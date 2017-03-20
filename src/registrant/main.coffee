@@ -7,7 +7,7 @@ debug = (require 'debug') name
 seem = require 'seem'
 
 {list} = require './opensips'
-couchapp = require './couchapp'
+CouchApp = require './couchapp'
 zappa_as_promised = require '../zappa-as-promised'
 hostname = (require 'os').hostname()
 
@@ -16,7 +16,9 @@ url = require 'url'
 
 module.exports = seem (cfg) ->
 
-  yield cfg.push couchapp cfg
+  couchapp = CouchApp cfg
+
+  yield cfg.push couchapp
 
   cfg.socket = io cfg.notify if cfg.notify?
 
@@ -46,6 +48,8 @@ module.exports = seem (cfg) ->
 main = (cfg) ->
 
   debug 'Using configuration', cfg
+
+  couchapp = CouchApp cfg
 
   ->
     @use morgan:'combined'
