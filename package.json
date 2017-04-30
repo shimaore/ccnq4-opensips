@@ -1,7 +1,7 @@
 {
   "name": "ccnq4-opensips",
   "docker_name": "shimaore/ccnq4-opensips",
-  "version": "15.3.1",
+  "version": "15.4.0",
   "opensips": {
     "version": "4.2.0"
   },
