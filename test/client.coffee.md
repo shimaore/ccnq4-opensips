@@ -1,7 +1,7 @@
     chai = require 'chai'
     chai.should()
 
-    debug = (require 'debug') 'test:client'
+    debug = (require 'tangible') 'test:client'
 
     describe 'The `client` configuration', ->
       request = require 'superagent'

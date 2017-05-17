@@ -5,7 +5,7 @@
     Promise = require 'bluebird'
     pkg = require '../../package.json'
     name = "#{pkg.name}:client"
-    debug = (require 'debug') name
+    debug = (require 'tangible') name
     body_parser = require 'body-parser'
 
     {show,list} = require './opensips'

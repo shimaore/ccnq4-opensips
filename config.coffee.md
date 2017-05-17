@@ -51,7 +51,7 @@ Toolbox
 
     pkg = require './package.json'
     assert = require 'assert'
-    debug = (require 'debug') "#{pkg.name}:config"
+    debug = (require 'tangible') "#{pkg.name}:config"
     Promise = require 'bluebird'
     supervisord = require 'supervisord'
     fs = Promise.promisifyAll require 'fs'

@@ -3,7 +3,7 @@ io = require 'socket.io-client'
 PouchDB = require 'pouchdb'
 pkg = require '../../package.json'
 name = "#{pkg.name}:registrant"
-debug = (require 'debug') name
+debug = (require 'tangible') name
 seem = require 'seem'
 
 {list} = require './opensips'

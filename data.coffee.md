@@ -58,7 +58,7 @@ Registrant reload on data changes.
 
     url = require 'url'
     pkg = require './package.json'
-    debug = (require 'debug') "#{pkg.name}:data"
+    debug = (require 'tangible') "#{pkg.name}:data"
     RoyalThing = require 'royal-thing'
     request = require 'superagent'
     Nimble = require 'nimble-direction'

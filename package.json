@@ -23,7 +23,6 @@
     "bluebird": "^3.4.7",
     "body-parser": "^1.16.0",
     "coffee-script": "1.12.2",
-    "debug": "^2.6.0",
     "lru-cache": "^4.0.2",
     "morgan": "^1.7.0",
     "nimble-direction": "^6.1.1",
@@ -33,6 +32,7 @@
     "socket.io-client": "^1.7.2",
     "superagent": "^3.4.1",
     "supervisord": "0.1.0",
+    "tangible": "^1.4.4",
     "zappajs": "^6.2.0"
   },
   "repository": {

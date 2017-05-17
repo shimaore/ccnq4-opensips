@@ -261,7 +261,7 @@ Toolbox
     Promise = require 'bluebird'
     Zappa = require 'zappajs'
     pkg = require '../package.json'
-    debug = (require 'debug') "#{pkg.name}:munin"
+    debug = (require 'tangible') "#{pkg.name}:munin"
     request = require 'superagent'
     seconds = 1000
     minutes = 60*seconds

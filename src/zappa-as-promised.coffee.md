@@ -12,4 +12,4 @@
 
     Zappa = require 'zappajs'
     pkg = require '../package'
-    debug = (require 'debug') "#{pkg.name}:zappa-as-promised"
+    debug = (require 'tangible') "#{pkg.name}:zappa-as-promised"
