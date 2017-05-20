@@ -93,7 +93,7 @@ Iterate over all contacts for the AOR,
 generating at least one document.
 
       cfg.for_contact_in_aor = (aor,handler) ->
-        return unless aor?
+        return unless aor? and typeof aor is 'string'
         [username,domain] = aor.split '@'
         extend = (doc) ->
           doc.aor ?= aor
