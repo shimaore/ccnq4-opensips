@@ -112,9 +112,6 @@ generating at least one document.
           cids.forEach (cid) ->
             doc = cfg.get_doc_for_cid cid
             handler extend doc
-        else
-          doc = _missing:true
-          handler extend doc
         null
 
 (Internal) returns an array containing all Contact IDs for an AOR.
