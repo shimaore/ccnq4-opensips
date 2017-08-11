@@ -1,6 +1,8 @@
 zappa = require 'zappajs'
 io = require 'socket.io-client'
-PouchDB = require 'pouchdb'
+PouchDB = require 'pouchdb-core'
+  .plugin require 'pouchdb-adapter-http'
+  .plugin require 'pouchdb-mapreduce'
 pkg = require '../../package.json'
 name = "#{pkg.name}:registrant"
 debug = (require 'tangible') name

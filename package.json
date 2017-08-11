@@ -13,27 +13,29 @@
     "version": "./build/gitlab-ci.yml"
   },
   "devDependencies": {
-    "chai": "^4.0.2",
-    "chai-as-promised": "^6.0.0",
+    "chai": "^4.1.1",
+    "chai-as-promised": "^7.1.1",
     "exec-as-promised": "^2.0.0",
     "memdown": "^1.2.4",
-    "mocha": "^3.4.2"
+    "mocha": "^3.5.0"
   },
   "dependencies": {
     "bluebird": "^3.5.0",
     "body-parser": "^1.17.2",
-    "coffee-script": "1.12.6",
-    "lru-cache": "^4.1.0",
+    "coffee-script": "1.12.7",
+    "lru-cache": "^4.1.1",
     "morgan": "^1.8.2",
-    "nimble-direction": "^6.1.4",
-    "pouchdb": "^6.1.1",
+    "nimble-direction": "^6.2.2",
+    "pouchdb-adapter-http": "^6.3.4",
+    "pouchdb-core": "^6.3.4",
+    "pouchdb-mapreduce": "^6.3.4",
     "royal-thing": "^7.0.0",
     "seem": "^2.0.0",
-    "socket.io-client": "^2.0.2",
+    "socket.io-client": "^2.0.3",
     "superagent": "^3.5.2",
     "supervisord": "0.1.0",
-    "tangible": "^1.6.1",
-    "zappajs": "^6.4.0"
+    "tangible": "^1.7.0",
+    "zappajs": "^6.4.1"
   },
   "repository": {
     "type": "git",
