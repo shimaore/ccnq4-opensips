@@ -6,3 +6,4 @@ local/
 node_modules/
 supervisord.conf
 Dockerfile
+package-lock.json

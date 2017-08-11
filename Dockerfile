@@ -1,4 +1,4 @@
-FROM shimaore/opensips:DOCKER_OPENSIPS_VERSION
+FROM shimaore/docker.opensips:v4.2.3
 MAINTAINER Stéphane Alnet <stephane@shimaore.net>
 ENV NODE_ENV production
 

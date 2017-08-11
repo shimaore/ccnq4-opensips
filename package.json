@@ -3,7 +3,7 @@
   "docker_name": "shimaore/ccnq4-opensips",
   "version": "15.6.2",
   "opensips": {
-    "version": "4.2.2"
+    "version": "v4.2.3"
   },
   "private": true,
   "scripts": {
@@ -17,7 +17,8 @@
     "chai-as-promised": "^7.1.1",
     "exec-as-promised": "^2.0.0",
     "memdown": "^1.2.4",
-    "mocha": "^3.5.0"
+    "mocha": "^3.5.0",
+    "pouchdb-adapter-memory": "^6.3.4"
   },
   "dependencies": {
     "bluebird": "^3.5.0",
@@ -29,7 +30,7 @@
     "pouchdb-adapter-http": "^6.3.4",
     "pouchdb-core": "^6.3.4",
     "pouchdb-mapreduce": "^6.3.4",
-    "royal-thing": "^7.0.0",
+    "royal-thing": "^7.0.1",
     "seem": "^2.0.0",
     "socket.io-client": "^2.0.3",
     "superagent": "^3.5.2",

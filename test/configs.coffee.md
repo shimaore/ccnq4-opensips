@@ -5,7 +5,9 @@
       zappa = require '../src/zappa-as-promised'
       request = require 'superagent'
       {opensips,kill} = require './opensips'
-      PouchDB = require 'pouchdb'
+      PouchDB = require 'pouchdb-core'
+        .plugin require 'pouchdb-adapter-memory'
+        .defaults adapter: 'memory'
 
       random = (n) ->
         n + Math.ceil 100 * Math.random()
@@ -192,7 +194,7 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
           service
             port: c_port
             host: '172.17.0.1'
-            prov: new PouchDB 'provisioning', db: require 'memdown'
+            prov: new PouchDB 'provisioning'
             push: -> Promise.resolve()
             opensips:
               host: 'example.net'

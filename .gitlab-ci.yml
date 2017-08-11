@@ -6,10 +6,9 @@ build:
   - docker login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
   - docker pull shimaore/opensips:${DOCKER_OPENSIPS_VERSION}
   script:
-  - sed -e "s/DOCKER_OPENSIPS_VERSION/${DOCKER_OPENSIPS_VERSION}/" Dockerfile.src > Dockerfile
   - docker build -t ${CI_REGISTRY_IMAGE}:${PROJECT_TAG} .
   - docker push ${CI_REGISTRY_IMAGE}:${PROJECT_TAG}
 
 variables:
   PROJECT_TAG: "15.6.2"
-  DOCKER_OPENSIPS_VERSION: "4.2.2"
+  DOCKER_OPENSIPS_VERSION: "v4.2.3"
