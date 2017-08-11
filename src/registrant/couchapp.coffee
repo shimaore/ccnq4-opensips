@@ -13,7 +13,7 @@ module.exports = (cfg) ->
     lib: {}
     views:
       registrant_by_host:
-        map: registrant_by_host_map.replace 'DEFAULT_REGISTRANT_EXPIRY', cfg.default_registrant_expiry ? 86400
+        map: registrant_by_host_map.replace 'DEFAULT_REGISTRANT_EXPIRY', cfg.default_registrant_expiry ? 86413
 
 registrant_by_host_map = p_fun (doc) ->
 
@@ -27,16 +27,26 @@ registrant_by_host_map = p_fun (doc) ->
         silly_prefix = doc.registrant_prefix ? '00'
         username = "#{silly_prefix}#{doc.number}"
 
+      aor = "sip:#{username}@#{doc.registrant_remote_ipv4}"
+      rand = 7
+      rand += aor.charCodeAt i for i in [0...aor.length]
+
+      expiry = doc.registrant_expiry ? DEFAULT_REGISTRANT_EXPIRY
+
+      # Randomize the expiry time by as much as 5%
+      rand %= (expiry // 10) + 1
+      expiry += rand - rand // 2
+
       value =
         registrar: "sip:#{doc.registrant_remote_ipv4}"
         # proxy: null
-        aor: "sip:#{username}@#{doc.registrant_remote_ipv4}"
+        aor: aor
         # third_party_registrant: null
         username: username
         password: doc.registrant_password
         # binding_URI: "sip:00#{doc.number}@#{p.interfaces.primary.ipv4 ? p.host}:5070"
         # binding_params: null
-        expiry: doc.registrant_expiry ? DEFAULT_REGISTRANT_EXPIRY
+        expiry: expiry
         # forced_socket: null
 
       hosts = doc.registrant_host
