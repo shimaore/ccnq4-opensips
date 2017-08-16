@@ -22,7 +22,7 @@
   "ignore_location": 1,
   "skip_lineside": 1,
 
-  "source_ip and source_port comment": "source_ip and source_port (which may be overidden by the X-CCNQ3-Registrant-HostPort header) indicate which IP and port we use to send our packets out to the registrar.",
+  "source_ip and source_port comment": "source_ip and source_port (which may be overidden by the X-RH header) indicate which IP and port we use to send our packets out to the registrar.",
   "source_ip": "",
   "source_port": 5070,
   "source_ports": [
