@@ -14,8 +14,7 @@ modparam("dialog", "dlg_match_mode", ${dlg_match_mode}) # default 0 (match on rr
 # timeout/BYE
 modparam("dialog", "default_timeout", ${dialog_timeout}) # default 43200 (12h)
 # Set maximum duration of dialog (=call)
-# hdr.X-CCNQ3-Reason Set to `Call too long` when a dialog times out. (Timeout value is set by cfg.opensips.dialog_timeout by default.)
-modparam("dialog", "dlg_extra_hdrs", "X-CCNQ3-Reason: Call too long\r\n")
+modparam("dialog", "dlg_extra_hdrs", "Reason: SIP;cause=200;text=\"Call too long\"\r\n")
 
 modparam("dialog", "profiles_with_value", "endpoint ; number ; account")
 
