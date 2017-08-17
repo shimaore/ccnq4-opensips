@@ -3,14 +3,19 @@
     io = require 'socket.io-client'
     LRU = require 'lru-cache'
     Promise = require 'bluebird'
-    pkg = require '../../package.json'
-    name = "#{pkg.name}:client"
-    debug = (require 'tangible') name
-    body_parser = require 'body-parser'
 
     {show,list} = require './opensips'
     {unquote_params} = require '../quote'
     zappa_as_promised = require '../zappa-as-promised'
+
+    pkg = require '../../package.json'
+    name = "#{pkg.name}:client"
+    debug = (require 'tangible') name
+    opensips_debug = (require 'tangible') 'ccnq4-opensips:opensips'
+    body_parser = require 'body-parser'
+
+Export
+======
 
     module.exports = (cfg) ->
       debug 'Using configuration', cfg
@@ -172,12 +177,6 @@ Reply to requests for all AORs.
         cfg.active_watchers.forEach (value,key) ->
           docs[key] = value
         cfg.socket.emit 'active_watchers:response', docs
-
-Ping
-----
-
-      cfg.socket?.on 'ping', (doc) ->
-        cfg.socket.emit 'pong', host:cfg.host, in_reply_to:doc, name:pkg.name, version:pkg.version
 
       zappa_as_promised main, cfg
 
@@ -592,7 +591,8 @@ Versions
 
             debug 'version for', @query.v
 
-            # Versions for OpenSIPS 2.1
+Versions for OpenSIPS 2.2
+
             versions =
               location: 1011
               presentity: 5
@@ -603,3 +603,23 @@ Versions
             return "int\n#{versions[@query.v]}\n"
 
           @send ''
+
+Reports
+=======
+
+        @post '/_notify/:msg', (body_parser.json {}), ->
+          {msg} = @params
+
+          switch msg
+            when 'report_dev'
+              opensips_debug.dev 'notify', @body
+            when 'report_ops'
+              opensips_debug.dev 'notify', @body
+            when 'report_csr'
+              opensips_debug.dev 'notify', @body
+            when 'report_trace'
+              opensips_debug 'notify', @body
+            else
+              opensips_debug "Invalid notify for #{msg}", @body
+
+        return
