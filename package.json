@@ -9,8 +9,7 @@
   "scripts": {
     "pretest": "npm install && npm install --only=dev",
     "test": "mocha",
-    "test-simple": "mocha test/compiler.coffee.md test/config.coffee.md test/munin.coffee.md",
-    "version": "./build/gitlab-ci.yml"
+    "test-simple": "mocha test/compiler.coffee.md test/config.coffee.md test/munin.coffee.md"
   },
   "devDependencies": {
     "chai": "^4.1.1",
