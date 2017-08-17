@@ -189,12 +189,16 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
         service = require '../src/registrant/main'
         config.db_url = "http://172.17.0.1:#{c_port}"
 
+        prov = new PouchDB 'provisioning'
+
         zappa (-> main), web: {host:'172.17.0.1', port:a_port}
+        .then ->
+          prov.put (require '../src/registrant/couchapp') {}
         .then ->
           service
             port: c_port
             host: '172.17.0.1'
-            prov: new PouchDB 'provisioning'
+            prov: prov
             push: -> Promise.resolve()
             opensips:
               host: 'example.net'

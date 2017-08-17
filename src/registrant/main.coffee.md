@@ -89,7 +89,7 @@ Registrant
               @send list rows, @req, 'registrant'
             .catch (error) =>
               debug "query: #{error}"
-              @send ""
+              @res.status(500).end()
             return
 
           @send ""
