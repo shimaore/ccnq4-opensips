@@ -58,7 +58,12 @@ Registrant reload on data changes.
 
     url = require 'url'
     pkg = require './package.json'
-    debug = (require 'tangible') "#{pkg.name}:data"
+    logger = require 'tangible'
+    logger
+      .use require 'tangible/cuddly'
+      .use require 'tangible/gelf'
+      .use require 'tangible/redis'
+    debug = logger "#{pkg.name}:data"
     RoyalThing = require 'royal-thing'
     request = require 'superagent'
     Nimble = require 'nimble-direction'
@@ -75,6 +80,10 @@ Registrant reload on data changes.
 * env.CONFIG Location of the JSON file that specifies the configuration.
 
       cfg = require process.env.CONFIG
+
+      logger
+        .use require 'tangible/net'
+        .use (require 'tangible/repl') {cfg}
 
       Nimble cfg
       .then ->

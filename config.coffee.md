@@ -51,7 +51,12 @@ Toolbox
 
     pkg = require './package.json'
     assert = require 'assert'
-    debug = (require 'tangible') "#{pkg.name}:config"
+    logger = require 'tangible'
+    logger
+      .use require 'tangible/cuddly'
+      .use require 'tangible/gelf'
+      .use require 'tangible/redis'
+    debug = logger "#{pkg.name}:config"
     Promise = require 'bluebird'
     supervisord = require 'supervisord'
     fs = Promise.promisifyAll require 'fs'
