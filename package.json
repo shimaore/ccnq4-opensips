@@ -35,7 +35,7 @@
     "socket.io-client": "^2.0.3",
     "superagent": "^3.5.2",
     "supervisord": "0.1.0",
-    "tangible": "^1.7.0",
+    "tangible": "^1.8.1",
     "zappajs": "^6.4.1"
   },
   "repository": {
