@@ -2,9 +2,6 @@
   "name": "ccnq4-opensips",
   "docker_name": "shimaore/ccnq4-opensips",
   "version": "16.1.2",
-  "opensips": {
-    "version": "v4.2.3"
-  },
   "private": true,
   "scripts": {
     "pretest": "npm install && npm install --only=dev",

@@ -5,7 +5,7 @@
 
     pkg = require '../package.json'
 
-    docker_opensips = pkg.opensips.version
+    docker_opensips = 'v4.2.3'
 
     @opensips = (port,cfg) ->
       fs.writeFileAsync "/tmp/config-#{port}", cfg
