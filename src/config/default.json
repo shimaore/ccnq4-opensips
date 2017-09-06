@@ -71,6 +71,7 @@
   "nat_keepalive_interval": 150,
 
   "require_register": false,
+  "register_cache_timeout": 86400,
 
   "ok":true
 }

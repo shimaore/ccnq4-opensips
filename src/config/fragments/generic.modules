@@ -8,6 +8,11 @@ loadmodule "cachedb_local.so"
 modparam("cachedb_local", "cache_clean_period", ${cache_cleanup})
 modparam("cachedb_local", "cache_table_size", 12)
 
+if redis_register_cache
+loadmodule "cachedb_redis.so"
+modparam("cachedb_redis","cachedb_url","redis:register:${redis_register_cache}")
+end if redis_register_cache
+
 # -- JSON --
 loadmodule "json.so"
 
