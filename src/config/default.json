@@ -70,5 +70,7 @@
 
   "nat_keepalive_interval": 150,
 
+  "require_register": false,
+
   "ok":true
 }
