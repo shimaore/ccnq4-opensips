@@ -67,9 +67,7 @@ if rate_limit
   end if rate_limit_cache
 end if rate_limit
 
-if local_notify
-  loadmodule "event_route.so"
-end if local_notify
+loadmodule "event_route.so"
 
 loadmodule "rest_client.so"
 loadmodule "statistics.so"

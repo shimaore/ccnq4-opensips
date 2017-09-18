@@ -111,23 +111,3 @@ Versions for OpenSIPS 2.2
             return "int\n#{versions[@query.v]}\n"
 
           @send ''
-
-Reports
-=======
-
-        @post '/_notify/:msg', (body_parser.json {}), ->
-          {msg} = @params
-
-          switch msg
-            when 'report_dev'
-              opensips_debug.dev 'notify', @body
-            when 'report_ops'
-              opensips_debug.dev 'notify', @body
-            when 'report_csr'
-              opensips_debug.dev 'notify', @body
-            when 'report_trace'
-              opensips_debug 'notify', @body
-            else
-              opensips_debug "Invalid notify for #{msg}", @body
-
-        return
