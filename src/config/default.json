@@ -3,7 +3,7 @@
 
   "runtime_opensips_cfg": "/opt/opensips/etc/opensips/opensips.cfg",
   "db_url": "http://127.0.0.1:34340/",
-  "local_notify": "http://127.0.0.1:34340/",
+  "redis_notify": false,
   "services_url": "http://127.0.0.1:5704",
   "startup_route_code": "",
   "usrloc_db_mode": 2,
