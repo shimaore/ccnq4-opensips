@@ -1,9 +1,7 @@
     seem = require 'seem'
     zappa = require 'zappajs'
     io = require 'socket.io-client'
-    PouchDB = require 'pouchdb-core'
-      .plugin require 'pouchdb-adapter-http'
-      .plugin require 'pouchdb-mapreduce'
+    PouchDB = require 'ccnq4-pouchdb'
 
     hostname = (require 'os').hostname()
     request = require 'superagent'

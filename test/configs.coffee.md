@@ -5,7 +5,7 @@
       zappa = require '../src/zappa-as-promised'
       request = require 'superagent'
       {opensips,kill} = require './opensips'
-      PouchDB = require 'pouchdb-core'
+      PouchDB = require 'ccnq4-pouchdb'
         .plugin require 'pouchdb-adapter-memory'
         .defaults adapter: 'memory'
 
