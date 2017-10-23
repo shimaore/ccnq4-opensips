@@ -64,16 +64,16 @@ Toolbox
     Nimble = require 'nimble-direction'
     seem = require 'seem'
     Couch = require './index'
+    ccnq4_config = require 'ccnq4-config'
 
     module.exports = Options
 
     main = seem ->
 
       debug "#{pkg.name} #{pkg.version} config -- Starting."
-      assert process.env.CONFIG?, 'Missing CONFIG environment.'
-      assert process.env.SUPERVISOR?, 'Missing SUPERVISOR environment.'
 
-      cfg = require process.env.CONFIG
+      cfg = ccnq4_config()
+      assert cfg?, 'Missing configuration.'
 
       yield Nimble cfg
 
@@ -94,6 +94,7 @@ Replicate the provisioning database
 
 Start the data server.
 
+      assert process.env.SUPERVISOR?, 'Missing SUPERVISOR environment.'
       supervisor = Promise.promisifyAll supervisord.connect process.env.SUPERVISOR
       yield supervisor.startProcessAsync 'data'
       debug 'Started data server'

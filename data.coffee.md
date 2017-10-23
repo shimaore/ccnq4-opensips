@@ -69,17 +69,18 @@ Registrant reload on data changes.
     Nimble = require 'nimble-direction'
     Options = require './config'
     assert = require 'assert'
+    ccnq4_config = require 'ccnq4-config'
 
     module.exports = run
 
     if require.main is module
       debug "#{pkg.name} #{pkg.version} data -- Starting."
-      assert process.env.CONFIG?, 'Missing CONFIG environment.'
       assert process.env.SUPERVISOR?, 'Missing SUPERVISOR environment.'
 
 * env.CONFIG Location of the JSON file that specifies the configuration.
 
-      cfg = require process.env.CONFIG
+      cfg = ccnq4_config()
+      assert config?, 'Missing configuration.'
 
       logger
         .use require 'tangible/net'
