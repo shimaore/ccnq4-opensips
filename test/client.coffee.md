@@ -24,7 +24,7 @@
 
         service = require '../src/client/main'
         config.db_url = 'http://172.17.0.1:34344'
-        our_server = service
+        service
           web:
             port: 34344
             host: '172.17.0.1'
@@ -32,6 +32,7 @@
           usrloc_options: db: require 'memdown'
         .then ({server}) ->
           debug "Server ready"
+          our_server = server
           opensips b_port, compile config
           Promise.delay 10000
         .then ->
@@ -39,6 +40,7 @@
 
       after ->
         kill b_port
+        our_server.close()
 
       it 'should say which', ->
         stats = request.get "http://127.0.0.1:#{b_port}/json/which"

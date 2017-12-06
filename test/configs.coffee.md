@@ -1,7 +1,10 @@
+    (require 'chai').should()
+
     describe 'OpenSIPS', ->
       exec = require('exec-as-promised') console
       Promise = require 'bluebird'
       fs = Promise.promisifyAll require 'fs'
+      seem = require 'seem'
       zappa = require '../src/zappa-as-promised'
       request = require 'superagent'
       {opensips,kill} = require './opensips'
@@ -12,9 +15,16 @@
       random = (n) ->
         n + Math.ceil 100 * Math.random()
 
+      sleep = (timeout) -> new Promise (resolve) -> setTimeout resolve, timeout
+
       it 'should log time', (done) ->
-        after ->
-          kill b_port
+        our_server = null
+        after seem ->
+          @timeout 5000
+          yield sleep 1000
+          yield kill b_port
+          yield sleep 2000
+          our_server.close()
         @timeout 8000
         port = random 7000
         a_port = port++
@@ -22,11 +32,13 @@
         c_port = port++
         main = ->
           @get '/time/:time', ->
-            @params.time.should.match /^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\+\d\d\d\d$/
+            {time} = @params
+            time.should.match /^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\+\d\d\d\d$/
             @json ok:yes
             done()
         zappa (-> main), web: {host:'172.17.0.1', port:a_port}
-        .then ->
+        .then ({server}) ->
+          our_server = server
           opensips b_port, """
             mpath="/opt/opensips/lib64/opensips/modules/"
             loadmodule "proto_udp.so"
@@ -45,8 +57,13 @@
         return
 
       it 'should accept simple configuration', (done) ->
-        after ->
-          kill b_port
+        our_server = null
+        after seem ->
+          @timeout 5000
+          yield sleep 1000
+          yield kill b_port
+          yield sleep 2000
+          our_server.close()
         @timeout 8000
         port = random 8000
         a_port = port++
@@ -57,7 +74,8 @@
             @json ok:yes
             done()
         zappa (-> main), web: {host:'172.17.0.1', port:a_port}
-        .then ->
+        .then ({server}) ->
+          our_server = server
           opensips b_port, """
             mpath="/opt/opensips/lib64/opensips/modules/"
             loadmodule "proto_udp.so"
@@ -72,14 +90,16 @@
               exit;
             }
           """
-        Promise.delay 2500
-        .then ->
-          kill b_port
         return
 
       it 'should parse JSON', (done) ->
-        after ->
-          kill b_port
+        our_server = null
+        after seem ->
+          @timeout 5000
+          yield sleep 1000
+          yield kill b_port
+          yield sleep 2000
+          our_server.close()
         @timeout 8000
         port = random 9000
         a_port = port++
@@ -92,7 +112,8 @@
             @json ok:yes
             done()
         zappa (-> main), web: {host:'172.17.0.1', port:a_port}
-        .then ->
+        .then ({server}) ->
+          our_server = server
 
 Notice: `rest_get(url,"$json(response)")` does not work, one must go through a variable.
 
@@ -119,8 +140,15 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
         return
 
       it 'should accept `client` configuration', (done) ->
-        after ->
-          kill b_port
+        our_server = null
+        their_server = null
+        after seem ->
+          @timeout 5000
+          yield sleep 1000
+          yield kill b_port
+          yield sleep 2000
+          our_server.close()
+          their_server.close()
         @timeout 10000
         port = random 10000
         a_port = port++
@@ -140,13 +168,15 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
             rest_get("http://172.17.0.1:#{a_port}/ok-client","$var(body)");
             exit;
         """
+        config.httpd_ip = ''
         config.httpd_port = b_port
 
         service = require '../src/client/main'
         config.db_url = "http://172.17.0.1:#{c_port}"
 
         zappa (-> main), web: {host:'172.17.0.1', port:a_port}
-        .then ->
+        .then ({server}) ->
+          our_server = server
           service
             port: c_port
             host: '172.17.0.1'
@@ -157,15 +187,23 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
               host: '172.17.0.1'
         .catch (error) ->
           console.log "Service error: #{error}"
-        .then ->
+        .then ({server}) ->
+          their_server = server
           opensips b_port, compile config
         .catch (error) ->
           console.log "OpenSIPS error: #{error}"
         return
 
       it 'should accept `registrant` configuration', (done) ->
-        after ->
-          kill b_port
+        our_server = null
+        their_server = null
+        after seem ->
+          @timeout 5000
+          yield sleep 1000
+          yield kill b_port
+          yield sleep 2000
+          our_server.close()
+          their_server.close()
         @timeout 10000
 
         port = random 11000
@@ -184,6 +222,7 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
             rest_get("http://172.17.0.1:#{a_port}/ok-registrant","$var(body)");
             exit;
         """
+        config.httpd_ip = ''
         config.httpd_port = b_port
 
         service = require '../src/registrant/main'
@@ -192,7 +231,8 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
         prov = new PouchDB 'provisioning'
 
         zappa (-> main), web: {host:'172.17.0.1', port:a_port}
-        .then ->
+        .then ({server}) ->
+          our_server = server
           prov.put (require '../src/registrant/couchapp') {}
         .then ->
           service
@@ -207,7 +247,8 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
               host: '172.17.0.1'
         .catch (error) ->
           console.log "Service error: #{error}"
-        .then ->
+        .then ({server}) ->
+          their_server = server
           opensips b_port, compile config
         .catch (error) ->
           console.log "OpenSIPS error: #{error}"

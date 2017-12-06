@@ -5,7 +5,7 @@
 
     pkg = require '../package.json'
 
-    docker_opensips = 'v4.2.3'
+    docker_opensips = 'v4.4.1'
 
     @opensips = (port,cfg) ->
       fs.writeFileAsync "/tmp/config-#{port}", cfg
@@ -15,4 +15,3 @@
     @kill = (port) ->
       request.get "http://127.0.0.1:#{port}/json/kill"
       .catch -> true
-      return

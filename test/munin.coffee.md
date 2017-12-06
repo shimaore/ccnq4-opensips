@@ -1,6 +1,8 @@
     chai = require 'chai'
     chai.use require 'chai-as-promised'
     chai.should()
+    seem = require 'seem'
+    sleep = (timeout) -> new Promise (resolve) -> setTimeout resolve, timeout
 
     request = require 'superagent'
 
@@ -9,6 +11,8 @@
       it 'should return proper autoconf', (done) ->
         munin = require '../src/munin'
         {server} = munin {}
+        after ->
+          server.close()
         server.on 'listening', ->
           request
           .get 'http://127.0.0.1:3949/autoconf'
@@ -19,6 +23,8 @@
       it 'should return config', (done) ->
         munin = require '../src/munin'
         {server} = munin munin: port:3940
+        after ->
+          server.close()
         server.on 'listening', ->
           request
           .get 'http://127.0.0.1:3940/config'
@@ -47,24 +53,29 @@
 
         service = require '../src/client/main'
         config.db_url = 'http://172.17.0.1:34349'
-        our_server = service
+        service
           web:
             port: 34349
             host: '172.17.0.1'
           usrloc: 'location'
           usrloc_options: db: require 'memdown'
         .then ({server}) ->
+          our_server = server
           opensips b_port, compile config
           Promise.delay 3000
 
-      after ->
-        kill b_port
+      after seem ->
+        yield sleep 1000
+        yield kill b_port
+        our_server.close()
 
       it 'should return value', (done) ->
         munin = require '../src/munin'
         {server} = munin
           munin: port:3941
           httpd_port: b_port
+        after ->
+          server.close()
         success = false
         server.on 'listening', ->
           request

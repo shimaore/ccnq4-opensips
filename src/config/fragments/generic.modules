@@ -6,7 +6,7 @@ loadmodule "proto_udp.so"
 
 loadmodule "cachedb_local.so"
 modparam("cachedb_local", "cache_clean_period", ${cache_cleanup})
-modparam("cachedb_local", "cache_table_size", 12)
+modparam("cachedb_local", "cache_collections", "default=12")
 
 if redis_register_cache
 loadmodule "cachedb_redis.so"
