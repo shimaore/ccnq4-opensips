@@ -80,7 +80,7 @@ Registrant reload on data changes.
 * env.CONFIG Location of the JSON file that specifies the configuration.
 
       cfg = ccnq4_config()
-      assert config?, 'Missing configuration.'
+      assert cfg?, 'Missing configuration.'
 
       logger
         .use require 'tangible/net'
