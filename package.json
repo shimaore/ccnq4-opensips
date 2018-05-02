@@ -4,16 +4,16 @@
   "version": "16.3.4",
   "private": true,
   "scripts": {
-    "pretest": "npm install && npm install --only=dev",
-    "test": "mocha",
-    "test-simple": "mocha test/compiler.coffee.md test/config.coffee.md test/munin.coffee.md"
+    "pretest": "npm install && npm install --only=dev && rm package-lock.json && coffee -c test/*.coffee.md",
+    "prepare": "coffee -c *.coffee.md src/*.coffee.md src/*/*.coffee.md src/*/*.coffee",
+    "test": "mocha"
   },
   "devDependencies": {
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "exec-as-promised": "^2.0.0",
-    "memdown": "^1.4.1",
-    "mocha": "^4.0.1",
+    "memdown": "^2.0.0",
+    "mocha": "^5.1.1",
     "pouchdb-adapter-memory": "^6.3.4"
   },
   "dependencies": {
@@ -21,17 +21,18 @@
     "body-parser": "^1.18.2",
     "ccnq4-config": "^1.0.0",
     "ccnq4-pouchdb": "^1.0.0",
-    "coffee-script": "1.12.7",
+    "coffeescript": "^2.3.0",
+    "express": "^4.16.3",
     "lru-cache": "^4.1.1",
     "morgan": "^1.9.0",
     "nimble-direction": "^6.3.3",
+    "red-rings": "^1.1.4",
+    "red-rings-axon": "^2.0.0",
     "royal-thing": "^7.0.2",
-    "seem": "^2.0.0",
     "socket.io-client": "^2.0.4",
-    "superagent": "^3.8.1",
+    "superagent": "^3.8.3",
     "supervisord": "0.1.0",
-    "tangible": "^1.9.0",
-    "zappajs": "^6.5.0"
+    "tangible": "^2.0.0"
   },
   "repository": {
     "type": "git",

@@ -3,6 +3,8 @@
 
     debug = (require 'tangible') 'test:client'
 
+    sleep = (timeout) -> new Promise (resolve) -> setTimeout resolve, timeout
+
     describe 'The `client` configuration', ->
       request = require 'superagent'
       Promise = require 'bluebird'
@@ -24,19 +26,16 @@
 
         service = require '../src/client/main'
         config.db_url = 'http://172.17.0.1:34344'
-        service
+        our_server = await service
           web:
             port: 34344
             host: '172.17.0.1'
           usrloc: 'location'
           usrloc_options: db: require 'memdown'
-        .then ({server}) ->
-          debug "Server ready"
-          our_server = server
-          opensips b_port, compile config
-          Promise.delay 10000
-        .then ->
-          debug "Start"
+        debug "Server ready"
+        opensips b_port, compile config
+        await sleep 10000
+        debug "Start"
 
       after ->
         kill b_port

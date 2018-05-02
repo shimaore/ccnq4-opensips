@@ -4,8 +4,11 @@ language: node_js
 node_js:
 - "9"
 
+env:
+- DEBUG="*"
+
 services:
 - docker
 
 before_install:
-- docker pull shimaore/docker.opensips:v4.4.1
+- docker pull shimaore/docker.opensips:v4.4.5

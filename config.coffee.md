@@ -18,7 +18,7 @@ Configuration for the entire package.
       for k,v of cfg_env
         cfg.opensips[k] ?= process.env[v] if process.env[v]?
 
-      debug 'Using configuration', cfg
+      # debug 'Using configuration', cfg
       assert cfg.opensips.model?, 'Missing `model` field in `opensips` object in configuration.'
 
       options = {}
@@ -62,20 +62,19 @@ Toolbox
     fs = Promise.promisifyAll require 'fs'
     os = require 'os'
     Nimble = require 'nimble-direction'
-    seem = require 'seem'
     Couch = require './index'
     ccnq4_config = require 'ccnq4-config'
 
     module.exports = Options
 
-    main = seem ->
+    main = ->
 
       debug "#{pkg.name} #{pkg.version} config -- Starting."
 
       cfg = ccnq4_config()
       assert cfg?, 'Missing configuration.'
 
-      yield Nimble cfg
+      await Nimble cfg
 
 Build the configuration file.
 
@@ -85,9 +84,9 @@ Build the configuration file.
 Replicate the provisioning database
 
       couch = Couch cfg.opensips.model
-      yield cfg.master_push couch
-      yield cfg.reject_tombstones cfg.prov
-      yield cfg.replicate 'provisioning', (doc) ->
+      await cfg.master_push couch
+      await cfg.reject_tombstones cfg.prov
+      await cfg.replicate 'provisioning', (doc) ->
           debug "Using replication filter #{couch.replication_filter}"
           doc.filter = couch.replication_filter
           doc.comment += " for #{pkg.name}"
@@ -96,10 +95,10 @@ Start the data server.
 
       assert process.env.SUPERVISOR?, 'Missing SUPERVISOR environment.'
       supervisor = Promise.promisifyAll supervisord.connect process.env.SUPERVISOR
-      yield supervisor.startProcessAsync 'data'
+      await supervisor.startProcessAsync 'data'
       debug 'Started data server'
       unless cfg.server_only is true
-        yield supervisor.startProcessAsync 'opensips'
+        await supervisor.startProcessAsync 'opensips'
         debug 'Started opensips'
 
       debug "Started."

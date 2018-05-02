@@ -1,7 +1,5 @@
 .pages
 .publish
-test/opensips-*.cfg
-test/node_modules/
 local/
 node_modules/
 supervisord.conf

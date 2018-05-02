@@ -1,6 +1,8 @@
-    seem = require 'seem'
-    zappa = require 'zappajs'
-    io = require 'socket.io-client'
+    Express = require 'express'
+    morgan = require 'morgan'
+    io = require 'socket.io-client' # DEPRECATED
+    RedRingAxon = require 'red-rings-axon'
+    {SUBSCRIBE} = require 'red-rings/operations'
     PouchDB = require 'ccnq4-pouchdb'
 
     hostname = (require 'os').hostname()
@@ -8,23 +10,24 @@
     url = require 'url'
     {list} = require './opensips'
     CouchApp = require './couchapp'
-    zappa_as_promised = require '../zappa-as-promised'
 
     pkg = require '../../package.json'
     name = "#{pkg.name}:registrant"
-    debug = (require 'tangible') name
-    opensips_debug = (require 'tangible') 'ccnq4-opensips:opensips'
-    body_parser = require 'body-parser'
-
+    {debug,foot} = (require 'tangible') name
 
 Export
 ======
 
-    module.exports = seem (cfg) ->
+    module.exports = (cfg) ->
+      # debug 'Using configuration', cfg
+
+      cfg.host ?= (require 'os').hostname()
 
       cfg.couchapp = CouchApp cfg
 
-      yield cfg.push cfg.couchapp
+      await cfg.push cfg.couchapp
+
+DEPRECATED
 
       cfg.socket = io cfg.notify if cfg.notify?
 
@@ -36,9 +39,9 @@ Subscribe to the `locations` bus.
 Reply to requests for all AORs.
 ------------------------------
 
-      cfg.socket?.on 'registrants', seem ->
+      cfg.socket?.on 'registrants', ->
         debug 'socket: registrants'
-        {body} = yield request
+        {body} = await request
           .get url.format
             protocol: 'http'
             hostname: cfg.opensips.httpd_ip
@@ -48,24 +51,48 @@ Reply to requests for all AORs.
         cfg.socket.emit 'registrants:response', body
         debug 'socket: registrants done'
 
-      zappa_as_promised main, cfg
+/DEPRECATED
+
+      cfg.rr = new RedRingAxon cfg.axon ? {}
+
+      cfg.rr
+      .receive 'registrants'
+      .filter ({op}) -> op is SUBSCRIBE
+      .forEach foot (msg) ->
+        {body} = await request
+          .get url.format
+            protocol: 'http'
+            hostname: cfg.opensips.httpd_ip
+            port: cfg.opensips.httpd_port
+            pathname: '/json/reg_list'
+          .accept 'json'
+        cfg.rr.notify msg.key, "host:#{cfg.host}", body
+        return
+
+      app = Express()
+      main app, cfg
+      new Promise (resolve,reject) ->
+        server = app.listen cfg.web.port, cfg.web.host, ->
+          debug 'Started'
+          resolve server
+        server.once 'error', reject
+        return
 
 ZappaJS server
 ==============
 
-    main = (cfg) ->
+    main = (app,cfg) ->
 
-      ->
-        @use morgan:'combined'
+      app.use morgan 'combined'
 
 REST/JSON API
 
-        queries =
-          version: 0
-          registrant: 0
+      queries =
+        version: 0
+        registrant: 0
 
-        @get '/', ->
-          @json {
+      app.get '/', (req,res) ->
+          res.json {
             name
             version: pkg.version
             queries
@@ -77,35 +104,38 @@ OpenSIPS db_http API
 Registrant
 ----------
 
-        @get '/registrant/': ->
+      app.get '/registrant/', (req,res) ->
           queries.registrant++
-          if not @query.k?
+          if not req.query.k?
             cfg.prov.query "#{cfg.couchapp.id}/registrant_by_host",
               startkey: [ cfg.opensips.host ]
               endkey: [ cfg.opensips.host, {} ]
             .then ({rows}) =>
-              @send list rows, @req, 'registrant'
+              res.send list rows, req, 'registrant'
             .catch (error) =>
               debug "query: #{error}"
-              @res.status(500).end()
+              res.status(500).end()
             return
 
-          @send ""
+          res.send ''
+          return
 
 Versions
 --------
 
-        @get '/version/': ->
+        app.get '/version/', (req,res) ->
           queries.version++
-          if @query.k is 'table_name' and @query.c is 'table_version'
+          if req.query.k is 'table_name' and req.query.c is 'table_version'
 
-            debug 'version for', @query.v
+            debug 'version for', req.query.v
 
 Versions for OpenSIPS 2.2
 
             versions =
               registrant: 1
 
-            return "int\n#{versions[@query.v]}\n"
+            res.send "int\n#{versions[req.query.v]}\n"
+            return
 
-          @send ''
+          res.send ''
+          return
