@@ -12,3 +12,4 @@ services:
 
 before_install:
 - docker pull shimaore/docker.opensips:v4.4.5
+- docker build -t shimaore/ccnq4-opensips .
