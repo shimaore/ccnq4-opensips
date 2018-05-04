@@ -62,7 +62,6 @@ Toolbox
     fs = Promise.promisifyAll require 'fs'
     os = require 'os'
     Nimble = require 'nimble-direction'
-    Couch = require './index'
     ccnq4_config = require 'ccnq4-config'
 
     module.exports = Options
@@ -83,13 +82,9 @@ Build the configuration file.
 
 Replicate the provisioning database
 
-      couch = Couch cfg.opensips.model
-      await cfg.master_push couch
       await cfg.reject_tombstones cfg.prov
-      await cfg.replicate 'provisioning', (doc) ->
-          debug "Using replication filter #{couch.replication_filter}"
-          doc.filter = couch.replication_filter
-          doc.comment += " for #{pkg.name}"
+      await cfg.reject_types cfg.prov
+      await cfg.replicate 'provisioning'
 
 Start the data server.
 
