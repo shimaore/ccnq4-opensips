@@ -24,7 +24,8 @@ USER opensips
 WORKDIR /home/opensips
 
 RUN mkdir -p log run/opensips \
-  && npm install && npm cache -f clean
+  && npm install && npm cache -f clean \
+  && npm run prepare
 
 USER root
 RUN \
