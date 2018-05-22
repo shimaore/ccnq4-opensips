@@ -31,7 +31,6 @@
     "royal-thing": "^7.0.2",
     "socket.io-client": "^2.0.4",
     "superagent": "^3.8.3",
-    "supervisord": "0.1.0",
     "tangible": "^2.0.0"
   },
   "repository": {

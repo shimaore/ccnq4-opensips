@@ -49,56 +49,13 @@ Override them with any configuration elment found in the configuration's `opensi
 Toolbox
 -------
 
-    pkg = require './package.json'
     assert = require 'assert'
     logger = require 'tangible'
     logger
       .use require 'tangible/cuddly'
       .use require 'tangible/gelf'
       .use require 'tangible/redis'
-    debug = logger "#{pkg.name}:config"
-    Promise = require 'bluebird'
-    supervisord = require 'supervisord'
-    fs = Promise.promisifyAll require 'fs'
+    debug = logger "ccnq4-opensips:config"
     os = require 'os'
-    Nimble = require 'nimble-direction'
-    ccnq4_config = require 'ccnq4-config'
 
     module.exports = Options
-
-    main = ->
-
-      debug "#{pkg.name} #{pkg.version} config -- Starting."
-
-      cfg = ccnq4_config()
-      assert cfg?, 'Missing configuration.'
-
-      await Nimble cfg
-
-Build the configuration file.
-
-      options = Options cfg
-      (require './src/config/compiler') options
-
-Replicate the provisioning database
-
-      await cfg.reject_tombstones cfg.prov
-      await cfg.reject_types cfg.prov
-      await cfg.replicate 'provisioning'
-
-Start the data server.
-
-      assert process.env.SUPERVISOR?, 'Missing SUPERVISOR environment.'
-      supervisor = Promise.promisifyAll supervisord.connect process.env.SUPERVISOR
-      await supervisor.startProcessAsync 'data'
-      debug 'Started data server'
-      unless cfg.server_only is true
-        await supervisor.startProcessAsync 'opensips'
-        debug 'Started opensips'
-
-      debug "Started."
-
-    if require.main is module
-      main()
-      .catch (error) ->
-        debug "Startup failed: #{error}"

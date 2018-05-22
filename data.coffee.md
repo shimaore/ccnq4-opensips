@@ -22,21 +22,7 @@ cfg.opensips.model Model for OpenSIPS configuration; either `client` (the defaul
           'client'
 
       service = require "./src/#{type}/main"
-      service cfg
-      .then ->
-        debug 'Service ready'
-
-If there was an issue with the server,
-
-      .catch (error) ->
-
-log it,
-
-        debug "Service error: #{error}"
-
-and ask supervisord to restart us.
-
-        throw error
+      await service cfg
 
 Registrant reload on data changes.
 
@@ -57,38 +43,11 @@ Registrant reload on data changes.
       munin cfg
 
     url = require 'url'
-    pkg = require './package.json'
     logger = require 'tangible'
     logger
       .use require 'tangible/cuddly'
       .use require 'tangible/gelf'
       .use require 'tangible/redis'
-    debug = logger "#{pkg.name}:data"
+    debug = logger "ccnq4-opensips:data"
     RoyalThing = require 'royal-thing'
     request = require 'superagent'
-    Nimble = require 'nimble-direction'
-    Options = require './config'
-    assert = require 'assert'
-    ccnq4_config = require 'ccnq4-config'
-
-    module.exports = run
-
-    if require.main is module
-      debug "#{pkg.name} #{pkg.version} data -- Starting."
-      assert process.env.SUPERVISOR?, 'Missing SUPERVISOR environment.'
-
-* env.CONFIG Location of the JSON file that specifies the configuration.
-
-      cfg = ccnq4_config()
-      assert cfg?, 'Missing configuration.'
-
-      logger
-        .use require 'tangible/net'
-        .use (require 'tangible/repl') {cfg}
-
-      Nimble cfg
-      .then ->
-        Options cfg
-        run cfg
-      .then ->
-        debug "Started."
