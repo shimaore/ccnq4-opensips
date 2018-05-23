@@ -5,10 +5,11 @@
       .use require 'tangible/gelf'
       .use require 'tangible/redis'
       .use require 'tangible/net'
-    debug = logger "ccnq4-opensips:config"
+    debug = logger "ccnq4-opensips:server"
     Nimble = require 'nimble-direction'
     ccnq4_config = require 'ccnq4-config'
     Options = require './config'
+    run = require './data'
     opensips = require './opensips'
 
     module.exports = main = ->
@@ -19,18 +20,22 @@
       logger.use (require 'tangible/repl') {cfg}
       await Nimble cfg
 
-Build the configuration file.
+      debug 'Build the configuration file.'
 
       options = Options cfg
       (require './src/config/compiler') options
 
-Replicate the provisioning database
+      debug 'Replicate the provisioning database.'
 
       await cfg.reject_tombstones cfg.prov
       await cfg.reject_types cfg.prov
       await cfg.replicate 'provisioning'
 
+      debug 'Start the data server'
+
       await run cfg
+
+      debug 'Start OpenSIPS'
 
       opensips()
 
