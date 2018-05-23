@@ -5,7 +5,6 @@
       .use require 'tangible/gelf'
       .use require 'tangible/redis'
       .use require 'tangible/net'
-      .use (require 'tangible/repl') {cfg}
     debug = logger "ccnq4-opensips:config"
     Nimble = require 'nimble-direction'
     ccnq4_config = require 'ccnq4-config'
@@ -17,6 +16,7 @@
       cfg = ccnq4_config()
       assert cfg?, 'Missing configuration.'
 
+      logger.use (require 'tangible/repl') {cfg}
       await Nimble cfg
 
 Build the configuration file.
