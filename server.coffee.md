@@ -29,7 +29,8 @@
 
       await cfg.reject_tombstones cfg.prov
       await cfg.reject_types cfg.prov
-      await cfg.replicate 'provisioning'
+      unless await cfg.replicate 'provisioning'
+        throw new Error 'Unable to start the replication of the provisioning database.'
 
       debug 'Start the data server'
 

@@ -25,7 +25,7 @@
     "express": "^4.16.3",
     "lru-cache": "^4.1.1",
     "morgan": "^1.9.0",
-    "nimble-direction": "^7.0.0",
+    "nimble-direction": "^7.1.0",
     "red-rings": "^1.1.4",
     "red-rings-axon": "^2.0.0",
     "royal-thing": "^7.0.2",
