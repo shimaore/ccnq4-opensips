@@ -23,6 +23,8 @@ Start the processes
         debug.dev "Process exited with code #{code}, signal #{signal}"
         process.exit code
 
+      process.on 'exit', -> s.kill()
+
       s
 
     child_process = require 'child_process'
