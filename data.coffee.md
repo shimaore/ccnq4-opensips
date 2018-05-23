@@ -1,7 +1,7 @@
 OpenSIPS / CouchDB data proxy
 -----------------------------
 
-    run = (cfg) ->
+    module.exports = run = (cfg) ->
 
 The service (database proxy) parameters.
 
