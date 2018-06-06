@@ -1,17 +1,28 @@
-    exec = require('exec-as-promised') console
+    child_process = require 'child_process'
     {promisifyAll} = require 'bluebird'
     fs = promisifyAll require 'fs'
     request = require 'superagent'
-
-    docker_opensips = 'v4.4.5'
+    debug = (require 'tangible') 'ccnq4-opensips:test:opensips'
+    sleep = (timeout) -> new Promise (resolve) -> setTimeout resolve, timeout
 
     opensips = (port,cfg) ->
-      fs.writeFileAsync "/tmp/config-#{port}", cfg
-      .then ->
-        exec "docker run --rm=true -v /tmp/config-#{port}:/tmp/config -p 127.0.0.1:#{port}:#{port} shimaore/docker.opensips:#{docker_opensips} /opt/opensips/sbin/opensips -f /tmp/config -m 64 -M 32 -F -E"
+      debug 'Going to start opensips on port', port
+      cfg_file = "/tmp/config-#{port}"
+      await fs.writeFileAsync cfg_file, cfg
+      s = child_process.spawn '/opt/opensips/sbin/opensips',
+          [
+            '-f', cfg_file
+            '-m', '64'
+            '-M', '16'
+            '-F' # no daemon
+            '-E' # log to stderr
+            '-w', '/tmp'
+          ],
+          stdio: if process.env.DEBUG then ['ignore',process.stdout,process.stderr] else ['ignore','ignore','ignore']
+          end: TZ:'UTC'
+      kill = ->
+        await sleep 500
+        s.kill()
+        await sleep 500
 
-    kill = (port) ->
-      request.get "http://127.0.0.1:#{port}/json/kill"
-      .catch -> true
-
-    module.exports = {opensips,kill}
+    module.exports = opensips

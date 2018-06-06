@@ -1,9 +1,10 @@
     (require 'chai').should()
+    hostname = '127.0.0.1'
 
     exec = require('exec-as-promised') console
     Express = require 'express'
     request = require 'superagent'
-    {opensips,kill} = require './opensips'
+    opensips = require './opensips'
     PouchDB = require 'ccnq4-pouchdb'
       .plugin require 'pouchdb-adapter-memory'
       .defaults adapter: 'memory'
@@ -35,9 +36,9 @@
               res.json ok:yes
               done()
         await new Promise (resolve) ->
-          our_server = app.listen a_port, '172.17.0.1', resolve
+          our_server = app.listen a_port, hostname, resolve
 
-        opensips b_port, """
+        kill = await opensips b_port, """
           mpath="/opt/opensips/lib64/opensips/modules/"
           loadmodule "proto_udp.so"
           listen=udp:127.0.0.1:#{c_port}
@@ -48,7 +49,7 @@
           loadmodule "rest_client.so"
           startup_route {
             $var(now) = $time(%FT%T%z);
-            rest_get("http://172.17.0.1:#{a_port}/time/$var(now)","$var(body)");
+            rest_get("http://#{hostname}:#{a_port}/time/$var(now)","$var(body)");
             exit;
           }
         """
@@ -73,19 +74,19 @@
             res.json ok:yes
             done()
         await new Promise (resolve) ->
-          our_server = app.listen a_port, '172.17.0.1', resolve
+          our_server = app.listen a_port, hostname, resolve
 
-        opensips b_port, """
+        kill = await opensips b_port, """
             mpath="/opt/opensips/lib64/opensips/modules/"
             loadmodule "proto_udp.so"
-            listen=udp:127.0.0.1:#{c_port}
+            listen=udp:0.0.0.0:#{c_port}
             loadmodule "mi_json.so"
 
             loadmodule "httpd.so"
             modparam("httpd","port",#{b_port})
             loadmodule "rest_client.so"
             startup_route {
-              rest_get("http://172.17.0.1:#{a_port}","$var(body)");
+              rest_get("http://#{hostname}:#{a_port}","$var(body)");
               exit;
             }
           """
@@ -112,14 +113,14 @@
             res.json ok:yes
             done()
         await new Promise (resolve) ->
-          our_server = app.listen a_port, '172.17.0.1', resolve
+          our_server = app.listen a_port, hostname, resolve
 
 Notice: `rest_get(url,"$json(response)")` does not work, one must go through a variable.
 
-        opensips b_port, """
+        kill = await opensips b_port, """
             mpath="/opt/opensips/lib64/opensips/modules/"
             loadmodule "proto_udp.so"
-            listen=udp:127.0.0.1:#{c_port}
+            listen=udp:0.0.0.0:#{c_port}
             loadmodule "mi_json.so"
 
             loadmodule "json.so"
@@ -127,10 +128,10 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
             modparam("httpd","port",#{b_port})
             loadmodule "rest_client.so"
             startup_route {
-              if(rest_get("http://172.17.0.1:#{a_port}/foo","$var(body)")) {
+              if(rest_get("http://#{hostname}:#{a_port}/foo","$var(body)")) {
                 $json(response) := $var(body);
                 if( $json(response/foo) == "bar") {
-                  rest_get("http://172.17.0.1:#{a_port}/ok-json","$var(body)");
+                  rest_get("http://#{hostname}:#{a_port}/ok-json","$var(body)");
                 }
               }
               exit;
@@ -159,14 +160,14 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
         {compile} = require '../src/config/compiler'
         config = build_config require './config1.json'
         config.startup_route_code = """
-            rest_get("http://172.17.0.1:#{a_port}/ok-client","$var(body)");
+            rest_get("http://#{hostname}:#{a_port}/ok-client","$var(body)");
             exit;
         """
         config.httpd_ip = ''
         config.httpd_port = b_port
 
         service = require '../src/client/main'
-        config.db_url = "http://172.17.0.1:#{c_port}"
+        config.db_url = "http://#{hostname}:#{c_port}"
 
         app = Express()
         success = false
@@ -176,17 +177,17 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
             done() unless success
             success = true
         await new Promise (resolve) ->
-          our_server = app.listen a_port, '172.17.0.1', resolve
+          our_server = app.listen a_port, hostname, resolve
 
         their_server = await service
           port: c_port
-          host: '172.17.0.1'
+          host: hostname
           usrloc: 'location'
           usrloc_options: db: require 'memdown'
           web:
             port: c_port
-            host: '172.17.0.1'
-        opensips b_port, compile config
+            host: hostname
+        kill = await opensips b_port, compile config
         await p
 
       it 'should accept `registrant` configuration', ->
@@ -210,14 +211,14 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
         {compile} = require '../src/config/compiler'
         config = build_config require './config2.json'
         config.startup_route_code = """
-            rest_get("http://172.17.0.1:#{a_port}/ok-registrant","$var(body)");
+            rest_get("http://#{hostname}:#{a_port}/ok-registrant","$var(body)");
             exit;
         """
         config.httpd_ip = ''
         config.httpd_port = b_port
 
         service = require '../src/registrant/main'
-        config.db_url = "http://172.17.0.1:#{c_port}"
+        config.db_url = "http://#{hostname}:#{c_port}"
 
         prov = new PouchDB 'provisioning'
 
@@ -227,18 +228,18 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
             res.json ok:yes
             done()
         await new Promise (resolve) ->
-          our_server = app.listen a_port, '172.17.0.1', resolve
+          our_server = app.listen a_port, hostname, resolve
 
         await prov.put (require '../src/registrant/couchapp') {}
         their_server = await service
             port: c_port
-            host: '172.17.0.1'
+            host: hostname
             prov: prov
             push: -> Promise.resolve()
             opensips:
               host: 'example.net'
             web:
               port: c_port
-              host: '172.17.0.1'
-        opensips b_port, compile config
+              host: hostname
+        kill = await opensips b_port, compile config
         await p

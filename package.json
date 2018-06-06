@@ -4,7 +4,7 @@
   "version": "18.0.0-5",
   "private": true,
   "scripts": {
-    "pretest": "npm install && npm install --only=dev && rm package-lock.json && coffee -c test/*.coffee.md",
+    "pretest": "npm install --only=dev && coffee -c test/*.coffee.md",
     "prepare": "coffee -c *.coffee.md src/*.coffee.md src/*/*.coffee.md src/*/*.coffee",
     "test": "mocha"
   },
@@ -12,7 +12,7 @@
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "exec-as-promised": "^2.0.0",
-    "memdown": "^2.0.0",
+    "memdown": "^3.0.0",
     "mocha": "^5.1.1",
     "pouchdb-adapter-memory": "^6.3.4"
   },
