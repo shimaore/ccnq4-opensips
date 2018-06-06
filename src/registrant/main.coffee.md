@@ -1,6 +1,5 @@
     Express = require 'express'
     morgan = require 'morgan'
-    io = require 'socket.io-client' # DEPRECATED
     RedRingAxon = require 'red-rings-axon'
     {SUBSCRIBE} = require 'red-rings/operations'
     PouchDB = require 'ccnq4-pouchdb'
@@ -26,32 +25,6 @@ Export
       cfg.couchapp = CouchApp cfg
 
       await cfg.push cfg.couchapp
-
-DEPRECATED
-
-      cfg.socket = io cfg.notify if cfg.notify?
-
-Subscribe to the `locations` bus.
-
-      cfg.socket?.on 'welcome', ->
-        cfg.socket.emit 'configure', locations:true
-
-Reply to requests for all AORs.
-------------------------------
-
-      cfg.socket?.on 'registrants', ->
-        debug 'socket: registrants'
-        {body} = await request
-          .get url.format
-            protocol: 'http'
-            hostname: cfg.opensips.httpd_ip
-            port: cfg.opensips.httpd_port
-            pathname: '/json/reg_list'
-          .accept 'json'
-        cfg.socket.emit 'registrants:response', body
-        debug 'socket: registrants done'
-
-/DEPRECATED
 
       cfg.rr = new RedRingAxon cfg.axon ? {}
 

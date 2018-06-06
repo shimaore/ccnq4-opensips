@@ -2,7 +2,6 @@
     morgan = require 'morgan'
     {promisify} = require 'util'
 
-    io = require 'socket.io-client' # DEPRECATED
     RedRingAxon = require 'red-rings-axon'
     {SUBSCRIBE} = require 'red-rings/operations'
 
@@ -81,17 +80,6 @@ Using the database with a LRU for cache.
         cfg.domains.set domain, {doc}
         return doc
 
-DEPRECATED
-
-      cfg.socket = io cfg.notify if cfg.notify?
-
-Subscribe to the `locations` bus.
-
-      cfg.socket?.on 'welcome', ->
-        cfg.socket.emit 'configure', locations:true
-
-/DEPRECATED
-
 Iterate over all AORs / all contacts,
 generating at least one document per known AOR.
 
@@ -110,11 +98,6 @@ generating at least one document.
           doc.username ?= username
           doc.domain ?= domain
           doc.hostname ?= cfg.host
-          doc._in = [
-            "endpoint:#{aor}"
-          ]
-          if domain?
-            doc._in.push "domain:#{domain}"
           doc
 
         cids = cfg.get_cids_for_aor aor
@@ -151,41 +134,6 @@ Save the document for a given Contact.
 
       cfg.save_contact = (doc) ->
         cfg.usrloc_data.set doc._id, doc
-
-DEPRECATED
-
-Reply to requests for a single AOR.
-----------------------------------
-
-      cfg.socket?.on 'location', (aor) ->
-        cfg.for_contact_in_aor aor, (doc) ->
-          cfg.socket.emit 'location:response', doc
-          return
-
-
-Reply to requests for all AORs.
-------------------------------
-
-      cfg.socket?.on 'locations', ->
-        docs = {}
-        cfg.all_contacts (doc) ->
-          docs[doc.aor] ?= []
-          docs[doc.aor].push doc
-        cfg.socket.emit 'locations:response', docs
-
-      cfg.socket?.on 'presentities', ->
-        docs = {}
-        cfg.presentities.forEach (value,key) ->
-          docs[key] = value
-        cfg.socket.emit 'presentities:response', docs
-
-      cfg.socket?.on 'active_watchers', ->
-        docs = {}
-        cfg.active_watchers.forEach (value,key) ->
-          docs[key] = value
-        cfg.socket.emit 'active_watchers:response', docs
-
-/DEPRECATED
 
 Reply to requests for a single AOR.
 ----------------------------------
@@ -352,19 +300,10 @@ Data is now finalized, store it.
           else
             debug 'Missing aor'
 
-Socket.IO notification
+Notification
 
-          notification =
-            _in: []
-          if doc.domain?
-            notification._in.push "domain:#{doc.domain}"
-          if doc.aor?
-            notification._in.push "endpoint:#{doc.aor}"
-
-          for own k,v of doc
-            notification[k] = v
-
-          cfg.socket?.emit 'location:update', notification
+          cfg.for_contact_in_aor aor, (doc) ->
+            cfg.rr.notify "endpoint:#{aor}", doc._id, doc
 
           debug 'location', doc
 
