@@ -5,13 +5,15 @@
     debug = (require 'tangible') 'test:client'
 
     sleep = (timeout) -> new Promise (resolve) -> setTimeout resolve, timeout
+    random = (n) ->
+      n + Math.ceil 100 * Math.random()
 
     describe 'The `client` configuration', ->
       request = require 'superagent'
       Promise = require 'bluebird'
       opensips = require './opensips'
 
-      port = 7600
+      port = random 7600
       a_port = port++
       b_port = port++
 

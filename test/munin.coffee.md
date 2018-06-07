@@ -2,6 +2,9 @@
     chai.use require 'chai-as-promised'
     chai.should()
     sleep = (timeout) -> new Promise (resolve) -> setTimeout resolve, timeout
+    random = (n) ->
+      n + Math.ceil 100 * Math.random()
+
     hostname = '127.0.0.1'
 
     request = require 'superagent'
@@ -17,17 +20,18 @@
         text.should.equal 'yes\n'
 
       it 'should return config', ->
+        m_port = random 3940
         munin = require '../src/munin'
-        server = await munin munin: port:3940
+        server = await munin munin: port: m_port
         after ->
           server.close()
-        {text} = await request.get 'http://127.0.0.1:3940/config'
+        {text} = await request.get "http://127.0.0.1:#{m_port}/config"
         text.should.match /opensips_registrar_accepted/
 
     describe 'munin live', ->
 
       opensips = require './opensips'
-      port = 7950
+      port = random 7950
       a_port = port++
       b_port = port++
 
@@ -45,10 +49,11 @@
         config.httpd_port = b_port
 
         service = require '../src/client/main'
-        config.db_url = "http://#{hostname}:34349"
+        db_port = random 34349
+        config.db_url = "http://#{hostname}:#{db_port}"
         server = await service
           web:
-            port: 34349
+            port: db_port
             host: hostname
           usrloc: 'location'
           usrloc_options: db: require 'memdown'
@@ -63,12 +68,13 @@
 
       it 'should return value', ->
         munin = require '../src/munin'
+        m_port = random 3941
         server = await munin
           munin:
             host: hostname
-            port:3941
+            port: m_port
           httpd_port: b_port
         after ->
           server.close()
-        {text} = await request.get "http://#{hostname}:3941/"
+        {text} = await request.get "http://#{hostname}:#{m_port}/"
         text.should.match /opensips_registrar_accepted.value 0/
