@@ -11,19 +11,19 @@ Start the processes
         stdio: ['ignore',process.stdout,process.stderr]
         env: TZ:'UTC'
 
-      s.on 'close', (code,signal) ->
+      s.once 'close', (code,signal) ->
         debug.dev "Process closed with code #{code}, signal #{signal}"
         process.exit code
 
-      s.on 'error', (error) ->
+      s.once 'error', (error) ->
         debug.dev "Process exited with error #{error}"
         process.exit 1
 
-      s.on 'exit', (code,signal) ->
+      s.once 'exit', (code,signal) ->
         debug.dev "Process exited with code #{code}, signal #{signal}"
         process.exit code
 
-      process.on 'exit', -> s.kill()
+      process.once 'exit', -> s.kill()
 
       s
 
