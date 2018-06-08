@@ -291,19 +291,19 @@ OpenSIPS 2.2 only gives us the `contact_id` on updates; we get username and doma
           doc.query_type = req.body.query_type
           doc.query_time = new Date().toJSON()
 
-Data is now finalized, store it.
+Data is now finalized, store it and notify.
 
           cfg.save_contact doc
 
           if doc.aor?
             cfg.add_cid_to_aor doc.aor, doc.contact_id
+
+            key = "endpoint:#{doc.aor}"
+            cfg.for_contact_in_aor doc.aor, (this_doc) ->
+              cfg.rr.notify key, this_doc._id, this_doc
+
           else
             debug 'Missing aor'
-
-Notification
-
-          cfg.for_contact_in_aor aor, (doc) ->
-            cfg.rr.notify "endpoint:#{aor}", doc._id, doc
 
           debug 'location', doc
 
