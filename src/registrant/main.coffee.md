@@ -8,7 +8,7 @@
     request = require 'superagent'
     url = require 'url'
     {list} = require './opensips'
-    CouchApp = require './couchapp'
+    CouchApp = require 'ccnq4-registrant-view'
 
     pkg = require '../../package.json'
     name = "#{pkg.name}:registrant"
@@ -22,7 +22,7 @@ Export
 
       cfg.host ?= (require 'os').hostname()
 
-      cfg.couchapp = CouchApp cfg
+      cfg.couchapp = CouchApp.couchapp cfg
 
       await cfg.push cfg.couchapp
 
@@ -80,7 +80,7 @@ Registrant
       app.get '/registrant/', (req,res) ->
           queries.registrant++
           if not req.query.k?
-            cfg.prov.query "#{cfg.couchapp.id}/registrant_by_host",
+            cfg.prov.query "#{CouchApp.app}/by_host",
               startkey: [ cfg.opensips.host ]
               endkey: [ cfg.opensips.host, {} ]
             .then ({rows}) =>

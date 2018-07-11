@@ -230,7 +230,7 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
         await new Promise (resolve) ->
           our_server = app.listen a_port, hostname, resolve
 
-        await prov.put (require '../src/registrant/couchapp') {}
+        await prov.put (require 'ccnq4-registrant-view').couchapp {}
         their_server = await service
             port: c_port
             host: hostname
