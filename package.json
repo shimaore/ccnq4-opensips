@@ -1,7 +1,7 @@
 {
   "name": "ccnq4-opensips",
   "docker_name": "shimaore/ccnq4-opensips",
-  "version": "18.0.0-8",
+  "version": "18.0.0",
   "private": true,
   "scripts": {
     "pretest": "npm install --only=dev && coffee -c test/*.coffee.md",
