@@ -49,6 +49,9 @@ registrant_by_host_map = p_fun (doc) ->
         expiry: expiry
         # forced_socket: null
 
+      value.proxy = doc.registrant_proxy if doc.registrant_proxy?
+      value.third_party_registrant = doc.registrant_from if doc.registrant_from?
+
       hosts = doc.registrant_host
       if typeof hosts is 'string'
         hosts = [hosts]
