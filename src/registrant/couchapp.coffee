@@ -19,7 +19,10 @@ registrant_by_host_map = p_fun (doc) ->
 
     return if doc.disabled
 
-    if doc.type? and doc.type is 'number' and doc.registrant_password? and doc.registrant_host? and doc.registrant_remote_ipv4?
+    domain = doc.registrant_domain
+    domain ?= doc.registrant_remote_ipv4 # legacy
+
+    if doc.type? and doc.type is 'number' and doc.registrant_password? and doc.registrant_host? and domain?
 
       username = doc.registrant_username
       unless username?
@@ -27,7 +30,7 @@ registrant_by_host_map = p_fun (doc) ->
         silly_prefix = doc.registrant_prefix ? '00'
         username = "#{silly_prefix}#{doc.number}"
 
-      aor = "sip:#{username}@#{doc.registrant_remote_ipv4}"
+      aor = "sip:#{username}@#{domain}"
       rand = 7
       rand += aor.charCodeAt i for i in [0...aor.length]
 
@@ -38,7 +41,7 @@ registrant_by_host_map = p_fun (doc) ->
       expiry += rand - rand // 2
 
       value =
-        registrar: "sip:#{doc.registrant_remote_ipv4}"
+        registrar: "sip:#{domain}"
         # proxy: null
         aor: aor
         # third_party_registrant: null
