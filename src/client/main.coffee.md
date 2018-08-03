@@ -128,7 +128,8 @@ Retrieve the document for a given Contact ID.
 
       cfg.get_doc_for_cid = (cid) ->
         doc = cfg.usrloc_data.get cid
-        doc ?= _missing:true, contact_id:cid
+        doc ?= _id:cid, _missing:true, hostname: cfg.host, contact_id:cid
+        doc
 
 Save the document for a given Contact.
 
