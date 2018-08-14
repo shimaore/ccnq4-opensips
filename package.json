@@ -35,13 +35,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/shimaore/ccnq4-opensips.git"
+    "url": "https://gitlab.com/shimaore/ccnq4-opensips.git"
   },
   "description": "OpenSIPS for CCNQ4",
   "bugs": {
-    "url": "https://github.com/shimaore/ccnq4-opensips/issues"
+    "url": "https://gitlab.com/shimaore/ccnq4-opensips/issues"
   },
-  "homepage": "https://github.com/shimaore/ccnq4-opensips",
+  "homepage": "https://gitlab.com/shimaore/ccnq4-opensips",
   "main": "index.js",
   "directories": {
     "test": "test"
