@@ -12,7 +12,7 @@
 
     pkg = require '../../package.json'
     name = "#{pkg.name}:client"
-    {debug,foot} = (require 'tangible') name
+    {debug} = (require 'tangible') name
 
 Export
 ======
@@ -144,11 +144,14 @@ Reply to requests for a single AOR.
       cfg.rr
       .receive 'endpoint:*'
       .filter ({op}) -> op is SUBSCRIBE
-      .observe foot (msg) ->
-        return unless $ = msg.key.match /^endpoint:(\S+)$/
-        aor = $[1]
-        cfg.for_contact_in_aor aor, (doc) ->
-          cfg.rr.notify msg.key, doc._id, doc
+      .observe ({key}) ->
+        try
+          return unless $ = key.match /^endpoint:(\S+)$/
+          aor = $[1]
+          cfg.for_contact_in_aor aor, (doc) ->
+            cfg.rr.notify key, doc._id, doc
+        catch error
+          debug.dev 'aor notify', error
         return
 
       app = Express()
