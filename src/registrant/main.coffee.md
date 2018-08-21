@@ -41,7 +41,6 @@ Export
           .accept 'json'
         cfg.rr.notify msg.key, "host:#{cfg.host}", body
         return
-      .catch console.error
 
       app = Express()
       main app, cfg

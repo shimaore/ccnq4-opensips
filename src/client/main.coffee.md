@@ -150,7 +150,6 @@ Reply to requests for a single AOR.
         cfg.for_contact_in_aor aor, (doc) ->
           cfg.rr.notify msg.key, doc._id, doc
         return
-      .catch console.error
 
       app = Express()
       main app, cfg
