@@ -31,7 +31,7 @@ Export
       cfg.rr
       .receive 'registrants'
       .filter ({op}) -> op is SUBSCRIBE
-      .forEach foot (msg) ->
+      .observe foot (msg) ->
         {body} = await request
           .get url.format
             protocol: 'http'
@@ -41,6 +41,7 @@ Export
           .accept 'json'
         cfg.rr.notify msg.key, "host:#{cfg.host}", body
         return
+      .catch console.error
 
       app = Express()
       main app, cfg
