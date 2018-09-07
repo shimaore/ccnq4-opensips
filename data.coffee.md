@@ -30,7 +30,7 @@ Registrant reload on data changes.
 * cfg.httpd_port Port number for OpenSIPS' HTTPD server. Default: 8560.
 
       if type is 'registrant'
-        RoyalThing ->
+        restart = ->
           ip = cfg.httpd_ip ? '127.0.0.1'
           port = cfg.httpd_port ? 8560
           request
@@ -38,6 +38,7 @@ Registrant reload on data changes.
           .accept 'json'
           .then ->
             debug "Registrant reload requested"
+        RoyalThing restart, cfg
 
       munin = require './src/munin'
       munin cfg
