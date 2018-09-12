@@ -28,6 +28,14 @@
   "source_ports": [
     5070,
     5071,
+    5072,
+    5073,
+    5074,
+    5075,
+    5076,
+    5077,
+    5078,
+    5079,
     5080,
     5081,
     5082,
@@ -58,7 +66,16 @@
     5107,
     5108,
     5109,
-    5110
+    5110,
+    5111,
+    5112,
+    5113,
+    5114,
+    5115,
+    5116,
+    5117,
+    5118,
+    5119
   ],
 
   "local_ip and local_port comment": "local_ip and optionally local_port indicate where the inbound messages (coming from the registrar) should be sent.",
