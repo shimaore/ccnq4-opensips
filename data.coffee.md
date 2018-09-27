@@ -38,7 +38,11 @@ Registrant reload on data changes.
           .accept 'json'
           .then ->
             debug "Registrant reload requested"
-        RoyalThing restart, cfg
+          .catch (error) ->
+            debug.dev 'Restart failed', error
+        {completed} = await RoyalThing restart, cfg
+        completed.catch (error) ->
+          debug.dev 'RoyalThing failed', error
 
       munin = require './src/munin'
       munin cfg
