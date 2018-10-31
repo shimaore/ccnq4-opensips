@@ -141,6 +141,15 @@ Reply to requests for a single AOR.
 
       cfg.rr = new RedRingAxon cfg.axon ? {}
 
+      cfg.notify_aor = (aor) ->
+        content = []
+        key = "endpoint:#{aor}"
+        cfg.for_contact_in_aor aor, (doc) ->
+          content.push doc
+        return unless content.length > 0
+        cfg.rr.notify key, 'contacts', content
+        return
+
       cfg.rr
       .receive 'endpoint:*'
       .filter ({op}) -> op is SUBSCRIBE
@@ -148,8 +157,7 @@ Reply to requests for a single AOR.
         try
           return unless $ = key.match /^endpoint:(\S+)$/
           aor = $[1]
-          cfg.for_contact_in_aor aor, (doc) ->
-            cfg.rr.notify key, doc._id, doc
+          cfg.notify_aor aor
         catch error
           debug.dev 'aor notify', error
         return
@@ -302,9 +310,7 @@ Data is now finalized, store it and notify.
           if doc.aor?
             cfg.add_cid_to_aor doc.aor, doc.contact_id
 
-            key = "endpoint:#{doc.aor}"
-            cfg.for_contact_in_aor doc.aor, (this_doc) ->
-              cfg.rr.notify key, this_doc._id, this_doc
+            cfg.notify_aor doc.aor
 
           else
             debug 'Missing aor'
