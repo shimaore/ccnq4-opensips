@@ -20,6 +20,7 @@
     "invite-trunk-outbound-domain",
     "invite",
     "invite-router",
+    "notify-router",
     "non-loose-route",
     "routing-lineside",
     "routing-trunkside-transparent",
