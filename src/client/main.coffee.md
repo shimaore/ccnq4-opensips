@@ -20,6 +20,24 @@ Export
     module.exports = (cfg) ->
       # debug 'Using configuration', cfg
 
+Function to map a key received in a notification to an (OpenSIPS) AOR
+
+      if cfg.key_to_aor?
+        try
+          key_to_aor = new Function 'key', cfg.key_to_aor
+
+      unless 'function' is typeof key_to_aor
+        key_to_aor = (key) -> key
+
+Reverse mapping: map an OpenSIPS AOR to a key
+
+      if cfg.aor_to_key?
+        try
+          aor_to_key = new Function 'aor', cfg.aor_to_key
+
+      unless 'function' is typeof aor_to_key
+        aor_to_key = (aor) -> aor
+
       cfg.host ?= (require 'os').hostname()
 
 Map AOR to a list of contact IDs
@@ -143,7 +161,7 @@ Reply to requests for a single AOR.
 
       cfg.notify_aor = (aor) ->
         content = []
-        key = "endpoint:#{aor}"
+        key = "endpoint:#{aor_to_key aor}"
         cfg.for_contact_in_aor aor, (doc) ->
           content.push doc
         return unless content.length > 0
@@ -156,7 +174,7 @@ Reply to requests for a single AOR.
       .observe ({key}) ->
         try
           return unless $ = key.match /^endpoint:(\S+)$/
-          aor = $[1]
+          aor = key_to_aor $[1]
           cfg.notify_aor aor
         catch error
           debug.dev 'aor notify', error
