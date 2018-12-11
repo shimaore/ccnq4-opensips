@@ -14,7 +14,7 @@ test:
   - docker login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
   - docker pull ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}
   script:
-  - docker run --rm ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA} npm test
+  - docker run --rm -e DEBUG="ccnq4-opensips:test:*" ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA} npm test
 
 deploy:
   stage: deploy

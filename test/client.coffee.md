@@ -2,7 +2,7 @@
     chai.should()
     hostname = '127.0.0.1'
 
-    debug = (require 'tangible') 'test:client'
+    debug = (require 'tangible') 'ccnq4-opensips:test:client'
 
     sleep = (timeout) -> new Promise (resolve) -> setTimeout resolve, timeout
     random = (n) ->
