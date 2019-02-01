@@ -31,8 +31,8 @@ RUN \
   apt-get purge -y \
     build-essential \
     ca-certificates \
-    cpp-6 \
-    gcc-6 \
+    cpp-8 \
+    gcc-8 \
     curl \
     git \
     make \
