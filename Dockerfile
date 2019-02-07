@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   make install && \
   cd .. && \
   rm -rf n.git && \
-  n 9.11.1
+  n 11.9.0
 
 # Start opensips part.
 COPY . /home/opensips
