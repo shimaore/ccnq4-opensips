@@ -51,10 +51,6 @@ Toolbox
 
     assert = require 'assert'
     logger = require 'tangible'
-    logger
-      .use require 'tangible/cuddly'
-      .use require 'tangible/gelf'
-      .use require 'tangible/redis'
     debug = logger "ccnq4-opensips:config"
     os = require 'os'
 

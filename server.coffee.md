@@ -1,10 +1,5 @@
     assert = require 'assert'
     logger = require 'tangible'
-    logger
-      .use require 'tangible/cuddly'
-      .use require 'tangible/gelf'
-      .use require 'tangible/redis'
-      .use require 'tangible/net'
     debug = logger "ccnq4-opensips:server"
     Nimble = require 'nimble-direction'
     ccnq4_config = require 'ccnq4-config'

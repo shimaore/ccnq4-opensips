@@ -1,4 +1,4 @@
-FROM shimaore/docker.opensips:v4.4.5
+FROM gitlab.k-net.fr:1234/ccnq/docker.opensips:v5.0.0
 MAINTAINER Stéphane Alnet <stephane@shimaore.net>
 ENV NODE_ENV production
 
@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   make install && \
   cd .. && \
   rm -rf n.git && \
-  n 11.9.0
+  n 11.10.0
 
 # Start opensips part.
 COPY . /home/opensips

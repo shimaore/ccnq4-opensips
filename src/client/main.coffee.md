@@ -42,7 +42,7 @@ Reverse mapping: map an OpenSIPS AOR to a key
 
 Map AOR to a list of contact IDs
 
-      cfg.usrloc = LRU
+      cfg.usrloc = new LRU
         # Store at most 6000 entries
         max: 6000
         # For at most 24 hours
@@ -50,31 +50,31 @@ Map AOR to a list of contact IDs
 
 Contact records, indexed on contact IDs
 
-      cfg.usrloc_data = LRU
+      cfg.usrloc_data = new LRU
         # Store at most 18000 entries
         max: 3*6000
         # For at most 24 hours
         maxAge: 24 * 3600 * 1000
 
-      cfg.presentities = LRU
+      cfg.presentities = new LRU
         # Store at most 6000 entries
         max: 6000
         # For at most 24 hour
         maxAge: 24 * 3600 * 1000
 
-      cfg.active_watchers = LRU
+      cfg.active_watchers = new LRU
         # Store at most 6000 entries
         max: 6000
         # For at most 24 hour
         maxAge: 24 * 3600 * 1000
 
-      cfg.watchers = LRU
+      cfg.watchers = new LRU
         # Store at most 6000 entries
         max: 6000
         # For at most 24 hour
         maxAge: 24 * 3600 * 1000
 
-      cfg.domains = LRU
+      cfg.domains = new LRU
         # Store at most 100 entries
         max: 100
         # For at most 1 minute
@@ -591,9 +591,9 @@ Versions
 Versions for OpenSIPS 2.2
 
             versions =
-              location: 1011
+              location: 1013
               presentity: 5
-              active_watchers: 11
+              active_watchers: 12
               watchers: 4
               pua: 8
 

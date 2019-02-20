@@ -49,10 +49,6 @@ Registrant reload on data changes.
 
     url = require 'url'
     logger = require 'tangible'
-    logger
-      .use require 'tangible/cuddly'
-      .use require 'tangible/gelf'
-      .use require 'tangible/redis'
     debug = logger "ccnq4-opensips:data"
     RoyalThing = require 'royal-thing'
     request = require 'superagent'

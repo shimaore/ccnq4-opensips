@@ -74,6 +74,7 @@
         last_modified:'date'
         sip_instance:'string'
         attr:'string'
+        kv_store: 'string'
       registrant:
         registrar:'string'
         proxy:'string'
@@ -122,6 +123,7 @@
         version:'int'
         socket_info:'string'
         local_contact:'string'
+        sharing_tag: 'string'
       watchers:
         id:'int'
         # index

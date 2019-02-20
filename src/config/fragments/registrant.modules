@@ -41,7 +41,6 @@ modparam("dialog", "db_mode", 0) # No database of dialogs
 modparam("dialog", "profiles_with_value", "endpoint;number")
 modparam("dialog", "profiles_no_value", "inbound;outbound")
 
-if replicate_to
-modparam("dialog", "accept_replicated_dialogs", 1)
-modparam("dialog", "replicate_dialogs_to", "${replicate_to}")
-end if replicate_to
+if cluster
+modparam("dialog", "dialog_replication_cluser", ${cluster})
+end if cluster

@@ -3,16 +3,12 @@ define usrloc
 loadmodule "usrloc.so"
 # Use usrloc-cl (DB-based)
 modparam("usrloc", "db_url",          "${db_url}")
-modparam("usrloc", "db_mode",         ${usrloc_db_mode})
+modparam("usrloc", "working_mode_preset", "${usrloc_db_mode}")
 modparam("usrloc", "timer_interval",  ${usrloc_db_timer})
 modparam("usrloc", "desc_time_order", 1)
 modparam("usrloc", "nat_bflag",       "bflag_request_mp_callee")
 modparam("usrloc", "use_domain",      1)
 
-if replicate_to
 modparam("usrloc", "skip_replicated_db_ops", 0)
-modparam("usrloc", "accept_replicated_contacts", 1)
-modparam("usrloc", "replicate_contacts_to", "${replicate_to}")
-end if replicate_to
 
 define has_usrloc
