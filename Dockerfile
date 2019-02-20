@@ -1,4 +1,4 @@
-FROM gitlab.k-net.fr:1234/ccnq/docker.opensips:v4.5.0
+FROM gitlab.k-net.fr:1234/shimaore/docker.opensips:v4.5.0
 MAINTAINER Stéphane Alnet <stephane@shimaore.net>
 ENV NODE_ENV production
 
