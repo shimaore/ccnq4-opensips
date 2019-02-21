@@ -34,8 +34,8 @@
           web:
             port: 34344
             host: hostname
+          prefix_admin: 'foo'
           usrloc: 'location'
-          usrloc_options: db: require 'memdown'
         debug "Server ready"
         kill = await opensips b_port, compile config
         await sleep 10000

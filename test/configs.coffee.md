@@ -5,9 +5,7 @@
     Express = require 'express'
     request = require 'superagent'
     opensips = require './opensips'
-    PouchDB = require 'ccnq4-pouchdb'
-      .plugin require 'pouchdb-adapter-memory'
-      .defaults adapter: 'memory'
+    CouchDB = require 'most-couchdb'
 
     describe 'OpenSIPS', ->
       random = (n) ->
@@ -20,9 +18,9 @@
         after ->
           @timeout 5000
           await sleep 1000
-          await kill b_port
+          await kill? b_port
           await sleep 2000
-          our_server.close()
+          our_server?.close()
         @timeout 8000
         port = random 7000
         a_port = port++
@@ -60,9 +58,9 @@
         after ->
           @timeout 5000
           await sleep 1000
-          await kill b_port
+          await kill? b_port
           await sleep 2000
-          our_server.close()
+          our_server?.close()
         @timeout 8000
         port = random 8000
         a_port = port++
@@ -97,9 +95,9 @@
         after ->
           @timeout 5000
           await sleep 1000
-          await kill b_port
+          await kill? b_port
           await sleep 2000
-          our_server.close()
+          our_server?.close()
         @timeout 8000
         port = random 9000
         a_port = port++
@@ -145,10 +143,10 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
         after ->
           @timeout 5000
           await sleep 1000
-          await kill b_port
+          await kill? b_port
           await sleep 2000
-          our_server.close()
-          their_server.close()
+          our_server?.close()
+          their_server?.close()
 
         @timeout 10000
         port = random 10000
@@ -182,8 +180,8 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
         their_server = await service
           port: c_port
           host: hostname
+          prefix_admin: 'foo'
           usrloc: 'location'
-          usrloc_options: db: require 'memdown'
           web:
             port: c_port
             host: hostname
@@ -196,10 +194,10 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
         after ->
           @timeout 5000
           await sleep 1000
-          await kill b_port
+          await kill? b_port
           await sleep 2000
-          our_server.close()
-          their_server.close()
+          our_server?.close()
+          their_server?.close()
         @timeout 10000
 
         port = random 11000
@@ -220,22 +218,33 @@ Notice: `rest_get(url,"$json(response)")` does not work, one must go through a v
         service = require '../src/registrant/main'
         config.db_url = "http://#{hostname}:#{c_port}"
 
-        prov = new PouchDB 'provisioning'
+        provisioning = "http://#{hostname}:#{a_port}/provisioning"
 
         app = Express()
         p = new Promise (done) ->
+          app.use (req,res,next) ->
+            console.log req.method, req.path, req.query
+            next()
+            return
           app.get '/ok-registrant', (req,res) ->
             res.json ok:yes
             done()
+
+          app.get '/provisioning/_design%2Fccnq4-registrant-1.0', (req,res) ->
+            res.json ok:yes
+          app.put '/provisioning/_design%2Fccnq4-registrant-1.0', (req,res) ->
+            res.json ok:yes
+          app.get '/provisioning/_design/ccnq4-registrant-1.0/_view/by_host', (req,res) ->
+            res.json rows:[]
+
         await new Promise (resolve) ->
           our_server = app.listen a_port, hostname, resolve
 
-        await prov.put (require 'ccnq4-registrant-view').couchapp {}
         their_server = await service
             port: c_port
             host: hostname
-            prov: prov
-            push: -> Promise.resolve()
+            prefix_admin: 'foo'
+            provisioning: provisioning
             opensips:
               host: 'example.net'
             web:

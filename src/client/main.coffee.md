@@ -5,6 +5,9 @@
     RedRingAxon = require 'red-rings-axon'
     {SUBSCRIBE} = require 'red-rings/operations'
 
+    Nimble = require 'nimble-direction'
+    CouchDB = require 'most-couchdb'
+
     LRU = require 'lru-cache'
 
     {show,list} = require './opensips'
@@ -18,6 +21,8 @@ Export
 ======
 
     module.exports = (cfg) ->
+      nimble = await Nimble cfg
+      prov = new CouchDB nimble.provisioning
       # debug 'Using configuration', cfg
 
 Function to map a key received in a notification to an (OpenSIPS) AOR
@@ -89,7 +94,7 @@ Using the database with a LRU for cache.
         v = cfg.domains.get domain
         return v.doc if v?
 
-        doc = await cfg.prov
+        doc = await prov
           .get "number_domain:#{domain}"
           .catch ->
             null

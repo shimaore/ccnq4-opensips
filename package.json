@@ -12,20 +12,18 @@
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "exec-as-promised": "^2.0.0",
-    "memdown": "^3.0.0",
-    "mocha": "^5.1.1",
-    "pouchdb-adapter-memory": "^6.3.4"
+    "mocha": "^5.1.1"
   },
   "dependencies": {
     "bluebird": "^3.5.3",
     "body-parser": "^1.18.3",
     "ccnq4-config": "^1.0.0",
-    "ccnq4-pouchdb": "^1.1.2",
     "ccnq4-registrant-view": "^1.0.0",
     "coffeescript": "^2.3.2",
     "express": "^4.16.4",
     "lru-cache": "^5.1.1",
     "morgan": "^1.9.1",
+    "most-couchdb": "^1.9.1",
     "nimble-direction": "^9.0.0",
     "red-rings": "^2.0.0",
     "red-rings-axon": "^2.1.5",

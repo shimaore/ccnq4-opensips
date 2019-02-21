@@ -55,8 +55,8 @@
           web:
             port: db_port
             host: hostname
+          prefix_admin: 'foo'
           usrloc: 'location'
-          usrloc_options: db: require 'memdown'
         our_server = server
         kill = await opensips b_port, compile config
         await sleep 3000

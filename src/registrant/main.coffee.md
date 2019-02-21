@@ -2,7 +2,9 @@
     morgan = require 'morgan'
     RedRingAxon = require 'red-rings-axon'
     {SUBSCRIBE} = require 'red-rings/operations'
-    PouchDB = require 'ccnq4-pouchdb'
+
+    Nimble = require 'nimble-direction'
+    CouchDB = require 'most-couchdb'
 
     hostname = (require 'os').hostname()
     request = require 'superagent'
@@ -18,13 +20,14 @@ Export
 ======
 
     module.exports = (cfg) ->
+      nimble = await Nimble cfg
       # debug 'Using configuration', cfg
 
       cfg.host ?= (require 'os').hostname()
 
       cfg.couchapp = CouchApp.couchapp cfg
 
-      await cfg.push cfg.couchapp
+      await nimble.push cfg.couchapp
 
       cfg.rr = new RedRingAxon cfg.axon ? {}
 
@@ -55,6 +58,8 @@ ZappaJS server
 ==============
 
     main = (app,cfg) ->
+      nimble = await Nimble cfg
+      prov = new CouchDB nimble.provisioning
 
       app.use morgan 'combined'
 
@@ -80,14 +85,12 @@ Registrant
       app.get '/registrant/', (req,res) ->
           queries.registrant++
           if not req.query.k?
-            cfg.prov.query "#{CouchApp.app}/by_host",
+            rows = []
+            await prov.query CouchApp.app, 'by_host',
               startkey: [ cfg.opensips.host ]
               endkey: [ cfg.opensips.host, {} ]
-            .then ({rows}) =>
-              res.send list rows, req, 'registrant'
-            .catch (error) =>
-              debug "query: #{error}"
-              res.status(500).end()
+            .forEach (row) -> rows.push row
+            res.send list rows, req, 'registrant'
             return
 
           res.send ''

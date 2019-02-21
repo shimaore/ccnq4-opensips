@@ -2,6 +2,7 @@
     logger = require 'tangible'
     debug = logger "ccnq4-opensips:server"
     Nimble = require 'nimble-direction'
+    CouchDB = require 'most-couchdb/with-update'
     ccnq4_config = require 'ccnq4-config'
     Options = require './config'
     run = require './data'
@@ -12,7 +13,8 @@
       cfg = ccnq4_config()
       assert cfg?, 'Missing configuration.'
 
-      await Nimble cfg
+      nimble = await Nimble cfg
+      prov = new CouchDB nimble.provisioning
 
       debug 'Build the configuration file.'
 
@@ -21,9 +23,9 @@
 
       debug 'Replicate the provisioning database.'
 
-      await cfg.reject_tombstones cfg.prov
-      await cfg.reject_types cfg.prov
-      unless await cfg.replicate 'provisioning'
+      await nimble.reject_tombstones prov
+      await nimble.reject_types prov
+      unless await nimble.replicate 'provisioning'
         throw new Error 'Unable to start the replication of the provisioning database.'
 
       debug 'Start the data server'
