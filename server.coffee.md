@@ -12,7 +12,6 @@
       cfg = ccnq4_config()
       assert cfg?, 'Missing configuration.'
 
-      logger.use (require 'tangible/repl') {cfg}
       await Nimble cfg
 
       debug 'Build the configuration file.'
