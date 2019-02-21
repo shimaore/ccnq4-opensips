@@ -6,7 +6,7 @@
   "redis_notify": false,
   "services_url": "http://127.0.0.1:5704",
   "startup_route_code": "",
-  "usrloc_db_mode": "single-instance-sql-write-back",
+  "usrloc_db_mode": "single-instance-sql-write-through",
 
   "mpath": "/opt/opensips/lib64/opensips/modules/",
   "var_run_opensips": "/home/opensips/run/opensips",
