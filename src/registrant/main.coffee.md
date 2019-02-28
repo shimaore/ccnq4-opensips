@@ -87,8 +87,8 @@ Registrant
           if not req.query.k?
             rows = []
             await prov.query CouchApp.app, 'by_host',
-              startkey: [ cfg.opensips.host ]
-              endkey: [ cfg.opensips.host, {} ]
+              startkey: JSON.stringify [ cfg.opensips.host ]
+              endkey: JSON.stringify [ cfg.opensips.host, {} ]
             .forEach (row) -> rows.push row
             res.send list rows, req, 'registrant'
             return

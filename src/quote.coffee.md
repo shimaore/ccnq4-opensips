@@ -76,6 +76,7 @@
         attr:'string'
         kv_store: 'string'
       registrant:
+        id:'int'
         registrar:'string'
         proxy:'string'
         aor:'string'
