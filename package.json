@@ -23,7 +23,7 @@
     "express": "^4.16.4",
     "lru-cache": "^5.1.1",
     "morgan": "^1.9.1",
-    "most-couchdb": "^1.10.5",
+    "most-couchdb": "^2.0.0",
     "nimble-direction": "^9.0.1",
     "red-rings": "^2.0.0",
     "red-rings-axon": "^2.1.5",
