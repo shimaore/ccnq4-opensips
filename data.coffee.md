@@ -40,9 +40,10 @@ Registrant reload on data changes.
             debug "Registrant reload requested"
           .catch (error) ->
             debug.dev 'Restart failed', error
-        {completed} = await RoyalThing restart, cfg
-        completed.catch (error) ->
-          debug.dev 'RoyalThing failed', error
+        do ->
+          while true
+            try await RoyalThing restart, cfg
+          return
 
       munin = require './src/munin'
       munin cfg
