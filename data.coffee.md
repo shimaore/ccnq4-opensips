@@ -42,7 +42,10 @@ Registrant reload on data changes.
             debug.dev 'Restart failed', error
         do ->
           while true
-            try await RoyalThing restart, cfg
+            try
+              await RoyalThing restart, cfg
+            catch error
+              debug.dev 'royal-thing failed', error
           return
 
       munin = require './src/munin'
