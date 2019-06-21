@@ -53,6 +53,71 @@
         """
         await p
 
+I test this one with `docker build -t bob . && docker run --rm -e DEBUG="*" --link redis bob npm test`.
+
+      it.skip 'should query redis (debug values)', ->
+        our_server = null
+        after ->
+          @timeout 5000
+          await sleep 1000
+          await kill? b_port
+          await sleep 2000
+          our_server?.close()
+        @timeout 8000
+        port = random 7000
+        a_port = port++
+        b_port = port++
+        c_port = port++
+        app = Express()
+        p = new Promise (done) ->
+          app.get '/cache/:code/:bob', (req,res) ->
+              {code,bob} = req.params
+              console.log '>>> cache', {code,bob}
+              res.json ok:yes
+          app.get '/cache_found/:bob', (req,res) ->
+              {bob} = req.params
+              console.log '>>> cache_found', {bob}
+              res.json ok:yes
+              done new Error "Found #{bob}, was supposed to be missed."
+          app.get '/cache_missed/:bob', (req,res) ->
+              {bob} = req.params
+              console.log '>>> cache_missed', {bob}
+              res.json ok:yes
+              done()
+        await new Promise (resolve) ->
+          our_server = app.listen a_port, hostname, resolve
+
+        kill = await opensips b_port, """
+          log_level=5
+          mpath="/opt/opensips/lib64/opensips/modules/"
+          loadmodule "proto_udp.so"
+          listen=udp:127.0.0.1:#{c_port}
+
+          loadmodule "rest_client.so"
+
+          loadmodule "cachedb_redis.so"
+          modparam("cachedb_redis","cachedb_url","redis:register://redis:6379/")
+
+          startup_route {
+            $avp(bob) := null;
+            $var(code) = cache_fetch("redis:register","reg:bob",$avp(bob));
+            rest_get("http://#{hostname}:#{a_port}/cache/$var(code)/$avp(bob)","$var(body)");
+
+            $var(bib) = null;
+            $var(code) = cache_fetch("redis:register","reg:bob",$var(bib));
+            rest_get("http://#{hostname}:#{a_port}/cache/$var(code)/$var(bib)","$var(body)");
+
+            $avp(last_source) := null;
+            if(cache_fetch("redis:register","reg:bob",$avp(last_source)) && $avp(last_source)) {
+              rest_get("http://#{hostname}:#{a_port}/cache_found/$avp(last_source)","$var(body)");
+            } else {
+              rest_get("http://#{hostname}:#{a_port}/cache_missed/$avp(last_source)","$var(body)");
+            }
+            exit;
+          }
+        """
+        await p
+
       it 'should accept simple configuration', ->
         our_server = null
         after ->
