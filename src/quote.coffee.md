@@ -61,7 +61,7 @@
         callid:'string'
         domain:'string'
         # non-keys
-        expires:'date'
+        expires:'int'
         q:'double'
         cseq:'int'
         flags:'int'
