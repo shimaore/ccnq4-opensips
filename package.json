@@ -15,21 +15,21 @@
     "mocha": "^5.1.1"
   },
   "dependencies": {
-    "bluebird": "^3.5.3",
-    "body-parser": "^1.18.3",
-    "ccnq4-config": "^1.0.0",
+    "bluebird": "^3.5.5",
+    "body-parser": "^1.19.0",
+    "ccnq4-config": "^1.0.1",
     "ccnq4-registrant-view": "^1.0.0",
-    "coffeescript": "^2.3.2",
-    "express": "^4.16.4",
+    "coffeescript": "^2.4.1",
+    "express": "^4.17.1",
     "lru-cache": "^5.1.1",
     "morgan": "^1.9.1",
-    "most-couchdb": "^2.0.0",
-    "nimble-direction": "^9.0.1",
+    "most-couchdb": "^3.3.3",
+    "nimble-direction": "^9.0.2",
     "red-rings": "^2.0.0",
     "red-rings-axon": "^2.1.5",
     "royal-thing": "^8.0.1",
-    "superagent": "^4.1.0",
-    "tangible": "^3.0.0"
+    "superagent": "^5.1.0",
+    "tangible": "^3.1.0"
   },
   "repository": {
     "type": "git",
