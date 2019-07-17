@@ -257,7 +257,7 @@ Domain
             res.send show doc, req, 'domain'
             return
 
-          debug "domain: not handled: #{req.query.k} #{req.query.op} #{req.query.v}"
+          debug.dev 'domain: not handled (get)', req.query
           res.send ''
 
 Location
@@ -291,7 +291,7 @@ Location
             res.send list rows, req, 'location'
             return
 
-          debug "location: not handled: #{req.query.k} #{req.query.op} #{req.query.v}"
+          debug.dev 'location: not handled (get)', req.query
           res.send ''
 
       app.post '/location', (Express.urlencoded extended:false), (req,res) ->
@@ -336,9 +336,7 @@ Data is now finalized, store it and notify.
             cfg.notify_aor doc.aor
 
           else
-            debug 'Missing aor'
-
-          debug 'location', doc
+            debug.dev 'Missing aor', doc
 
 Response
 
@@ -352,7 +350,7 @@ Response
             res.send ''
             return
 
-          debug "location: not handled: #{req.query.k} #{req.query.op} #{req.query.v}"
+          debug.dev 'location: not handled (get)', req.query
           res.send ''
 
 Presentity
@@ -404,7 +402,7 @@ in modules/presence/publish.c, 'cleaning expired presentity information'
             res.send list rows, req, 'presentity'
             return
 
-          debug 'presentity: not handled', req.query
+          debug.dev 'presentity: not handled (get)', req.query
           res.send ''
 
       app.post '/presentity', (Express.urlencoded extended:false), (req,res) ->
@@ -474,7 +472,7 @@ No action is needed, we're using the LRU maxAge (see above).
             res.send ''
             return
 
-          debug 'presentity: not handled', req.body
+          debug.dev 'presentity: not handled (post)', req.body
           res.send ''
 
 Active Watchers
@@ -495,7 +493,7 @@ Active Watchers
             res.send list rows, req, 'active_watchers'
             return
 
-          debug 'active_watchers: not handled', req.query
+          debug.dev 'active_watchers: not handled (get)', req.query
           res.send ''
 
       app.post '/active_watchers', (Express.urlencoded extended:false), (req,res) ->
@@ -542,7 +540,7 @@ No action is needed, we're using the LRU maxAge (see below).
             res.send doc._id
             return
 
-          debug 'active_watchers: not handled', req.body
+          debug.dev 'active_watchers: not handled (post)', req.body
           res.send ''
 
 Watchers
@@ -553,7 +551,7 @@ Watchers
       app.get '/watchers/', (req,res) ->
           queries.watchers++
 
-          debug 'watchers: not handled', req.query
+          debug.dev 'watchers: not handled (get)', req.query
           res.send ''
 
       app.post '/watchers', (Express.urlencoded extended:false), (req,res) ->
@@ -566,7 +564,7 @@ Watchers
             res.send ''
             return
 
-          debug 'watchers: not handled', req.body
+          debug.dev 'watchers: not handled (post)', req.body
           res.send ''
 
 Presence client / User Agent
@@ -575,13 +573,13 @@ Presence client / User Agent
       app.get '/pua/', (req,res) ->
           queries.pua++
 
-          debug 'pua: not handled', req.query
+          debug.dev 'pua: not handled (get)', req.query
           res.send ''
 
       app.post '/pua', (Express.urlencoded extended:false), (req,res) ->
           queries.save_pua++
 
-          debug 'pua: not handled', req.body
+          debug.dev 'pua: not handled (post)', req.body
           res.send ''
 
 Versions
