@@ -378,11 +378,23 @@ in modules/presence/publish.c, 'cleaning expired presentity information'
 > GET with { k: 'expires', op: '<', v: '1464611367', c: 'username,domain,etag,event' }
 
           if req.query.k is 'expires' and req.query.op is '<'
-            v = req.query.v
+            v = req.query.v.split(',').map (t) -> parseInt t, 10
             debug 'get presentities expiring before', v
             rows = []
             cfg.presentities.forEach (value,key) ->
               if value.expires < v
+                rows.push {key,value}
+
+            res.type 'text/plain'
+            res.send list rows, req, 'presentity'
+            return
+
+          if req.query.k is 'expires,expires' and req.query.op is '>,<'
+            v = req.query.v.split(',').map (t) -> parseInt t, 10
+            debug 'get presentities expiring before', v
+            rows = []
+            cfg.presentities.forEach (value,key) ->
+              if value.expires > v[0] and value.expires < v[1]
                 rows.push {key,value}
 
             res.type 'text/plain'
@@ -432,7 +444,7 @@ FIXME should prune old presentities in the `o` while we are at it.
             res.send doc._id
             return
 
-          if req.body.query_type is 'update' and req.query.k is 'domain,username,event,etag'
+          if req.body.query_type is 'update' and req.body.k is 'domain,username,event,etag'
             update_doc = unquote_params(req.body.uk,req.body.uv,'presentity')
 
             debug 'update presentity', doc, update_doc
@@ -453,7 +465,7 @@ FIXME should prune old presentities in the `o` while we are at it.
             res.send doc._id
             return
 
-          if req.body.k is 'expires' and req.body.op is '<' and req.body.query_type is 'delete'
+          if req.body.query_type is 'delete' and req.body.k is 'expires' and req.body.op is '<'
             debug 'delete presentity older than', req.body.v
 
 No action is needed, we're using the LRU maxAge (see above).
@@ -462,7 +474,7 @@ No action is needed, we're using the LRU maxAge (see above).
             res.send ''
             return
 
-          if req.body.query_type is 'delete' and req.query.k is 'domain,username,event,etag'
+          if req.body.query_type is 'delete' and req.body.k is 'domain,username,event,etag'
             debug 'delete presentity', doc._upid
             o = cfg.presentities.get doc._upid
             o ?= {}
@@ -564,6 +576,18 @@ Watchers
             res.send ''
             return
 
+          if req.body.query_type is 'delete' and req.body.k is 'inserted_time,status' and req.body.op is '<,='
+            # FIXME
+            res.type 'text/plain'
+            res.send ''
+            return
+
+          if req.body.query_type is 'delete' and req.body.k is 'presentity_uri,event,to_tag' and not req.body.op?
+            # FIXME
+            res.type 'text/plain'
+            res.send ''
+            return
+
           debug.dev 'watchers: not handled (post)', req.body
           res.send ''
 
@@ -578,6 +602,31 @@ Presence client / User Agent
 
       app.post '/pua', (Express.urlencoded extended:false), (req,res) ->
           queries.save_pua++
+
+          if req.body.query_type is 'delete' and req.body.k is 'expires' and req.body.op is '<'
+            # FIXME
+            res.type 'text/plain'
+            res.send ''
+            return
+
+          if req.body.query_type is 'delete' and req.body.k is 'pres_uri,event,flag,pres_id,etag' and not req.query.op?
+            # FIXME
+            res.type 'text/plain'
+            res.send ''
+            return
+
+          if req.body.query_type is 'insert' and req.body.k is 'pres_uri,pres_id,flag,event,watcher_uri,call_id,to_tag,from_tag,etag,tuple_id,cseq,expires,desired_expires,record_route,contact,remote_contact,version,to_uri,extra_headers' and not req.body.op?
+            # FIXME
+            res.type 'text/plain'
+            res.send ''
+            return
+
+          if req.body.query_type is 'update' and req.body.k is 'pres_uri,pres_id,flag' and not req.body.op?
+            # FIXME
+            res.type 'text/plain'
+            res.send ''
+            return
+
 
           debug.dev 'pua: not handled (post)', req.body
           res.send ''
