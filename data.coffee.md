@@ -43,7 +43,8 @@ Registrant reload on data changes.
         do ->
           while true
             try
-              await RoyalThing restart, cfg
+              {completed} = await RoyalThing restart, cfg
+              await completed
             catch error
               debug.dev 'royal-thing failed', error
           return
