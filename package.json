@@ -9,13 +9,13 @@
     "test": "mocha"
   },
   "devDependencies": {
+    "bluebird": "^3.5.5",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "exec-as-promised": "^2.0.0",
     "mocha": "^5.1.1"
   },
   "dependencies": {
-    "bluebird": "^3.5.5",
     "body-parser": "^1.19.0",
     "ccnq4-config": "^1.0.1",
     "ccnq4-registrant-view": "^1.0.0",
