@@ -1,4 +1,4 @@
-FROM gitlab.k-net.fr:1234/ccnq/docker.opensips:v5.0.0
+FROM registry.gitlab.com/shimaore/docker.opensips:v5.0.0-rebuild
 MAINTAINER Stéphane Alnet <stephane@shimaore.net>
 ENV NODE_ENV production
 
