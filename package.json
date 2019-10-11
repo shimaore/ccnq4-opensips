@@ -22,10 +22,10 @@
     "express": "^4.17.1",
     "lru-cache": "^5.1.1",
     "morgan": "^1.9.1",
-    "most-couchdb": "^3.3.3",
+    "most-couchdb": "^3.7.3",
     "nimble-direction": "^9.0.2",
-    "red-rings": "^2.0.0",
-    "red-rings-axon": "^2.1.5",
+    "red-rings": "^2.1.0",
+    "red-rings-axon": "^2.2.0",
     "royal-thing": "^9.0.0",
     "superagent": "^5.1.0",
     "tangible": "^3.1.0"
